@@ -10,9 +10,14 @@
 <body>
   <div id="app">
     <input type="text" v-model="value">
-    <button @click="addContent">添加</button>
+    <button @click="addContent">底部添加</button>
+    <button @click="delContent">删除最新</button>
     <ul>
-      <li v-for="(item,index) in items">{{index}} -- {{ item }}</li>
+      <li v-for="(item,index) in items" >
+        <template v-if="index != 1">
+          {{index}} -- {{ item }}-- <button @click="delSample(index)">删除</button>
+        </template>
+      </li>
     </ul>
   </div>
 
@@ -24,9 +29,27 @@
         items: ["第一", "第二", "第三"]
       },
       methods: {
+        // 添加元素
         addContent(){
           if (this.value != "") {
             this.items.push(this.value)
+          }else{
+            alert("value不能为空")
+          }
+        },
+        //删除元素
+        delContent(){
+          this.items.pop()
+        },
+
+        //删除单个原色
+        delSample(index){
+          console.log(index);
+          if(this.items.length==1){
+            alert("必须保留一个人")
+          }else{
+          //splice(index, number):从index处删除number个数据
+            this.items.splice(index, 1)
           }
         }
       }
