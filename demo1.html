@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="js/vue.js"></script>
+    <title>Document</title>
+</head>
+
+<body>
+    <!-- 双向绑定 -->
+    <div id="app">
+        {{ content }}
+        <input type="text" v-model="content"> 
+        <button @click="update_data" value="更新内容">更新内容</button>
+    </div>
+
+    <script>
+        var app = new Vue({
+            el: "#app",
+            data: {
+                content: "您好，世界"
+                
+            },
+            methods: {
+                update_data(){
+                    this.content = "我不好"
+                }
+            },
+        })
+    </script>
+</body>
+
+</html>
