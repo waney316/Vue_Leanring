@@ -19,14 +19,39 @@
         </template>
       </li>
     </ul>
+
+    <!-- 使用组件 -->
+    <ul>
+      <list-component v-for="(item, index) in items" :content="index">
+
+      </list-component>
+
+      <list_com></list_com>
+    </ul>
   </div>
 
   <script>
+    // 全局组件: 参数1：组件名称 参数2：组件实例对象
+    Vue.component("list-component", {
+      props: ["content"],
+      template: "<li>{{ content }}</li>"
+    })
+
+    // 局部组件
+    var list_com = {
+      props: ["content"],
+      template: "<a href='#'>{{ content }}哈哈哈</a>"
+    }
+
+
     var vm = new Vue({
       el: "#app",
       data: {
         value: "",
         items: ["第一", "第二", "第三"]
+      },
+      components: {
+        list_com
       },
       methods: {
         // 添加元素
