@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vue生命周期函数</title>
+  <script src="js/vue.js"></script>
+</head>
+<body>
+  <div id="app">
+    {{ content }}
+  </div>
+
+  <script>
+    // 创建实例
+    var vm = new Vue({
+      //绑定远侧
+      el: "#app",
+      // 数据
+      data: {
+        content: "您好",
+        test: {
+          key: "hhhh"
+        }
+      },
+
+      //实例创建之前
+      beforeCreate() {
+        console.log(this.content) // undefined
+        console.log("beforecreated")
+      },
+
+      //实例创建之后
+      created() {
+        console.log(this.content)
+        console.log("created");
+      },
+
+      // 渲染之前
+      beforeMount() {
+        console.log("bforemounted")
+      },
+
+      //渲染之后
+      mounted() {
+        console.log("mountd");
+      },
+
+      //数据更新之前
+      beforeUpdate() {
+        console.log("before update")
+      },
+
+      //数据更新之后
+      updated() {
+        console.log("update")
+      },
+
+      //数据销毁之前
+      beforeDestroy() {
+        console.log("before destrory")
+      },
+
+      //数据销毁之后
+      destroyed() {
+        console.log("destroey");
+      },
+    })
+  </script>
+</body>
+</html>
