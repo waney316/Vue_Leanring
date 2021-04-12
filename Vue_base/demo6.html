@@ -4,16 +4,22 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>计算属性和监听器</title>
     <script src="js/vue.js"></script>
 </head>
 <body>
     <div class="app">
-        {{ content }}
+        原始字符串：{{ content }}
+        <br>
+        html内翻转： {{ content.split("").reverse().join('') }}
+        <br>
+        计算属性翻转: {{ reverseContent }}
+        <br>
+        methos实现翻转：{{ reverseContent2() }}
         <!-- // v-text: 文本渲染 -->
         <div v-text="content"></div>
         <!-- //v-html: html渲染 -->
-        <div v-html="htmlValue"></div>
+        <!-- <div v-html="htmlValue"></div> -->
     </div>
     
     <script>
@@ -22,6 +28,25 @@
             data: {
                 content: "您好，世界",
                 htmlValue: "<h1>不要</h1>"
+            },
+            //通过计算属性翻转
+            computed: {
+                reverseContent(){
+                    return this.content.split('').reverse().join('')
+                }
+            },
+            //method方法实现翻转
+            methods: {
+               reverseContent2(){
+                   return this.content.split('').reverse().join('')
+               } 
+            },
+
+            //监听器,当对应的值
+            watch: {
+                watchContent(){
+                    
+                }
             }
         })
     </script>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>监听器</title>
+    <script src="js/vue.js"></script>
+</head>
+<body>
+    <div id="app">
+        姓氏：{{ firstName }} <br>
+        名仕：{{ lastName }} <br>
+        全名：{{ fullNmae }}
+
+        <br>
+
+        姓氏： <input type="text" name="" id="" v-model="firstName">
+        名字 <input type="text" name="" id="" v-model="lastName">
+        <br>
+        全名：{{ fullNmae }}
+    </div>
+    
+
+    <script>
+        var vm = new Vue({
+            el: "#app",
+            data: {
+                firstName: "王",
+                lastName: "者",
+                fullNmae: "王者"
+            },
+            watch: {
+                //当监听到firstname发生变化，将变化后的值传入
+                firstName(value){
+                    console.log("first name chaged to", value)
+                    this.fullNmae = value + this.lastName
+                },
+                lastName(val){
+                    this.fullNmae = this.firstName + val
+                }
+            }
+        })
+    </script>
+</body>
+</html>
