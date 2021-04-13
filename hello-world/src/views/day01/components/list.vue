@@ -15,8 +15,10 @@
 <script>
 export default {
   data () {
+    // 父组件向子组件传值
+    props: ['list']
     return {
-      list: ['a', 'b', 'c', 'd', 'e'],
+      // list: ['a', 'b', 'c', 'd', 'e'],
       val: ''
     }
   },
