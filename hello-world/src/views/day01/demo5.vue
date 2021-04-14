@@ -41,7 +41,7 @@ export default {
       },
       set (value) {
         console.log('compute  set')
-        var name = value.split(' ')
+        var name = value.split(',')
         this.lastName = name[0]
         this.firstName = name[1]
       }

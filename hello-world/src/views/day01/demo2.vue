@@ -1,15 +1,16 @@
 <template>
     <div>
         <!-- <List></List> -->
-        <list></list>
+        <!-- 父组件向子组件传值 -->
+        <List :list="list"></List>
     </div>
 </template>
 
 <script>
 // 全局注册
-import Vue from 'vue'
+// import Vue from 'vue'
 import List from './components/list'
-Vue.component('list', List)
+// Vue.component('list', List)
 
 export default {
   data () {

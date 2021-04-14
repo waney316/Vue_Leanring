@@ -23,7 +23,7 @@ export default {
     //   content: '<h1>51reboot</h1>',
       content: '51reboot',
       test: '51reboot',
-      disabledStatus: true
+      disabledStatus: false
     }
   },
 
