@@ -43,6 +43,21 @@ export default [
     path: '/day01/demo6',
     name: 'demo6',
     component: () => import('../views/day01/demo6.vue')
+  },
+  {
+    path: '/day01/demo7',
+    name: 'demo7',
+    component: () => import('../views/day01/demo7.vue')
+  },
+  {
+    path: '/day01/demo8',
+    name: 'demo8',
+    component: () => import('../views/day01/demo8.vue')
+  },
+  {
+    path: '/day01/demo9',
+    name: 'demo9',
+    component: () => import('../views/day01/demo9.vue')
   }
 
 ]
