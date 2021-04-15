@@ -12,9 +12,9 @@
     <hr>
     <button @click="switchLoginType">登录方式验证</button>
     <hr>
-      <!-- 
+      <!--
         v-show 在判断后，始终会渲染数据且使用 css 的 display 展示或者隐藏功能页面。
-      而 v-if 是“真正”的条件渲染，因为它会确保在切换过程中条件块内的事件监听器和子组件适当地被销毁和重建。 
+      而 v-if 是“真正”的条件渲染，因为它会确保在切换过程中条件块内的事件监听器和子组件适当地被销毁和重建。
       -->
       <h2 v-show="false">v-show</h2>
       <h2 v-if="true">v-if</h2>

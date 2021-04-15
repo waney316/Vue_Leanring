@@ -1,19 +1,19 @@
 <template>
-    <div>
-       {{ fullName }}
-       <br>
-       lastName: <input type="text" v-model="lastName">
-       firstName: <input type="text" v-model="firstName">
-       <button @click="test">测试按钮</button>
+  <div>
+    {{ fullName }}
+    <br />
+    lastName: <input type="text" v-model="lastName" /> firstName:
+    <input type="text" v-model="firstName" />
+    <button @click="test">测试按钮</button>
 
-        <hr>
-        <h2>setter演示</h2>
-        <input type="text" v-model="value" >
-        <button @click="testButton">测试</button>
+    <hr />
+    <h2>setter演示</h2>
+    <input type="text" v-model="value" />
+    <button @click="testButton">测试</button>
 
-        <hr>
-        方法返回：{{ showFullName   () }}
-    </div>
+    <hr />
+    方法返回：{{ showFullName() }}
+  </div>
 </template>
 
 <script>

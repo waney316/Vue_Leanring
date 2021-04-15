@@ -58,6 +58,31 @@ export default [
     path: '/day01/demo9',
     name: 'demo9',
     component: () => import('../views/day01/demo9.vue')
+  },
+  {
+    path: '/day01/demo10',
+    name: 'demo10',
+    component: () => import('../views/day01/demo10.vue')
+  },
+  {
+    path: '/day01/demo11',
+    name: 'demo11',
+    component: () => import('../views/day01/demo11.vue')
+  },
+  {
+    path: '/day01/demo12',
+    name: 'demo12',
+    component: () => import('../views/day01/demo12.vue')
+  },
+  {
+    path: '/day01/demo13',
+    name: 'demo13',
+    component: () => import('../views/day01/demo13.vue')
+  },
+  {
+    path: '/day01/demo14',
+    name: 'demo14',
+    component: () => import('../views/day01/demo14.vue')
   }
 
 ]
