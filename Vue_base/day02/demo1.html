@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="js/vue.js"></script>
+  <title>Document</title>
+  <div class="app">
+    <!-- {{ users }} -->
+    <table>
+      <!-- <tr v-for="user in users">
+        <td>{{ user.id }}</td>
+        <td>{{ user.name }}</td>
+      </tr> -->
+      <user-list v-for="user in users" :user="user"></user-list>
+    </table>
+
+  </div>
+</head>
+<body>
+  <script>
+    // 使用组件改造
+    Vue.component("user-list", {
+      props: ["user"],
+      template: "<tr><td>{{ user.id }}</td><td>{{ user.name }}</td></tr>"
+    })
+
+    var data = new Vue({
+      el: ".app",
+      data: {
+        users: [
+          {id:1, name: "aa"},
+          {id:2, name: "bb"},
+          {id:3, name: "cc"},
+          {id:4, name: "dd"},
+        ]
+      }
+    })
+  </script>
+</body>
+</html>
