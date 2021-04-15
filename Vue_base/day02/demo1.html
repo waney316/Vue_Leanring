@@ -13,17 +13,20 @@
         <td>{{ user.id }}</td>
         <td>{{ user.name }}</td>
       </tr> -->
-      <user-list v-for="user in users" :user="user"></user-list>
+
+      <!-- 通过is解决tr位于table在外面的问题 -->
+      <!-- <user-list  v-for="user in users" :user="user"></user-list> -->
+      <tr is="user-list" v-for="user in users" :item="user"></tr>
     </table>
 
   </div>
 </head>
 <body>
   <script>
-    // 使用组件改造
+    // 使用组件改造，定义子组件
     Vue.component("user-list", {
-      props: ["user"],
-      template: "<tr><td>{{ user.id }}</td><td>{{ user.name }}</td></tr>"
+      props: ["item"],
+      template: "<tr><td>{{ item.id }}</td><td>{{ item.name }}</td></tr>"
     })
 
     var data = new Vue({

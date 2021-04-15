@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>动态组件的加载</title>
+    <script src="js/vue.js"></script>
+</head>
+<body>
+    <div id="app">
+        <h1>动态组件切换，建议使用</h1>
+        <component :is="component_index"></component>
+        <button @click="switchCom">切换组件</button>
+
+        <hr>
+        <h1>v-if切换组件</h1>
+        <component1 v-if="component_index==='component1'"></component1>
+        <component2 v-if="component_index==='component2'"></component2>
+    </div>
+</body>
+
+<script>
+    //全局定义组件
+    Vue.component("component1", {
+        template: "<h1>test1</h1>"
+    })
+
+    Vue.component("component2", {
+        template: "<h1>test2</h1>"
+    })
+
+    var vm = new Vue({
+        el: "#app",
+        data: {
+            component_index: "component1"
+        },
+        methods: {
+            switchCom(){
+                this.component_index = this.component_index ==="component1"?"component2":"component1"
+            }
+        },
+    })
+</script>
+</html>
