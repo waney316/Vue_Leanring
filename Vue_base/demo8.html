@@ -10,6 +10,8 @@
 <body>
     <div id="app">
         {{ content }}
+
+        {{list}}
     </div>
 
     <!-- js -->
@@ -17,7 +19,8 @@
         var vm = new Vue({
             el: "#app",
             data: {
-                content: "您好，世界"
+                content: "您好，世界",
+                list: [1,2,3,4]
             }
         })
     </script>

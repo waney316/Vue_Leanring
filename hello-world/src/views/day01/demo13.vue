@@ -35,6 +35,7 @@ export default {
   },
   methods: {
     update () {
+      // 对象数据添加属性，需要为data里注册
       this.$set(this.list, 'name', 'cshi')
     }
   }
