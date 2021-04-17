@@ -9,8 +9,11 @@
 </head>
 <body>
   <div id="app">
-    <test></test>
-    total: {{ total }}
+    <test @f-total="sumTotal" ref="test1"></test>
+    <test @f-total="sumTotal" ref="test2"></test>
+    <h1>total: {{ total }}</h1>
+    <!-- 父组件里通过ref获取子组件属性引用 -->
+    <button @click="handleClick">测试按钮</button>
   </div>
 
   
@@ -26,12 +29,27 @@
     template: "<h1 @click=add> {{ number }}</h1>",
     methods: {
       add(){
-        this.number++
+        this.number = this.number+5
+        this.$emit('f-total')
+      },
+      testAlert(){
+        alert("我是子组件里函数方法")
       }
     }
   })
   var vm = new Vue({
     el: "#app",
+    data: {
+      total: 0
+    },
+    methods: {
+      sumTotal(){
+        this.total = this.$refs.test1.number + this.$refs.test2.number
+      },
+      handleClick(){
+        this.$refs.test1.testAlert()
+      }
+    },
 
   })
 </script>

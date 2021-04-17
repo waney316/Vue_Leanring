@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>父组件向子组件传值</title>
+    <script src="js/vue.js"></script>
+</head>
+<body>
+    <div id="app">
+        <test :number="father_number" :list="father_list" :obj="father_obj">
+            
+        </test>
+        
+    </div>
+
+    <script>
+        //全局定义组件
+        Vue.component("test", {
+            //props: 接收父组件传过来的值
+            props: ["number", "list", "obj"],
+            template: `<h1>
+                直接修改：{{ this.childNumber }}， 间接修改: {{ this.childNumber }}--<button @click='chageNumber'>修改父组件里值</button>
+                <hr>
+                {{ this.list }} -- <button @click='chageList'>修改父组件里数组的值</button>
+                <hr>
+                {{ this.obj }} -- <button @click='chageObj'>修改父组件里数组的值</button>
+                </h1>`,
+            //通过引用子组件值，间接修改父组件的值
+            data(){
+                return {
+                    childNumber: ""
+                }
+            },
+            mounted() {
+                this.childNumber = this.number
+            },
+            methods: {
+                chageNumber(){
+                    this.childNumber++
+                },
+                chageList(){
+                    this.list.shift()
+                },
+                chageObj(){
+                    this.obj.name="hhhh"
+                }
+            },
+        })
+
+        //父组件
+        var vm = new Vue({
+            el: "#app",
+            data: {
+                // 普通字符串的值
+                father_number:55,
+                //数组传递
+                father_list: [1,2,3,4],
+                //对象传递
+                father_obj: {
+                    name: "wangwei"
+                }
+            }
+
+        })
+    </script>
+</body>
+</html>
