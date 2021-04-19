@@ -5,8 +5,35 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>插槽</title>
+    <script src="js/vue.js"></script>
 </head>
 <body>
-    
+    <div id="app">
+
+    </div>
+
+    <script>
+        //定义组件
+        Vue.component("test", {
+            data(){
+                return {
+                    list: [1,2,3,4,5,6]
+                }
+            },
+            template: `
+            <div>
+                <ul></ul>
+            </div>
+            `,
+            methods: {
+                
+            },
+        })
+
+
+        var vm = new Vue({
+            el: "#app"
+        })
+    </script>
 </body>
 </html>
