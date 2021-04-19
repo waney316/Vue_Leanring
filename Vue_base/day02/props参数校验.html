@@ -4,9 +4,51 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>props参数校验</title>
+    <script src="js/vue.js"></script>
 </head>
 <body>
+    <div id="app">
+        <test :age="fatherNumber" content="content"></test>
+    </div>
+    <script>
+        //定义个子组件
+        Vue.component("test", {
+            // props: ["age", "content"],
+            //2: 规定传参的数据类型,
+            // props: {
+            //     "age": Number,
+            //     "content": Number
+            // },
+            //3: 详细定义方式
+            props: {
+                age: {
+                    type: Number,
+                    required: true,
+                    default: ''
+                },
+                // content: {
+                //     type: String,
+                //     required: true,
+                //     default: "test"
+                // }
+            },
+            data(){
+                return {
+                    name: "wangwei"
+                }
+            },
+            template: "<h1>用户名：{{ name }}， 年龄: {{ age }}, </h1>"
+        })
+
+        var vm = new Vue({
+            el: '#app',
+            data: {
+                fatherNumber: 12,
+                content: "father"
+            }
+        })
+    </script>
     
 </body>
 </html>

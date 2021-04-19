@@ -5,8 +5,56 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>子组件之间相互通信，事件总线</title>
+    <script src="js/vue.js"></script>
 </head>
 <body>
+    <div id="app">
+        <test name="test1">
+        </test>
+        <test name="test2"></test>
+    </div>
+    <script>
+        //初始化事件总线
+        const EventBus = new Vue()
+
+        //定义字组件
+        Vue.component("test", {
+            props: ["name"],
+            data(){
+                return {
+                    name9: this.name + 'dd'
+                }
+            },
+            template: `<div><h1>{{name9}}</h1>
+                <slot name="test">
+                <button @click='send(name)'>
+                    点击
+                </button>
+                </slot>
+                </div>`,
+            mounted() {
+                EventBus.$on('recvEvent', (val) => {
+                    console.log(val)
+                })
+            },
+            methods: {
+                send(name){
+                    // $emit(func, args): 像其他组件
+
+
+                    EventBus.$emit("recvEvent", name)
+                },
+            },
+        })
+
+        //父组件
+        var vm = new Vue({
+            el: "#app",
+            data: {
+
+            }
+        })
+    </script>
     
 </body>
 </html>
