@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="js/vue.js"></script>
+</head>
+<body>
+  <div id="app">
+    <component :is="componentName"></component>
+
+    <button @click="handleClick">切换</button>
+    <!-- <h1>v-once确保内容只计算一次</h1>
+    <test1 v-if="status"></test1>
+    <test2 v-else></test2> -->
+  </div>
+
+  <script>
+    Vue.component("test1", {
+      template: "<h1 v-once>test1</h1>"
+    })
+    Vue.component("test2", {
+      template: "<h1 v-once>test2</h1>"
+    })
+
+    var vm = new Vue({
+      el: "#app",
+      data: {
+        status: false,
+        componentName: "test1"
+      },
+      methods: {
+        handleClick() {
+          this.componentName = this.componentName === "test1"?"test2": "test1"
+        }
+      }
+    })
+  </script>
+</body>
+</html>

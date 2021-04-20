@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>作用域插槽</title>
+  <script src="js/vue.js"></script>
+</head>
+<body>
+  <div id="app">
+    <h1>作用域插槽需要放置在template标签里面</h1>
+    <hr>
+    <!-- <test>{{ user.firstName }}</test> -->
+    <test>
+      <template slot-scope="props">
+        <li>{{ props.value }}</li>
+      </template>
+    </test>
+    <hr>
+    <test>
+      <template slot-scope="props">
+        <h1>{{ props.value }}</h1>
+      </template>
+    </test>
+  </div>
+  <script>
+    //定义子组件
+    Vue.component("test", {
+      data(){
+        return {
+          user: {
+            firstName: "wang",
+            lastName: "wei"
+          },
+          list: [1,2,3,4]
+        }
+      },
+      // template: `<span><slot>{{ user.firstName }}</slot></span>`
+      // template: `<div><ul v-for='val of list'><li>{{ val }}</li></ul></div>`,
+      template: `<div><ul><slot v-for='val in list' :value=val></slot></ul></div>`,
+    })
+    //全局
+    var vm = new Vue({
+      el: "#app"
+    })
+  </script>
+
+</body>
+</html>

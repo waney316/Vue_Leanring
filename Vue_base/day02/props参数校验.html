@@ -25,7 +25,10 @@
                 age: {
                     type: Number,
                     required: true,
-                    default: ''
+                    default: '',
+                    validator: function(v){
+                        return v.length > 2
+                    }
                 },
                 // content: {
                 //     type: String,
