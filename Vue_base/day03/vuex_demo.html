@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>vuex使用</title>
+  <script src="js/vue.js"></script>
+  <script src="js/vuex.js"></script>
+</head>
+<body>
+  <div id="app">
+    <h1>vuex</h1>
+    <hr>
+    vuexCount实际值：{{ $store.state.vuexCount }}
+    <button @click=handleClick>点击,用于修改vuex实例的数据</button>
+  </div>
+  
+  <script>
+
+    // 创建vuex对象,存放全局数据，如果要修改vuex数据中心的数据
+    // 不建议通过组件方式修改，采用mutations/actions/getter方法
+    const store = new Vuex.Store({
+      state: {
+        //存放的键值对就是所要管理的状态
+        vuexCount: 0
+      },
+      //接受组件提交来的dispach方法:context: 上下文，payload挂载参数
+      actions: {
+        addCountActions(context, payload){
+          console.log("actions--context", context);
+          console.log("actions--payload", payload);
+          context.commit('calcuteCount', payload)
+        }
+      },
+      // mutations未操作数据中心方法的集合,逻辑处理
+      mutations: {
+        calcuteCount(state, payload){
+          console.log("mutations--payload", payload);
+          console.log("execute calcute count");
+          state.vuexCount++
+        }
+      }
+    })
+    
+    var vm = new Vue({
+      el: "#app",
+      //将创建的vuex对象挂载
+      store: store,
+      //通过计算属性返回store里的值
+      computed: {
+        vueCount(){
+          console.log(this.$store.state);
+          return this.$store.state.vuexCount
+        }
+      },
+
+      //触发
+      methods: {
+        // Vue组件如果调用某个VueX的方法过程中需要向后端请求时或者说出现异步操作时，需要dispatch VueX中actions的方法，以保证数据的同步
+        handleClick(){
+          this.$store.dispatch("addCountActions")
+        }
+      },
+    })
+  </script>
+</body>
+</html>
