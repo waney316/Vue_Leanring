@@ -4,6 +4,7 @@ export default [
     path: '/',
     name: 'Home',
     component: Home
+    // redirect: '/about'
   },
   {
     path: '/about',
@@ -89,11 +90,56 @@ export default [
     props: true,
     name: 'test1',
     component: () => import('../views/test/test1.vue')
+
   },
   {
     path: '/test2',
     name: 'test2',
-    component: () => import('../views/test/test2.vue')
+    component: () => import('../views/test/test2.vue'),
+    props: {
+      id: 12345
+    },
+    meta: {
+      auth: true
+    },
+    beforeEnter: (to, from, next) => {
+      console.log(to)
+      console.log(from)
+      console.log(next)
+      if (to.meta.auth) {
+        console.log('sucess login')
+        // 如果成功登录，跳转至首页
+        next('/')
+      } else {
+        next(new Error('失败'))
+      }
+    }
+
+  },
+  {
+    path: '/demo',
+    name: 'demo',
+    component: () => import('../views/test/demo.vue'),
+    children: [{
+      path: 'user/:id',
+      name: 'DemoUser',
+      // component: () => import('../views/test/user.vue')  //单个componetn
+      components: { // 多个component
+        default: () => import('../views/test/user.vue'),
+        user2: () => import('../views/test/user2.vue')
+      },
+      props: {
+        default: true,
+        user2: true
+      }
+    }]
+  },
+
+  // axios demo
+  {
+    path: '/axios/demo1',
+    name: 'axios-demo1',
+    component: () => import('../views/axios/demo1.vue')
   }
 
 ]

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <router-link :to="{name: 'test2'}">
+    <router-link :to="{ name: 'test2' }">
       <h1>
         当前为test1，点击跳转至test2,
         <hr />
