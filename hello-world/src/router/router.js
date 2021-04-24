@@ -83,6 +83,17 @@ export default [
     path: '/day01/demo14',
     name: 'demo14',
     component: () => import('../views/day01/demo14.vue')
+  },
+  {
+    path: '/test1/:id',
+    props: true,
+    name: 'test1',
+    component: () => import('../views/test/test1.vue')
+  },
+  {
+    path: '/test2',
+    name: 'test2',
+    component: () => import('../views/test/test2.vue')
   }
 
 ]
