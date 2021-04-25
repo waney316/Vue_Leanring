@@ -82,7 +82,7 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           console.log(this.$refs[formName]);
-          alert("submit!");
+          alert("创建成功");
         } else {
           console.log("error submit!!");
           return false;

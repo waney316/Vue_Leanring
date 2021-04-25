@@ -9,43 +9,22 @@
         <el-button @click="clearFilter">清除所有过滤器</el-button>
         <el-table ref="filterTable" :data="tableData" style="width: 100%">
           <el-table-column
-            prop="date"
-            label="日期"
+            prop="publish_date"
+            label="出版日期"
             sortable
-            width="180"
+            width="200"
             column-key="date"
-            :filters="[
-              { text: '2016-05-01', value: '2016-05-01' },
-              { text: '2016-05-02', value: '2016-05-02' },
-              { text: '2016-05-03', value: '2016-05-03' },
-              { text: '2016-05-04', value: '2016-05-04' },
-            ]"
-            :filter-method="filterHandler"
           >
           </el-table-column>
-          <el-table-column prop="name" label="姓名" width="180">
+          <el-table-column prop="author" label="作者" width="180">
           </el-table-column>
-          <el-table-column prop="address" label="地址" :formatter="formatter">
+          <el-table-column prop="bookName" label="图书名">
           </el-table-column>
-          <el-table-column
-            prop="tag"
-            label="标签"
-            width="100"
-            :filters="[
-              { text: '家', value: '家' },
-              { text: '公司', value: '公司' },
-            ]"
-            :filter-method="filterTag"
-            filter-placement="bottom-end"
-          >
-            <template slot-scope="scope">
-              <el-tag
-                :type="scope.row.tag === '家' ? 'primary' : 'success'"
-                disable-transitions
-                >{{ scope.row.tag }}</el-tag
-              >
-            </template>
+          <el-table-column prop="publisher" label="出版社" >
           </el-table-column>
+          <el-table-column prop="publish_status" label="发行状态">
+          </el-table-column>
+         
         </el-table>
       </div>
     </el-card>
@@ -59,28 +38,32 @@ export default {
     return {
       tableData: [
         {
-          date: "2016-05-02",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄",
-          tag: "家",
+          "author":"王者",
+          "bookName":"测试123",
+          "publisher":"测试出版社123",
+          "publish_date":"2020-08-26T16:00:00.000Z",
+          "publish_status": "已发行"
         },
         {
-          date: "2016-05-04",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1517 弄",
-          tag: "公司",
+          "author":"王者",
+          "bookName":"测试123",
+          "publisher":"测试出版社123",
+          "publish_date":"2020-08-26T16:00:00.000Z",
+          "publish_status": "已发行"
         },
         {
-          date: "2016-05-01",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1519 弄",
-          tag: "家",
+          "author":"王者",
+          "bookName":"测试123",
+          "publisher":"测试出版社123",
+          "publish_date":"2020-08-26T16:00:00.000Z",
+          "publish_status": "已发行"
         },
         {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1516 弄",
-          tag: "公司",
+          "author":"王者",
+          "bookName":"测试123",
+          "publisher":"测试出版社123",
+          "publish_date":"2020-08-26T16:00:00.000Z",
+          "publish_status": "已发行"
         },
       ],
     };
@@ -91,9 +74,6 @@ export default {
     },
     clearFilter() {
       this.$refs.filterTable.clearFilter();
-    },
-    formatter(row, column) {
-      return row.address;
     },
     filterTag(value, row) {
       return row.tag === value;
