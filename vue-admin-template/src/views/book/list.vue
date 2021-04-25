@@ -5,8 +5,12 @@
         <span>图书列表</span>
       </div>
       <div class="text item">
-        <el-button @click="resetDateFilter">清除日期过滤器</el-button>
-        <el-button @click="clearFilter">清除所有过滤器</el-button>
+        <el-input
+          placeholder="请输入搜索内容"
+          style="width: 20%"
+          clearable
+        ></el-input>
+        <el-button type="primary" style="margin-left: 10px">搜索</el-button>
         <el-table ref="filterTable" :data="tableData" style="width: 100%">
           <el-table-column
             prop="publish_date"
@@ -18,14 +22,13 @@
           </el-table-column>
           <el-table-column prop="author" label="作者" width="180">
           </el-table-column>
-          <el-table-column prop="bookName" label="图书名">
-          </el-table-column>
-          <el-table-column prop="publisher" label="出版社" >
-          </el-table-column>
+          <el-table-column prop="bookName" label="图书名"> </el-table-column>
+          <el-table-column prop="publisher" label="出版社"> </el-table-column>
           <el-table-column prop="publish_status" label="发行状态">
           </el-table-column>
-         
         </el-table>
+        <el-pagination background layout="prev, pager, next" :total="tableData.length" style="float: right; margin-top: 5px">
+        </el-pagination>
       </div>
     </el-card>
   </div>
@@ -38,32 +41,32 @@ export default {
     return {
       tableData: [
         {
-          "author":"王者",
-          "bookName":"测试123",
-          "publisher":"测试出版社123",
-          "publish_date":"2020-08-26T16:00:00.000Z",
-          "publish_status": "已发行"
+          author: "王者",
+          bookName: "测试123",
+          publisher: "测试出版社123",
+          publish_date: "2020-08-26T16:00:00.000Z",
+          publish_status: "已发行",
         },
         {
-          "author":"王者",
-          "bookName":"测试123",
-          "publisher":"测试出版社123",
-          "publish_date":"2020-08-26T16:00:00.000Z",
-          "publish_status": "已发行"
+          author: "王者",
+          bookName: "测试123",
+          publisher: "测试出版社123",
+          publish_date: "2020-08-26T16:00:00.000Z",
+          publish_status: "已发行",
         },
         {
-          "author":"王者",
-          "bookName":"测试123",
-          "publisher":"测试出版社123",
-          "publish_date":"2020-08-26T16:00:00.000Z",
-          "publish_status": "已发行"
+          author: "王者",
+          bookName: "测试123",
+          publisher: "测试出版社123",
+          publish_date: "2020-08-26T16:00:00.000Z",
+          publish_status: "已发行",
         },
         {
-          "author":"王者",
-          "bookName":"测试123",
-          "publisher":"测试出版社123",
-          "publish_date":"2020-08-26T16:00:00.000Z",
-          "publish_status": "已发行"
+          author: "王者",
+          bookName: "测试123",
+          publisher: "测试出版社123",
+          publish_date: "2020-08-26T16:00:00.000Z",
+          publish_status: "已发行",
         },
       ],
     };
