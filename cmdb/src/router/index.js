@@ -30,8 +30,7 @@ import Layout from '@/layout'
  * a base page that does not have permission requirements
  * all roles can be accessed
  */
-export const constantRoutes = [
-  {
+export const constantRoutes = [{
     path: '/login',
     component: () => import('@/views/login/index'),
     hidden: true
@@ -51,7 +50,10 @@ export const constantRoutes = [
       path: 'dashboard',
       name: 'Dashboard',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: '首页', icon: 'dashboard' }
+      meta: {
+        title: '首页',
+        icon: 'dashboard'
+      }
     }]
   },
 
@@ -60,26 +62,36 @@ export const constantRoutes = [
     path: '/classify',
     component: Layout,
     name: 'Example',
-    meta: { title: '数据分类', icon: 'el-icon-s-help' },
-    children: [
-      {
-        path: '',
-        name: 'Classify',
-        component: () => import('@/views/cmdb/complex-table'),
-        meta: { title: '数据分类', icon: 'form' }
+    meta: {
+      title: '数据分类',
+      icon: 'el-icon-s-help'
+    },
+    children: [{
+      path: '',
+      name: 'Classify',
+      component: () => import('@/views/cmdb/classify'),
+      meta: {
+        title: '数据分类',
+        icon: 'form'
       }
-    ]
+    }]
   },
 
- 
+
 
   // 404 page must be placed at the end !!!
-  { path: '*', redirect: '/404', hidden: true }
+  {
+    path: '*',
+    redirect: '/404',
+    hidden: true
+  }
 ]
 
 const createRouter = () => new Router({
   // mode: 'history', // require service support
-  scrollBehavior: () => ({ y: 0 }),
+  scrollBehavior: () => ({
+    y: 0
+  }),
   routes: constantRoutes
 })
 
