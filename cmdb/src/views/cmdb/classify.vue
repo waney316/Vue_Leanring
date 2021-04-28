@@ -176,7 +176,7 @@
 
         <el-form-item label="备注信息">
           <el-input
-            v-model="temp.remark"
+            v-model="temp.remarks"
             :autosize="{ minRows: 2, maxRows: 4 }"
             type="textarea"
             placeholder="请输入备注信息"
@@ -232,6 +232,7 @@
 
 <script>
 // import { fetchList, fetchPv, createArticle, updateArticle } from '@/api/article'
+import axios from 'axios'
 import waves from "@/directive/waves"; // waves directive
 import { parseTime } from "@/utils";
 import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
@@ -289,8 +290,8 @@ export default {
       statusOptions: ["published", "draft", "deleted"],
       showReviewer: false,
       temp: {
-        id: undefined,
-        remark: "",
+        // id: undefined,
+        remarks: "",
         type_name: "",
       },
       dialogFormVisible: false,
@@ -302,7 +303,6 @@ export default {
       dialogPvVisible: false,
       pvData: [],
       rules: {
-
         type_name: [
           { required: true, message: "分类名称须填写", trigger: "blur" },
         ],
@@ -316,15 +316,20 @@ export default {
   methods: {
     getList () {
       this.listLoading = false;
-      fetchList(this.listQuery).then((response) => {
-        this.list = response.data.items;
-        this.total = response.data.total;
+      // fetchList(this.listQuery).then((response) => {
+      //   this.list = response.data.items;
+      //   this.total = response.data.total;
 
-        // Just to simulate the time of the request
-        setTimeout(() => {
-          this.listLoading = false;
-        }, 1.5 * 1000);
-      });
+      //   // Just to simulate the time of the request
+      //   setTimeout(() => {
+      //     this.listLoading = false;
+      //   }, 1.5 * 1000);
+      // });
+      axios.get("http://localhost:8000/api/v1/classify").then(response => {
+        this.list = response.data.data.list,
+          this.total = response.data.data.total
+        console.log(response.data);
+      })
     },
     handleFilter () {
       this.listQuery.page = 1;
@@ -353,13 +358,8 @@ export default {
     },
     resetTemp () {
       this.temp = {
-        id: undefined,
-        importance: 1,
-        remark: "",
-        timestamp: new Date(),
-        title: "",
-        status: "published",
-        type: "",
+        remarks: "",
+        type_name: "",
       };
     },
     handleCreate () {
@@ -373,18 +373,41 @@ export default {
     createData () {
       this.$refs["dataForm"].validate((valid) => {
         if (valid) {
-          this.temp.id = parseInt(Math.random() * 100) + 1024; // mock a id
-          this.temp.author = "vue-element-admin";
-          createArticle(this.temp).then(() => {
-            this.list.unshift(this.temp);
-            this.dialogFormVisible = false;
-            this.$notify({
-              title: "Success",
-              message: "Created Successfully",
-              type: "success",
-              duration: 2000,
-            });
-          });
+          // this.temp.id = parseInt(Math.random() * 100) + 1024; // mock a id
+          // this.temp.author = "vue-element-admin";
+
+          axios.post("http://localhost:8000/api/v1/classify", this.temp).then(response => {
+            console.log(response.data);
+            if (response.data.code === 200) {
+              this.$notify({
+                title: "成功",
+                message: "分类创建成功",
+                type: "success",
+                duration: 2000,
+              });
+            } else {
+              this.$notify({
+                title: "失败",
+                message: "分类创建失败",
+                type: "error",
+                duration: 2000,
+              })
+            }
+
+          }).catct(err => {
+            console.log(err);
+          })
+
+          // createArticle(this.temp).then(() => {
+          //   this.list.unshift(this.temp);
+          //   this.dialogFormVisible = false;
+          //   this.$notify({
+          //     title: "Success",
+          //     message: "Created Successfully",
+          //     type: "success",
+          //     duration: 2000,
+          //   });
+          // });
         }
       });
     },
@@ -434,7 +457,7 @@ export default {
     handleDownload () {
       this.downloadLoading = true;
       import("@/vendor/Export2Excel").then((excel) => {
-        const tHeader = ["timestamp", "title", "type", "importance", "status"];
+        const tHeader = ["ID", "分类名称", "创建时间", "更新时间", "备注信息"];
         const filterVal = [
           "timestamp",
           "title",
