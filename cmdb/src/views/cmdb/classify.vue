@@ -87,7 +87,7 @@
           >
             <template slot-scope="{ row }">
               <span>{{
-                row.create_time | parseTime("{y}-{m}-{d} {h}:{i}")
+                row.create_time
               }}</span>
             </template>
           </el-table-column>
@@ -97,7 +97,7 @@
           >
             <template slot-scope="{ row }">
               <span>{{
-                row.update_time | parseTime("{y}-{m}-{d} {h}:{i}")
+                row.update_time
               }}</span>
             </template>
           </el-table-column>
@@ -113,30 +113,16 @@
                 size="mini"
                 @click="handleUpdate(row)"
               >
-                Edit
+                编辑
               </el-button>
-              <el-button
-                v-if="row.status != 'published'"
-                size="mini"
-                type="success"
-                @click="handleModifyStatus(row, 'published')"
-              >
-                Publish
-              </el-button>
-              <el-button
-                v-if="row.status != 'draft'"
-                size="mini"
-                @click="handleModifyStatus(row, 'draft')"
-              >
-                Draft
-              </el-button>
+
               <el-button
                 v-if="row.status != 'deleted'"
                 size="mini"
                 type="danger"
                 @click="handleDelete(row, $index)"
               >
-                Delete
+                删除
               </el-button>
             </template>
           </el-table-column>
@@ -232,6 +218,7 @@
 
 <script>
 // import { fetchList, fetchPv, createArticle, updateArticle } from '@/api/article'
+import cerateClassify from '@/api/cmdb'
 import axios from 'axios'
 import waves from "@/directive/waves"; // waves directive
 import { parseTime } from "@/utils";
@@ -290,7 +277,7 @@ export default {
       statusOptions: ["published", "draft", "deleted"],
       showReviewer: false,
       temp: {
-        // id: undefined,
+        id: undefined,
         remarks: "",
         type_name: "",
       },
@@ -326,8 +313,8 @@ export default {
       //   }, 1.5 * 1000);
       // });
       axios.get("http://localhost:8000/api/v1/classify").then(response => {
-        this.list = response.data.data.list,
-          this.total = response.data.data.total
+        this.list = response.data.data.list;
+        this.total = response.data.data.total;
         console.log(response.data);
       })
     },
@@ -373,47 +360,46 @@ export default {
     createData () {
       this.$refs["dataForm"].validate((valid) => {
         if (valid) {
-          // this.temp.id = parseInt(Math.random() * 100) + 1024; // mock a id
-          // this.temp.author = "vue-element-admin";
-
-          axios.post("http://localhost:8000/api/v1/classify", this.temp).then(response => {
-            console.log(response.data);
+          axios.post("http://localhost:8000/api/v1/classify", this.temp).then((response) => {
+            // console.log(response);
             if (response.data.code === 200) {
               this.$notify({
-                title: "成功",
-                message: "分类创建成功",
+                tile: "Success",
+                message: "创建成功",
                 type: "success",
-                duration: 2000,
-              });
+                duration: 2000
+              })
+              this.dialogFormVisible = false
+              this.getList()
+
             } else {
               this.$notify({
-                title: "失败",
-                message: "分类创建失败",
+                title: "failed",
+                message: "创建失败",
                 type: "error",
-                duration: 2000,
+                duration: 2000
               })
             }
-
-          }).catct(err => {
-            console.log(err);
           })
-
-          // createArticle(this.temp).then(() => {
-          //   this.list.unshift(this.temp);
-          //   this.dialogFormVisible = false;
-          //   this.$notify({
-          //     title: "Success",
-          //     message: "Created Successfully",
-          //     type: "success",
-          //     duration: 2000,
-          //   });
+          // this.temp.id = parseInt(Math.random() * 100) + 1024; // mock a id
+          // this.temp.author = "vue-element-admin";
+          // cerateClassify(this.temp).then(() => {
+          //   console.log(response);
+          //   // this.list.unshift(this.temp);
+          //   // this.dialogFormVisible = false;
+          //   // this.$notify({
+          //   //   title: "Success",
+          //   //   message: "Created Successfully",
+          //   //   type: "success",
+          //   //   duration: 2000,
+          //   // });
           // });
         }
       });
     },
     handleUpdate (row) {
       this.temp = Object.assign({}, row); // copy obj
-      this.temp.timestamp = new Date(this.temp.timestamp);
+      // this.temp.timestamp = new Date(this.temp.timestamp);
       this.dialogStatus = "update";
       this.dialogFormVisible = true;
       this.$nextTick(() => {
@@ -423,30 +409,59 @@ export default {
     updateData () {
       this.$refs["dataForm"].validate((valid) => {
         if (valid) {
-          const tempData = Object.assign({}, this.temp);
-          tempData.timestamp = +new Date(tempData.timestamp); // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
-          updateArticle(tempData).then(() => {
-            const index = this.list.findIndex((v) => v.id === this.temp.id);
-            this.list.splice(index, 1, this.temp);
-            this.dialogFormVisible = false;
-            this.$notify({
-              title: "Success",
-              message: "Update Successfully",
-              type: "success",
-              duration: 2000,
-            });
-          });
+          // const tempData = Object.assign({}, this.temp);
+          // tempData.timestamp = +new Date(tempData.timestamp); // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
+          // updateArticle(tempData).then(() => {
+          //   const index = this.list.findIndex((v) => v.id === this.temp.id);
+          //   this.list.splice(index, 1, this.temp);
+          //   this.dialogFormVisible = false;
+          //   this.$notify({
+          //     title: "Success",
+          //     message: "Update Successfully",
+          //     type: "success",
+          //     duration: 2000,
+          //   });
+          // });
+          axios.put("http://localhost:8000/api/v1/classify", this.temp).then(response => {
+            console.log(response);
+            if (response.data.code === 200) {
+              this.$notify({
+                title: "更新",
+                message: "更新成功",
+                type: "success"
+              })
+
+              this.dialogFormVisible = false
+              this.getList()
+            }
+          })
         }
       });
     },
     handleDelete (row, index) {
-      this.$notify({
-        title: "Success",
-        message: "Delete Successfully",
-        type: "success",
-        duration: 2000,
-      });
-      this.list.splice(index, 1);
+      console.log(row, index);
+      axios.delete("http://localhost:8000/api/v1/classify", {
+        data: {
+          "id": row.id
+        }
+      }).then(response => {
+        console.log(response);
+        if (response.data.code === 200) {
+          this.$notify({
+            title: "删除",
+            message: "删除成功",
+            type: "success"
+          })
+          this.getList()
+        }
+      })
+      // this.$notify({
+      //   title: "Success",
+      //   message: "Delete Successfully",
+      //   type: "success",
+      //   duration: 2000,
+      // });
+
     },
     handleFetchPv (pv) {
       fetchPv(pv).then((response) => {
