@@ -10,7 +10,7 @@
       <div class="text item">
         <div class="filter-container">
           <el-input
-            v-model="listQuery.title"
+            v-model="listQuery.type_name"
             placeholder="请输入分类名称"
             style="width: 200px"
             class="filter-item"
@@ -64,6 +64,7 @@
             prop="id"
             sortable="custom"
             align="center"
+            style="width: 10%"
             :class-name="getSortClass('id')"
           >
             <template slot-scope="{ row }">
@@ -221,7 +222,7 @@
 import cerateClassify from '@/api/cmdb'
 import axios from 'axios'
 import waves from "@/directive/waves"; // waves directive
-import { parseTime } from "@/utils";
+// import { parseTime } from "@/utils";
 import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
 
 const calendarTypeOptions = [
@@ -262,11 +263,8 @@ export default {
       listLoading: true,
       listQuery: {
         page: 1,
-        limit: 20,
-        importance: undefined,
-        title: undefined,
-        type: undefined,
-        sort: "+id",
+        limit: 10,
+
       },
       importanceOptions: [1, 2, 3],
       calendarTypeOptions,
@@ -312,10 +310,13 @@ export default {
       //     this.listLoading = false;
       //   }, 1.5 * 1000);
       // });
-      axios.get("http://localhost:8000/api/v1/classify").then(response => {
-        this.list = response.data.data.list;
-        this.total = response.data.data.total;
+      axios.get("http://localhost:8000/api/v1/classify", {
+        params: this.listQuery
+      }).then(response => {
         console.log(response.data);
+        this.list = response.data.data.results;
+        this.total = response.data.data.count;
+
       })
     },
     handleFilter () {
@@ -463,22 +464,17 @@ export default {
       // });
 
     },
-    handleFetchPv (pv) {
-      fetchPv(pv).then((response) => {
-        this.pvData = response.data.pvData;
-        this.dialogPvVisible = true;
-      });
-    },
+
     handleDownload () {
       this.downloadLoading = true;
       import("@/vendor/Export2Excel").then((excel) => {
         const tHeader = ["ID", "分类名称", "创建时间", "更新时间", "备注信息"];
         const filterVal = [
-          "timestamp",
-          "title",
-          "type",
-          "importance",
-          "status",
+          "id",
+          "type_name",
+          "create_time",
+          "update_time",
+          "remarks",
         ];
         const data = this.formatJson(filterVal);
         excel.export_json_to_excel({
@@ -489,19 +485,10 @@ export default {
         this.downloadLoading = false;
       });
     },
-    formatJson (filterVal) {
-      return this.list.map((v) =>
-        filterVal.map((j) => {
-          if (j === "timestamp") {
-            return parseTime(v[j]);
-          } else {
-            return v[j];
-          }
-        })
-      );
-    },
+
     getSortClass: function (key) {
       const sort = this.listQuery.sort;
+      // console.log(sort);
       return sort === `+${key}` ? "ascending" : "descending";
     },
   },
