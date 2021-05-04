@@ -59,22 +59,32 @@ export const constantRoutes = [{
 
   {
     //数据分类
-    path: '/classify',
+    path: '/cmdb',
     component: Layout,
     name: 'Example',
     meta: {
-      title: '数据分类',
+      title: '资产管理',
       icon: 'el-icon-s-help'
     },
     children: [{
-      path: '',
-      name: 'Classify',
-      component: () => import('@/views/cmdb/classify'),
-      meta: {
-        title: '数据分类',
-        icon: 'form'
+        path: 'classify',
+        name: 'CmdbClassify',
+        component: () => import('@/views/cmdb/classify'),
+        meta: {
+          title: '数据分类',
+          icon: 'form'
+        }
+      },
+      {
+        path: "data_dict",
+        name: "dataDict",
+        meta: {
+          title: "数据字典",
+          icon: 'form'
+        },
+        component: () => import('@/views/cmdb/dataDict')
       }
-    }]
+    ]
   },
 
 

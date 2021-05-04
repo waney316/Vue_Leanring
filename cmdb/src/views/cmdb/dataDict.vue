@@ -73,13 +73,13 @@
           </el-table-column>
           <el-table-column
             label="分类名称"
-            prop="type_name"
+            prop="name"
             sortable="custom"
             align="center"
-            :class-name="getSortClass('type_name')"
+            :class-name="getSortClass('name')"
           >
             <template slot-scope="{ row }">
-              <span>{{ row.type_name }}</span>
+              <span>{{ row.name }}</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -90,6 +90,14 @@
               <span>{{
                 row.create_time
               }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="备注"
+            align="center"
+          >
+            <template slot-scope="{ row }">
+              <span>{{ row.remarks }}</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -152,11 +160,11 @@
       >
 
         <el-form-item
-          label="分类名称"
-          prop="type_name"
+          label="名称"
+          prop="name"
         >
           <el-input
-            v-model="temp.type_name"
+            v-model="temp.name"
             placeholder="请输入分类名称"
           />
         </el-form-item>
@@ -221,7 +229,7 @@
 
 //分类的增删改查
 import {
-  getClassifyList, createClassify, updateClassify, deleteClassify
+  getDataDictList, createDataDict, updateDataDict, deleteDataDict
 } from '@/api/cmdb'
 
 import waves from "@/directive/waves"; // waves directive
@@ -255,7 +263,7 @@ export default {
       temp: {
         id: undefined,
         remarks: "",
-        type_name: "",
+        name: "",
       },
       dialogFormVisible: false,
       dialogStatus: "",
@@ -266,7 +274,7 @@ export default {
       dialogPvVisible: false,
       pvData: [],
       rules: {
-        type_name: [
+        name: [
           { required: true, message: "分类名称须填写", trigger: "blur" },
         ],
       },
@@ -282,11 +290,12 @@ export default {
     getList () {
       this.listLoading = true;
       //将查询参数传递给后端
-      getClassifyList(this.listQuery).then((response) => {
+      getDataDictList(this.listQuery).then((response) => {
         console.log(response.data);
         this.list = response.data.results;
         this.total = response.data.count;
         this.listLoading = false
+
         // Just to simulate the time of the request
         // setTimeout(() => {
         //   this.listLoading = false;
@@ -321,7 +330,7 @@ export default {
     resetTemp () {
       this.temp = {
         remarks: "",
-        type_name: "",
+        name: "",
       };
     },
 
@@ -338,7 +347,7 @@ export default {
     createData () {
       this.$refs["dataForm"].validate((valid) => {
         if (valid) {
-          createClassify(this.temp).then((response) => {
+          createDataDict(this.temp).then((response) => {
             console.log(response);
             // 如果后端返回的状态码为0,则创建成功
             if (response.code === 0) {
@@ -381,7 +390,7 @@ export default {
             "type_name": tempData.type_name,
             "remarks": tempData.remarks
           }
-          updateClassify(updateData, tempData.id).then(response => {
+          updateDataDict(updateData, tempData.id).then(response => {
             console.log(response);
             if (response.code === 0) {
               this.$notify({
@@ -411,7 +420,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        deleteClassify(row.id).then(response => {
+        deleteDataDict(row.id).then(response => {
           console.log(response);
           if (response.code === 0) {
             this.$notify({
