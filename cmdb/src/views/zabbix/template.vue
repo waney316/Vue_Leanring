@@ -11,15 +11,15 @@
 
         <div class="filter-container">
           <el-select
-            v-model="value"
+            v-model="temp.dataSource"
             clearable
             placeholder="请选择数据源"
           >
             <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
+              v-for="item in dataSourceOption"
+              :key="item.id"
+              :label="item.name"
+              :value="item.name"
             >
             </el-option>
           </el-select>
@@ -27,20 +27,19 @@
             v-waves
             class="filter-item"
             type="success"
-            icon="el-icon-search"
+            icon="el-icon-check"
             @click="handleFilter"
             style="margin-left: 5px"
           >
-            搜索
+            确认
           </el-button>
           <el-input
             v-model="listQuery.search"
-            placeholder="请输入数据源名称或URL"
+            placeholder="请输入模版名称"
             style="width: 200px; margin-left: 5px"
             class="filter-item"
             @keyup.enter.native="handleFilter"
           />
-          </el-select>
 
           <el-button
             v-waves
@@ -51,15 +50,6 @@
             style="margin-left: 5px"
           >
             搜索
-          </el-button>
-          <el-button
-            class="filter-item"
-            style="margin-left: 10px"
-            type="primary"
-            icon="el-icon-edit"
-            @click="handleCreate"
-          >
-            新建
           </el-button>
 
         </div>
@@ -147,11 +137,11 @@
           >
             <template slot-scope="{ row, $index }">
               <el-button
-                type="primary"
+                type="success"
                 size="mini"
                 @click="handleUpdate(row)"
               >
-                编辑
+                导出
               </el-button>
 
               <el-button
@@ -175,105 +165,6 @@
       </div>
     </el-card>
 
-    <el-dialog
-      :title="textMap[dialogStatus]"
-      :visible.sync="dialogFormVisible"
-    >
-      <el-form
-        ref="dataForm"
-        :rules="rules"
-        :model="temp"
-        label-position="left"
-        label-width="80px"
-        style="width: 80%; margin-left: 50px"
-      >
-
-        <el-form-item
-          label="名称"
-          prop="name"
-        >
-          <el-input
-            v-model="temp.name"
-            placeholder="请输入数据名称(中文)"
-          />
-        </el-form-item>
-
-        <el-form-item
-          label="别名"
-          prop="alias"
-        >
-          <el-input
-            v-model="temp.alias"
-            placeholder="请输入数据别名(英文)"
-          />
-        </el-form-item>
-        <el-form-item label="分类选择">
-          <el-select
-            v-model="temp.classify"
-            placeholder="请选择数据分类"
-          >
-            <el-option
-              v-for="item in classifyOption"
-              :key="item.id"
-              :label="item.type_name"
-              :value="item.type_name"
-            >
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="备注信息">
-          <el-input
-            v-model="temp.remarks"
-            :autosize="{ minRows: 2, maxRows: 4 }"
-            type="textarea"
-            placeholder="请输入备注信息"
-          />
-        </el-form-item>
-      </el-form>
-      <div
-        slot="footer"
-        class="dialog-footer"
-      >
-        <el-button @click="dialogFormVisible = false"> 关闭 </el-button>
-        <el-button
-          type="primary"
-          @click="dialogStatus === 'create' ? createData() : updateData()"
-        >
-          确认
-        </el-button>
-      </div>
-    </el-dialog>
-
-    <el-dialog
-      :visible.sync="dialogPvVisible"
-      title="Reading statistics"
-    >
-      <el-table
-        :data="pvData"
-        border
-        fit
-        highlight-current-row
-        style="width: 100%"
-      >
-        <el-table-column
-          prop="key"
-          label="Channel"
-        />
-        <el-table-column
-          prop="pv"
-          label="Pv"
-        />
-      </el-table>
-      <span
-        slot="footer"
-        class="dialog-footer"
-      >
-        <el-button
-          type="primary"
-          @click="dialogPvVisible = false"
-        >Confirm</el-button>
-      </span>
-    </el-dialog>
   </div>
 </template>
 
@@ -281,16 +172,15 @@
 
 //分类的增删改查
 import {
-  getZabbixList
+  getZabbixList, listTemplate
 } from '@/api/zabbix'
 
 import waves from "@/directive/waves"; // waves directive
-// import { parseTime } from "@/utils";
 import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
 
 
 export default {
-  name: "zabbixInfo",
+  name: "zabbixTemplate",
   components: { Pagination },
   directives: { waves },
   data () {
@@ -305,22 +195,22 @@ export default {
         size: 10,
       },
       importanceOptions: [1, 2, 3],
-      // calendarTypeOptions: [],
       sortOptions: [
         { label: "ID Ascending", key: "+id" },
         { label: "ID Descending", key: "-id" },
       ],
       statusOptions: ["published", "draft", "deleted"],
       showReviewer: false,
-      //分类选择
-      classifyOption: [],
+      //s数据源选择
+      dataSourceOption: [],
       temp: {
         id: undefined,
         name: "",
         url: "",
         user: "",
         source_room: "",
-        remarks: ""
+        remarks: "",
+        dataSource: ""
       },
       dialogFormVisible: false,
       dialogStatus: "",
@@ -341,6 +231,7 @@ export default {
   //页面刷新时执行
   created () {
     this.getList();
+    this.getDataSourceList();
   },
 
   methods: {
@@ -387,92 +278,14 @@ export default {
       };
     },
     //获取数据分类列表
-    getClassify () {
-      getClassifyList().then(response => {
-        // console.log(response.data)
-        this.classifyOption = response.data.results
+    getDataSourceList () {
+      getZabbixList().then(response => {
+        console.log(response.data)
+        this.dataSourceOption = response.data.results
         console.log(this.classifyOption)
       })
     },
-    //新增输入框，校验
-    handleCreate () {
-      this.resetTemp();
-      this.dialogStatus = "create";
-      this.dialogFormVisible = true;
-      this.$nextTick(() => {
-        this.$refs["dataForm"].clearValidate();
-      });
-      this.getClassify()
-    },
-    //数据新建
-    createData () {
-      this.$refs["dataForm"].validate((valid) => {
-        if (valid) {
-          createDataDict(this.temp).then((response) => {
-            console.log(response);
-            // 如果后端返回的状态码为0,则创建成功
-            if (response.code === 0) {
-              this.$notify({
-                title: "创建成功",
-                message: response.message,
-                type: "success",
-                duration: 2000
-              })
-              this.dialogFormVisible = false // 关闭输入框
-              this.getList()   //重新获取列表
-
-            } else {
-              this.$notify({
-                title: "创建失败",
-                message: response.data.message,
-                type: "error",
-                duration: 2000
-              })
-            }
-          })
-        }
-      });
-    },
-
-    //数据更新
-    handleUpdate (row) {
-      this.temp = Object.assign({}, row); // copy obj
-      this.dialogStatus = "update";
-      this.dialogFormVisible = true;
-      this.$nextTick(() => {
-        this.$refs["dataForm"].clearValidate();
-      });
-    },
-    updateData () {
-      this.$refs["dataForm"].validate((valid) => {
-        if (valid) {
-          const tempData = Object.assign({}, this.temp);
-          const updateData = {
-            "type_name": tempData.type_name,
-            "remarks": tempData.remarks
-          }
-          updateDataDict(updateData, tempData.id).then(response => {
-            console.log(response);
-            if (response.code === 0) {
-              this.$notify({
-                title: "更新成功",
-                message: response.message,
-                type: "success"
-              })
-              this.dialogFormVisible = false //关闭更新输入框
-              this.getList()   //重新获取列表
-            } else {
-              this.$notify({
-                title: "更新失败",
-                message: response.message,
-                type: "failed"
-              })
-            }
-          })
-        }
-      });
-    },
-
+  
     //数据删除
     handleDelete (row, index) {
       // console.log(row, index);  //index:当前列表页的索引顺序值

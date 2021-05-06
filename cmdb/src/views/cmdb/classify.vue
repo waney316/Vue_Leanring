@@ -218,17 +218,13 @@
 </template>
 
 <script>
-
 //分类的增删改查
 import {
   getClassifyList, createClassify, updateClassify, deleteClassify
 } from '@/api/cmdb'
-
 import waves from "@/directive/waves"; // waves directive
 // import { parseTime } from "@/utils";
 import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
-
-
 export default {
   name: "Classify",
   components: { Pagination },
@@ -278,7 +274,6 @@ export default {
   created () {
     this.getList();
   },
-
   methods: {
     getList () {
       this.listLoading = true;
@@ -325,7 +320,6 @@ export default {
         type_name: "",
       };
     },
-
     //新增输入框，校验
     handleCreate () {
       this.resetTemp();
@@ -351,7 +345,6 @@ export default {
               })
               this.dialogFormVisible = false // 关闭输入框
               this.getList()   //重新获取列表
-
             } else {
               this.$notify({
                 title: "创建失败",
@@ -364,7 +357,6 @@ export default {
         }
       });
     },
-
     //数据更新
     handleUpdate (row) {
       this.temp = Object.assign({}, row); // copy obj
@@ -403,7 +395,6 @@ export default {
         }
       });
     },
-
     //数据删除
     handleDelete (row, index) {
       // console.log(row, index);  //index:当前列表页的索引顺序值
@@ -435,9 +426,7 @@ export default {
           message: '已取消删除'
         });
       });
-
     },
-
     //数据导出
     handleDownload () {
       this.downloadLoading = true;
@@ -449,7 +438,6 @@ export default {
           "remarks",
           "create_time",
           "update_time",
-
         ];
         const data = this.formatJson(filterVal);
         excel.export_json_to_excel({
@@ -469,7 +457,6 @@ export default {
         }
       }))
     },
-
     getSortClass: function (key) {
       const sort = this.listQuery.sort;
       // console.log(sort);
