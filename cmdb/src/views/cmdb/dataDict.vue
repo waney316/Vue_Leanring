@@ -16,7 +16,7 @@
             class="filter-item"
             @keyup.enter.native="handleFilter"
           />
-          </el-select>
+
 
           <el-button
             v-waves

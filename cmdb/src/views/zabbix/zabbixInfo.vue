@@ -16,7 +16,6 @@
             class="filter-item"
             @keyup.enter.native="handleFilter"
           />
-          </el-select>
 
           <el-button
             v-waves
@@ -170,33 +169,48 @@
         >
           <el-input
             v-model="temp.name"
-            placeholder="请输入数据名称(中文)"
+            placeholder="请输入zabbix名称"
           />
         </el-form-item>
 
         <el-form-item
-          label="别名"
-          prop="alias"
+          label="API地址"
+          prop="url"
         >
           <el-input
-            v-model="temp.alias"
-            placeholder="请输入数据别名(英文)"
+            v-model="temp.url"
+            placeholder="请输入ZABBIX API地址"
           />
         </el-form-item>
-        <el-form-item label="分类选择">
-          <el-select
-            v-model="temp.classify"
-            placeholder="请选择数据分类"
-          >
-            <el-option
-              v-for="item in classifyOption"
-              :key="item.id"
-              :label="item.type_name"
-              :value="item.type_name"
-            >
-            </el-option>
-          </el-select>
+        <el-form-item
+          label="用户名"
+          prop="user"
+        >
+          <el-input
+            v-model="temp.user"
+            placeholder="请输入ZABBIX用户"
+          />
         </el-form-item>
+        <el-form-item
+          label="密码"
+          prop="password"
+        >
+          <el-input
+            v-model="temp.password"
+            placeholder="请输入ZABBIX用户密码"
+            show-password
+          />
+        </el-form-item>
+        <el-form-item
+          label="资源池"
+          prop="source_room"
+        >
+          <el-input
+            v-model="temp.source_room"
+            placeholder="请输入资源池"
+          />
+        </el-form-item>
+
         <el-form-item label="备注信息">
           <el-input
             v-model="temp.remarks"
@@ -295,20 +309,30 @@ export default {
         name: "",
         url: "",
         user: "",
+        password: "",
         source_room: "",
         remarks: ""
       },
       dialogFormVisible: false,
       dialogStatus: "",
       textMap: {
-        update: "添加数据源",
-        create: "更新数据源",
+        update: "更新数据源",
+        create: "添加数据源",
       },
       dialogPvVisible: false,
       pvData: [],
       rules: {
         name: [
           { required: true, message: "数据名称须填写", trigger: "blur" },
+        ],
+        url: [
+          { required: true, message: "API地址须填写", trigger: "blur" },
+        ],
+        user: [
+          { required: true, message: "用户名须填写", trigger: "blur" },
+        ],
+        password: [
+          { required: true, message: "密码须填写", trigger: "blur" },
         ]
       },
       downloadLoading: false,

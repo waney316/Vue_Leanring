@@ -194,13 +194,6 @@ export default {
         page: 1,
         size: 10,
       },
-      importanceOptions: [1, 2, 3],
-      sortOptions: [
-        { label: "ID Ascending", key: "+id" },
-        { label: "ID Descending", key: "-id" },
-      ],
-      statusOptions: ["published", "draft", "deleted"],
-      showReviewer: false,
       //s数据源选择
       dataSourceOption: [],
       temp: {
@@ -212,25 +205,12 @@ export default {
         remarks: "",
         dataSource: ""
       },
-      dialogFormVisible: false,
-      dialogStatus: "",
-      textMap: {
-        update: "添加数据源",
-        create: "更新数据源",
-      },
-      dialogPvVisible: false,
-      pvData: [],
-      rules: {
-        name: [
-          { required: true, message: "数据名称须填写", trigger: "blur" },
-        ]
-      },
+
       downloadLoading: false,
     };
   },
   //页面刷新时执行
   created () {
-    this.getList();
     this.getDataSourceList();
   },
 
@@ -250,13 +230,7 @@ export default {
       this.listQuery.page = 1;
       this.getList();
     },
-    handleModifyStatus (row, status) {
-      this.$message({
-        message: "操作Success",
-        type: "success",
-      });
-      row.status = status;
-    },
+
     sortChange (data) {
       const { prop, order } = data;
       if (prop === "id") {
@@ -271,12 +245,7 @@ export default {
       }
       this.handleFilter();
     },
-    resetTemp () {
-      this.temp = {
-        remarks: "",
-        name: "",
-      };
-    },
+
     //获取数据分类列表
     getDataSourceList () {
       getZabbixList().then(response => {
