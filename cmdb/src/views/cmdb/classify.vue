@@ -235,6 +235,7 @@ export default {
   directives: { waves },
   data () {
     return {
+      excelName: "数据分类",
       tableKey: 0,
       list: null,
       total: 0,
@@ -441,22 +442,32 @@ export default {
     handleDownload () {
       this.downloadLoading = true;
       import("@/vendor/Export2Excel").then((excel) => {
-        const tHeader = ["ID", "分类名称", "创建时间", "更新时间", "备注信息"];
+        const tHeader = ["ID", "分类名称", "备注信息", "创建时间", "更新时间"];
         const filterVal = [
           "id",
           "type_name",
+          "remarks",
           "create_time",
           "update_time",
-          "remarks",
+
         ];
         const data = this.formatJson(filterVal);
         excel.export_json_to_excel({
           header: tHeader,
           data,
-          filename: "table-list",
+          filename: this.excelName,
         });
         this.downloadLoading = false;
       });
+    },
+    formatJson (filterVal) {
+      return this.list.map(v => filterVal.map(j => {
+        if (j === 'timestamp') {
+          return parseTime(v[j])
+        } else {
+          return v[j]
+        }
+      }))
     },
 
     getSortClass: function (key) {

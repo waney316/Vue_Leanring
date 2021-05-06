@@ -11,7 +11,7 @@
         <div class="filter-container">
           <el-input
             v-model="listQuery.search"
-            placeholder="请输入分类名称"
+            placeholder="请输入数据名称"
             style="width: 200px"
             class="filter-item"
             @keyup.enter.native="handleFilter"
@@ -72,7 +72,7 @@
             </template>
           </el-table-column>
           <el-table-column
-            label="分类名称"
+            label="数据名称"
             prop="name"
             sortable="custom"
             align="center"
@@ -80,16 +80,6 @@
           >
             <template slot-scope="{ row }">
               <span>{{ row.name }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="创建时间"
-            align="center"
-          >
-            <template slot-scope="{ row }">
-              <span>{{
-                row.create_time
-              }}</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -165,10 +155,33 @@
         >
           <el-input
             v-model="temp.name"
-            placeholder="请输入分类名称"
+            placeholder="请输入数据名称(中文)"
           />
         </el-form-item>
 
+        <el-form-item
+          label="别名"
+          prop="alias"
+        >
+          <el-input
+            v-model="temp.alias"
+            placeholder="请输入数据别名(英文)"
+          />
+        </el-form-item>
+        <el-form-item label="分类选择">
+          <el-select
+            v-model="temp.classify"
+            placeholder="请选择数据分类"
+          >
+            <el-option
+              v-for="item in classifyOption"
+              :key="item.id"
+              :label="item.type_name"
+              :value="item.type_name"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item label="备注信息">
           <el-input
             v-model="temp.remarks"
@@ -229,7 +242,7 @@
 
 //分类的增删改查
 import {
-  getDataDictList, createDataDict, updateDataDict, deleteDataDict
+  getDataDictList, createDataDict, updateDataDict, deleteDataDict, getClassifyList
 } from '@/api/cmdb'
 
 import waves from "@/directive/waves"; // waves directive
@@ -238,11 +251,13 @@ import Pagination from "@/components/Pagination"; // secondary package based on 
 
 
 export default {
-  name: "Classify",
+  name: "dataDict",
   components: { Pagination },
   directives: { waves },
   data () {
     return {
+      //导出excel名
+      excelName: "数据字典",
       tableKey: 0,
       list: null,
       total: 0,
@@ -260,22 +275,32 @@ export default {
       ],
       statusOptions: ["published", "draft", "deleted"],
       showReviewer: false,
+      //分类选择
+      classifyOption: [],
       temp: {
         id: undefined,
         remarks: "",
+        alias: "",
         name: "",
+        classify: ""
       },
       dialogFormVisible: false,
       dialogStatus: "",
       textMap: {
-        update: "更新分类",
-        create: "创建分类",
+        update: "数据字典更新",
+        create: "数据字典新建",
       },
       dialogPvVisible: false,
       pvData: [],
       rules: {
         name: [
-          { required: true, message: "分类名称须填写", trigger: "blur" },
+          { required: true, message: "数据名称须填写", trigger: "blur" },
+        ],
+        alias: [
+          { required: true, message: "数据别名须填写", trigger: "blur" },
+        ],
+        classify: [
+          { required: true, message: "数据分类须选择", trigger: "blur" },
         ],
       },
       downloadLoading: false,
@@ -295,13 +320,9 @@ export default {
         this.list = response.data.results;
         this.total = response.data.count;
         this.listLoading = false
-
-        // Just to simulate the time of the request
-        // setTimeout(() => {
-        //   this.listLoading = false;
-        // }, 1.5 * 1000);
       });
     },
+
     handleFilter () {
       this.listQuery.page = 1;
       this.getList();
@@ -333,7 +354,14 @@ export default {
         name: "",
       };
     },
-
+    //获取数据分类列表
+    getClassify () {
+      getClassifyList().then(response => {
+        // console.log(response.data)
+        this.classifyOption = response.data.results
+        console.log(this.classifyOption)
+      })
+    },
     //新增输入框，校验
     handleCreate () {
       this.resetTemp();
@@ -342,6 +370,7 @@ export default {
       this.$nextTick(() => {
         this.$refs["dataForm"].clearValidate();
       });
+      this.getClassify()
     },
     //数据新建
     createData () {
@@ -450,22 +479,32 @@ export default {
     handleDownload () {
       this.downloadLoading = true;
       import("@/vendor/Export2Excel").then((excel) => {
-        const tHeader = ["ID", "分类名称", "创建时间", "更新时间", "备注信息"];
+        const tHeader = ["ID", "数据名称", "数据分类", "备注信息", "创建时间", "更新时间"];
         const filterVal = [
           "id",
-          "type_name",
+          "name",
+          "classify",
+          "remarks",
           "create_time",
           "update_time",
-          "remarks",
         ];
         const data = this.formatJson(filterVal);
         excel.export_json_to_excel({
           header: tHeader,
           data,
-          filename: "table-list",
+          filename: this.excelName,
         });
         this.downloadLoading = false;
       });
+    },
+    formatJson (filterVal) {
+      return this.list.map(v => filterVal.map(j => {
+        if (j === 'timestamp') {
+          return parseTime(v[j])
+        } else {
+          return v[j]
+        }
+      }))
     },
 
     getSortClass: function (key) {
