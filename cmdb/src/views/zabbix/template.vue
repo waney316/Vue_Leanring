@@ -10,10 +10,14 @@
       <div class="text item">
 
         <div class="filter-container">
+          <span>数据源</span>
+
           <el-select
-            v-model="temp.dataSource"
+            v-model="listQuery.dataSource"
             clearable
             placeholder="请选择数据源"
+            style="margin-left: 10px"
+            @change="getList"
           >
             <el-option
               v-for="item in dataSourceOption"
@@ -23,16 +27,8 @@
             >
             </el-option>
           </el-select>
-          <el-button
-            v-waves
-            class="filter-item"
-            type="success"
-            icon="el-icon-check"
-            @click="handleFilter"
-            style="margin-left: 5px"
-          >
-            确认
-          </el-button>
+
+          <span style="margin-left: 5px">模板名称</span>
           <el-input
             v-model="listQuery.search"
             placeholder="请输入模版名称"
@@ -52,6 +48,18 @@
             搜索
           </el-button>
 
+          <div style="float: right">
+            <el-button type="danger">
+              删除
+            </el-button>
+            <el-button type="success">
+              逐个导出
+            </el-button>
+            <el-button type="success">
+              合并导出
+            </el-button>
+          </div>
+
         </div>
 
         <el-table
@@ -64,96 +72,80 @@
           style="width: 100%; margin-top:10px"
           @sort-change="sortChange"
         >
+          <!-- <el-table-column
+            label="选择"
+            align="center"
+            width="100"
+          >
+            <template slot-scope="{ row }">
+              <el-checkbox></el-checkbox>
+            </template>
+          </el-table-column> -->
           <el-table-column
-            label="ID"
+            type="selection"
+            width="55"
+          >
+          </el-table-column>
+
+          <el-table-column
+            label="模板ID"
             prop="id"
             sortable="custom"
             align="center"
-            style="width: 10%"
             :class-name="getSortClass('id')"
+            width="100"
           >
             <template slot-scope="{ row }">
-              <span>{{ row.id }}</span>
+              <span>{{ row.templateid }}</span>
             </template>
           </el-table-column>
 
           <el-table-column
-            label="资源池"
-            align="center"
-          >
-            <template slot-scope="{ row }">
-              <span>{{
-                row.source_room
-              }}</span>
-            </template>
-          </el-table-column>
-
-          <el-table-column
-            label="数据源名称"
+            label="模板名称"
             prop="name"
             sortable="custom"
             align="center"
             :class-name="getSortClass('name')"
+            min-width="200"
           >
             <template slot-scope="{ row }">
               <span>{{ row.name }}</span>
             </template>
           </el-table-column>
-
           <el-table-column
-            label="ZabbixAPI地址"
+            label="关联主机"
             align="center"
           >
             <template slot-scope="{ row }">
-              <span>{{
-                row.url
-              }}</span>
+              <span>{{ row.hosts }}</span>
             </template>
           </el-table-column>
-
           <el-table-column
-            label="Zabbix用户"
+            label="监控项数"
             align="center"
           >
             <template slot-scope="{ row }">
-              <span>{{
-                row.user
-              }}</span>
+              <span>{{ row.items }}</span>
             </template>
           </el-table-column>
           <el-table-column
-            label="备注"
+            label="触发器数量"
             align="center"
           >
             <template slot-scope="{ row }">
-              <span>{{ row.remarks }}</span>
+              <span>{{ row.triggers }}</span>
             </template>
           </el-table-column>
 
           <el-table-column
-            label="操作"
+            label="自动发现"
             align="center"
-            class-name="small-padding fixed-width"
           >
-            <template slot-scope="{ row, $index }">
-              <el-button
-                type="success"
-                size="mini"
-                @click="handleUpdate(row)"
-              >
-                导出
-              </el-button>
-
-              <el-button
-                v-if="row.status != 'deleted'"
-                size="mini"
-                type="danger"
-                @click="handleDelete(row, $index)"
-              >
-                删除
-              </el-button>
+            <template slot-scope="{ row }">
+              <span>{{ row.discoveries }}</span>
             </template>
           </el-table-column>
+
         </el-table>
         <pagination
           v-show="total > 0"
@@ -194,15 +186,11 @@ export default {
         page: 1,
         size: 10,
       },
-      //s数据源选择
+      //数据源选择
       dataSourceOption: [],
       temp: {
         id: undefined,
-        name: "",
-        url: "",
-        user: "",
-        source_room: "",
-        remarks: "",
+
         dataSource: ""
       },
 
@@ -215,10 +203,12 @@ export default {
   },
 
   methods: {
+    // 获取模板列表
     getList () {
+      console.log("aaaa");
       this.listLoading = true;
       //将查询参数传递给后端
-      getZabbixList(this.listQuery).then((response) => {
+      listTemplate(this.listQuery).then((response) => {
         console.log(response.data);
         this.list = response.data.results;
         this.total = response.data.count;
@@ -249,12 +239,12 @@ export default {
     //获取数据分类列表
     getDataSourceList () {
       getZabbixList().then(response => {
-        console.log(response.data)
+        // console.log(response.data)
         this.dataSourceOption = response.data.results
         console.log(this.classifyOption)
       })
     },
-  
+
     //数据删除
     handleDelete (row, index) {
       // console.log(row, index);  //index:当前列表页的索引顺序值

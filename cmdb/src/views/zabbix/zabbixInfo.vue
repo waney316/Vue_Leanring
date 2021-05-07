@@ -54,7 +54,6 @@
             prop="id"
             sortable="custom"
             align="center"
-            style="width: 10%"
             :class-name="getSortClass('id')"
           >
             <template slot-scope="{ row }">
@@ -88,6 +87,7 @@
           <el-table-column
             label="ZabbixAPI地址"
             align="center"
+            min-width="200"
           >
             <template slot-scope="{ row }">
               <span>{{
@@ -121,6 +121,13 @@
             class-name="small-padding fixed-width"
           >
             <template slot-scope="{ row, $index }">
+              <el-button
+                type="success"
+                size="mini"
+                @click="handleConnect(row)"
+              >
+                测试连接
+              </el-button>
               <el-button
                 type="primary"
                 size="mini"
@@ -271,7 +278,7 @@
 
 //分类的增删改查
 import {
-  getZabbixList
+  getZabbixList, createZabbix
 } from '@/api/zabbix'
 
 import waves from "@/directive/waves"; // waves directive
@@ -344,9 +351,9 @@ export default {
   },
 
   methods: {
+    //获取zabbix数据源列表
     getList () {
       this.listLoading = true;
-      //将查询参数传递给后端
       getZabbixList(this.listQuery).then((response) => {
         console.log(response.data);
         this.list = response.data.results;
@@ -386,14 +393,7 @@ export default {
         name: "",
       };
     },
-    //获取数据分类列表
-    getClassify () {
-      getClassifyList().then(response => {
-        // console.log(response.data)
-        this.classifyOption = response.data.results
-        console.log(this.classifyOption)
-      })
-    },
+
     //新增输入框，校验
     handleCreate () {
       this.resetTemp();
@@ -402,13 +402,12 @@ export default {
       this.$nextTick(() => {
         this.$refs["dataForm"].clearValidate();
       });
-      this.getClassify()
     },
-    //数据新建
+    //添加数据源
     createData () {
       this.$refs["dataForm"].validate((valid) => {
         if (valid) {
-          createDataDict(this.temp).then((response) => {
+          createZabbix(this.temp).then((response) => {
             console.log(response);
             // 如果后端返回的状态码为0,则创建成功
             if (response.code === 0) {
