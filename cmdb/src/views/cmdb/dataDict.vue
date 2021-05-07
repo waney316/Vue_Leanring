@@ -150,7 +150,7 @@
       >
 
         <el-form-item
-          label="名称"
+          label="字典名称"
           prop="name"
         >
           <el-input
@@ -160,7 +160,7 @@
         </el-form-item>
 
         <el-form-item
-          label="别名"
+          label="字典别名"
           prop="alias"
         >
           <el-input
@@ -190,6 +190,9 @@
             placeholder="请输入备注信息"
           />
         </el-form-item>
+      <el-form-item>
+         
+       </el-form-item>
       </el-form>
       <div
         slot="footer"
@@ -300,7 +303,7 @@ export default {
           { required: true, message: "数据别名须填写", trigger: "blur" },
         ],
         classify: [
-          { required: true, message: "数据分类须选择", trigger: "blur" },
+          { required: true, message: "数据分类须选择", trigger: "change" },
         ],
       },
       downloadLoading: false,

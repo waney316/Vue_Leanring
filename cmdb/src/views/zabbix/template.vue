@@ -205,7 +205,6 @@ export default {
   methods: {
     // 获取模板列表
     getList () {
-      console.log("aaaa");
       this.listLoading = true;
       //将查询参数传递给后端
       listTemplate(this.listQuery).then((response) => {

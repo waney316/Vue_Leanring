@@ -49,7 +49,7 @@
           style="width: 100%; margin-top:10px"
           @sort-change="sortChange"
         >
-          <el-table-column
+          <!-- <el-table-column
             label="ID"
             prop="id"
             sortable="custom"
@@ -59,7 +59,7 @@
             <template slot-scope="{ row }">
               <span>{{ row.id }}</span>
             </template>
-          </el-table-column>
+          </el-table-column> -->
 
           <el-table-column
             label="资源池"
@@ -312,7 +312,7 @@ export default {
       //分类选择
       classifyOption: [],
       temp: {
-        id: undefined,
+        // id: undefined,
         name: "",
         url: "",
         user: "",
