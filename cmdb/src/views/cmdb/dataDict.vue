@@ -17,7 +17,6 @@
             @keyup.enter.native="handleFilter"
           />
 
-
           <el-button
             v-waves
             class="filter-item"
@@ -174,8 +173,8 @@
             placeholder="请选择数据分类"
           >
             <el-option
-              v-for="item in classifyOption"
-              :key="item.id"
+              v-for="(item, index) in classifyOption"
+              :key="index"
               :label="item.type_name"
               :value="item.type_name"
             >
@@ -190,9 +189,68 @@
             placeholder="请输入备注信息"
           />
         </el-form-item>
-      <el-form-item>
-         
-       </el-form-item>
+
+        <el-form-item label="字段">
+          <div
+            v-for="(item, index) in temp.fields"
+            :key="index"
+          >
+            <el-input
+              v-model="item.name"
+              style="width: 110px"
+              size="small"
+              placeholder="名称: name"
+            />
+            <el-input
+              v-model="item.alias"
+              style="width: 110px"
+              size="small"
+              placeholder="别名: 名称"
+            />
+            <el-select
+              v-model="item.type"
+              clearable
+              filterable
+              placeholder="请选择类型"
+              size="small"
+              style="width: 130px"
+            >
+              <el-option
+                v-for="(item1, index1) in typeOptions"
+                :key="index1"
+                :label="item1.label"
+                :value="item1.value"
+              />
+            </el-select>
+            <el-checkbox
+              v-model="item.required"
+              style="margin-left: 20px; margin-right: 20px"
+            >必填</el-checkbox>
+            <el-input
+              v-model="item.remarks"
+              style="width: 120px"
+              size="small"
+              placeholder="备注描述"
+            />
+            <el-button
+              v-if="index===0"
+              type="primary"
+              icon="el-icon-circle-plus"
+              style="margin-left: 9px;"
+              size="small"
+              @click="addFields"
+            />
+            <el-button
+              v-if="index!==0"
+              type="danger"
+              icon="el-icon-remove"
+              size="small"
+              style="margin-left: 9px;"
+              @click.prevent="removeFields(item)"
+            />
+          </div>
+        </el-form-item>
+
       </el-form>
       <div
         slot="footer"
@@ -276,6 +334,14 @@ export default {
         { label: "ID Ascending", key: "+id" },
         { label: "ID Descending", key: "-id" },
       ],
+
+      //新加字段类型
+      typeOptions: [
+        { label: '单行输入框', value: 'input' },
+        { label: '多行输入框', value: 'textarea' },
+        { label: '日期', value: 'date' },
+        { label: '日期时间', value: 'datetime' }
+      ],
       statusOptions: ["published", "draft", "deleted"],
       showReviewer: false,
       //分类选择
@@ -285,7 +351,15 @@ export default {
         remarks: "",
         alias: "",
         name: "",
-        classify: ""
+        classify: "",
+        //新加字段
+        fields: [{
+          name: '',
+          alias: '',
+          type: '',
+          required: false,
+          remarks: ''
+        }]
       },
       dialogFormVisible: false,
       dialogStatus: "",
@@ -315,6 +389,23 @@ export default {
   },
 
   methods: {
+
+    //新建数据字典时字段添加与移除
+    removeFields (item) {
+      var index = this.temp.fields.indexOf(item)
+      if (index !== -1) {
+        this.temp.fields.splice(index, 1)
+      }
+    },
+    addFields () {
+      this.temp.fields.push({
+        name: '',
+        alias: '',
+        type: '',
+        required: false,
+        remarks: ''
+      })
+    },
     getList () {
       this.listLoading = true;
       //将查询参数传递给后端
@@ -516,5 +607,7 @@ export default {
       return sort === `+${key}` ? "ascending" : "descending";
     },
   },
+
+
 };
 </script>

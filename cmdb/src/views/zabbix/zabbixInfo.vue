@@ -124,7 +124,7 @@
               <el-button
                 type="success"
                 size="mini"
-                @click="handleConnect(row)"
+                @click="handleConnect(row.name)"
               >
                 测试连接
               </el-button>
@@ -271,6 +271,24 @@
         >Confirm</el-button>
       </span>
     </el-dialog>
+
+    <!-- 登陆验证 -->
+    <el-dialog
+      :visible.sync="dialogInfoVisible"
+      title="ZABBIX连接信息"
+    >
+      <el-alert
+        title="连接成功"
+        type="success"
+      >
+      </el-alert>
+
+      <p>Zabbix版本: {{info.api_data}}</p>
+      <p>用户ID: {{info.login_data.userid}}</p>
+      <p>用户名：{{info.login_data.username}}</p>
+      <p>会话过期时间：{{info.login_data.session_time}}</p>
+      <p>用户类型：{{info.login_data.privilege}}</p>
+    </el-dialog>
   </div>
 </template>
 
@@ -278,7 +296,7 @@
 
 //分类的增删改查
 import {
-  getZabbixList, createZabbix
+  getZabbixList, createZabbix, updateZabbix, deleteZabbix, testZabbix
 } from '@/api/zabbix'
 
 import waves from "@/directive/waves"; // waves directive
@@ -320,12 +338,15 @@ export default {
         source_room: "",
         remarks: ""
       },
+      //信息
+      info: "",
       dialogFormVisible: false,
       dialogStatus: "",
       textMap: {
         update: "更新数据源",
         create: "添加数据源",
       },
+      dialogInfoVisible: false,
       dialogPvVisible: false,
       pvData: [],
       rules: {
@@ -366,6 +387,7 @@ export default {
       this.listQuery.page = 1;
       this.getList();
     },
+
     handleModifyStatus (row, status) {
       this.$message({
         message: "操作Success",
@@ -401,6 +423,22 @@ export default {
       this.dialogFormVisible = true;
       this.$nextTick(() => {
         this.$refs["dataForm"].clearValidate();
+      });
+    },
+    //连接zabbix测试
+    handleConnect (instance_name) {
+      console.log(data);
+      const data = {
+        name: instance_name
+      }
+      console.log(data);
+      testZabbix(data).then(response => {
+        console.log(response.data);
+        if (response.code === 0) {
+          this.info = response.data
+          this.dialogInfoVisible = true
+
+        }
       });
     },
     //添加数据源
@@ -446,11 +484,8 @@ export default {
       this.$refs["dataForm"].validate((valid) => {
         if (valid) {
           const tempData = Object.assign({}, this.temp);
-          const updateData = {
-            "type_name": tempData.type_name,
-            "remarks": tempData.remarks
-          }
-          updateDataDict(updateData, tempData.id).then(response => {
+          // console.log(tempData);
+          updateZabbix(tempData, tempData.id).then(response => {
             console.log(response);
             if (response.code === 0) {
               this.$notify({
@@ -475,12 +510,12 @@ export default {
     //数据删除
     handleDelete (row, index) {
       // console.log(row, index);  //index:当前列表页的索引顺序值
-      this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
+      this.$confirm('此操作将删除该数据源, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        deleteDataDict(row.id).then(response => {
+        deleteZabbix(row.id).then(response => {
           console.log(response);
           if (response.code === 0) {
             this.$notify({
