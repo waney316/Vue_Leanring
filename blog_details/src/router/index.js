@@ -12,6 +12,7 @@ Vue.use(ElementUI)
 const routes = [
   // 添加blog_datails 视图
   {
+
     path: '/blog_datails',
     name: 'Details',
     component: Details

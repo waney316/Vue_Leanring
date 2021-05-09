@@ -283,11 +283,11 @@
       >
       </el-alert>
 
-      <p>Zabbix版本: {{info.api_data}}</p>
+      <!-- <p>Zabbix版本: {{info.api_data}}</p>
       <p>用户ID: {{info.login_data.userid}}</p>
       <p>用户名：{{info.login_data.username}}</p>
       <p>会话过期时间：{{info.login_data.session_time}}</p>
-      <p>用户类型：{{info.login_data.privilege}}</p>
+      <p>用户类型：{{info.login_data.privilege}}</p> -->
     </el-dialog>
   </div>
 </template>
@@ -427,13 +427,11 @@ export default {
     },
     //连接zabbix测试
     handleConnect (instance_name) {
-      console.log(data);
       const data = {
         name: instance_name
       }
       console.log(data);
       testZabbix(data).then(response => {
-        console.log(response.data);
         if (response.code === 0) {
           this.info = response.data
           this.dialogInfoVisible = true
