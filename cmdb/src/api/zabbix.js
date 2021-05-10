@@ -47,7 +47,7 @@ export function deleteZabbix(pk) {
 // 登录
 export function loginZabbix(data) {
   return request({
-    url: 'api/v1/zabbix/login/',
+    url: '/api/v1/zabbix/login/',
     method: "post",
     data: data
   })
@@ -56,7 +56,7 @@ export function loginZabbix(data) {
 //获取模版列表
 export function listTemplate(params) {
   return request({
-    url: 'api/v1/zabbix/template/',
+    url: '/api/v1/zabbix/template/',
     method: "get",
     params
   })

@@ -190,7 +190,6 @@ export default {
       dataSourceOption: [],
       temp: {
         id: undefined,
-
         dataSource: ""
       },
 
@@ -208,6 +207,7 @@ export default {
       this.listLoading = true;
       //将查询参数传递给后端
       listTemplate(this.listQuery).then((response) => {
+        console.log(response);
         console.log(response.data);
         this.list = response.data.results;
         this.total = response.data.count;

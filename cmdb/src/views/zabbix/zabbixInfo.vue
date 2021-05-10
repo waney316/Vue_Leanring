@@ -273,21 +273,23 @@
     </el-dialog>
 
     <!-- 登陆验证 -->
-    <el-dialog
-      :visible.sync="dialogInfoVisible"
-      title="ZABBIX连接信息"
-    >
+    <el-dialog :visible.sync="dialogInfoVisible">
       <el-alert
         title="连接成功"
         type="success"
+        show-icon
+        :closable="false"
       >
+        <h3>API版本：{{info.api_data}}</h3>
+        <h3
+          v-for="(val,key,i) in info.user_data"
+          :key="i"
+        > {{key}}: {{val}}</h3>
       </el-alert>
 
-      <!-- <p>Zabbix版本: {{info.api_data}}</p>
-      <p>用户ID: {{info.login_data.userid}}</p>
-      <p>用户名：{{info.login_data.username}}</p>
-      <p>会话过期时间：{{info.login_data.session_time}}</p>
-      <p>用户类型：{{info.login_data.privilege}}</p> -->
+      <!-- 用户名：{{info.user_data.username}}
+      会话过期时间：{{info.user_data.session_time}}
+      用户类型：{{info.user_data.privilege}} -->
     </el-dialog>
   </div>
 </template>
@@ -432,11 +434,13 @@ export default {
       }
       console.log(data);
       testZabbix(data).then(response => {
-        if (response.code === 0) {
-          this.info = response.data
-          this.dialogInfoVisible = true
-
+        const response_data = {
+          api_data: response.data.api_data.data,
+          user_data: response.data.user_data.data
         }
+        this.info = response_data
+        console.log(this.info);
+        this.dialogInfoVisible = true
       });
     },
     //添加数据源
