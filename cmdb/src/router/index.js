@@ -135,6 +135,24 @@ export const constantRoutes = [{
         }
       },
       {
+        path: 'alert',
+        name: 'alertManger',
+        component: () => import('@/views/zabbix/alert'),
+        meta: {
+          title: '告警管理',
+          icon: 'message'
+        }
+      },
+      {
+        path: 'data',
+        name: 'dataSearch',
+        component: () => import('@/views/zabbix/data'),
+        meta: {
+          title: '数据查询',
+          icon: 'eye-open'
+        }
+      },
+      {
         path: 'configuration',
         name: 'configManger',
         component: () => import('@/views/zabbix/configuration'),
