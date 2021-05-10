@@ -95,7 +95,7 @@ export const constantRoutes = [{
     name: 'Example',
     meta: {
       title: 'Zabbix管理',
-      icon: 'el-icon-s-help'
+      icon: 'el-icon-cherry'
     },
     children: [{
         path: 'info',
@@ -103,7 +103,7 @@ export const constantRoutes = [{
         component: () => import('@/views/zabbix/zabbixInfo'),
         meta: {
           title: '数据源',
-          icon: 'form'
+          icon: 'list'
         }
       },
       {
@@ -113,6 +113,34 @@ export const constantRoutes = [{
         meta: {
           title: '模板管理',
           icon: 'form'
+        }
+      },
+
+      {
+        path: 'hostgroup',
+        name: 'hostgroupManger',
+        component: () => import('@/views/zabbix/hostgroup'),
+        meta: {
+          title: '主机组管理',
+          icon: 'nested'
+        }
+      },
+      {
+        path: 'host',
+        name: 'hostManger',
+        component: () => import('@/views/zabbix/host'),
+        meta: {
+          title: '主机管理',
+          icon: 'tree'
+        }
+      },
+      {
+        path: 'configuration',
+        name: 'configManger',
+        component: () => import('@/views/zabbix/configuration'),
+        meta: {
+          title: '配置管理',
+          icon: 'documentation'
         }
       },
     ]
