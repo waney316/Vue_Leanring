@@ -64,6 +64,7 @@
           <el-table-column
             label="资源池"
             align="center"
+            width="120"
           >
             <template slot-scope="{ row }">
               <span>{{
@@ -77,6 +78,7 @@
             prop="name"
             sortable="custom"
             align="center"
+            width="120"
             :class-name="getSortClass('name')"
           >
             <template slot-scope="{ row }">
@@ -87,7 +89,7 @@
           <el-table-column
             label="ZabbixAPI地址"
             align="center"
-            min-width="200"
+            min-width="150"
           >
             <template slot-scope="{ row }">
               <span>{{
@@ -99,6 +101,7 @@
           <el-table-column
             label="Zabbix用户"
             align="center"
+            width="120"
           >
             <template slot-scope="{ row }">
               <span>{{
@@ -107,6 +110,7 @@
             </template>
           </el-table-column>
           <el-table-column
+            width="200"
             label="备注"
             align="center"
           >
