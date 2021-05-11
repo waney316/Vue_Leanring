@@ -61,3 +61,12 @@ export function listTemplate(params) {
     params
   })
 }
+
+//获取主机组列表
+export function listHostGroup(params) {
+  return request({
+    url: '/api/v1/zabbix/hostgroup/',
+    method: "get",
+    params
+  })
+}

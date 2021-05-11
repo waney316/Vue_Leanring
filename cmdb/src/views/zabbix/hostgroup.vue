@@ -28,10 +28,10 @@
             </el-option>
           </el-select>
 
-          <span style="margin-left: 5px">模板名称</span>
+          <span style="margin-left: 5px">主机组名称</span>
           <el-input
             v-model="listQuery.search"
-            placeholder="请输入模版名称"
+            placeholder="请输入主机组名称"
             style="width: 200px; margin-left: 5px"
             class="filter-item"
             @keyup.enter.native="handleFilter"
@@ -52,12 +52,6 @@
             <el-button type="danger">
               删除
             </el-button>
-            <el-button type="success">
-              逐个导出
-            </el-button>
-            <el-button type="success">
-              合并导出
-            </el-button>
           </div>
 
         </div>
@@ -72,15 +66,6 @@
           style="width: 100%; margin-top:10px"
           @sort-change="sortChange"
         >
-          <!-- <el-table-column
-            label="选择"
-            align="center"
-            width="100"
-          >
-            <template slot-scope="{ row }">
-              <el-checkbox></el-checkbox>
-            </template>
-          </el-table-column> -->
           <el-table-column
             type="selection"
             width="55"
@@ -88,7 +73,7 @@
           </el-table-column>
 
           <el-table-column
-            label="模板ID"
+            label="主机组ID"
             prop="id"
             sortable="custom"
             align="center"
@@ -96,12 +81,12 @@
             width="100"
           >
             <template slot-scope="{ row }">
-              <span>{{ row.templateid }}</span>
+              <span>{{ row.groupid }}</span>
             </template>
           </el-table-column>
 
           <el-table-column
-            label="模板名称"
+            label="主机组名称"
             prop="name"
             sortable="custom"
             align="center"
@@ -121,28 +106,29 @@
             </template>
           </el-table-column>
           <el-table-column
-            label="监控项数"
+            label="模板数量"
             align="center"
           >
             <template slot-scope="{ row }">
-              <span>{{ row.items }}</span>
+              <span>{{ row.templates }}</span>
             </template>
           </el-table-column>
           <el-table-column
-            label="触发器数量"
+            label="发现类型"
             align="center"
           >
             <template slot-scope="{ row }">
-              <span>{{ row.triggers }}</span>
+              <span>{{ row.flags }}</span>
             </template>
           </el-table-column>
 
           <el-table-column
-            label="自动发现"
+            label="组类型"
             align="center"
           >
             <template slot-scope="{ row }">
-              <span>{{ row.discoveries }}</span>
+              <span v-if="row.templates!='0'">模板组</span>
+              <span v-else>主机组</span>
             </template>
           </el-table-column>
 
@@ -164,7 +150,7 @@
 
 //分类的增删改查
 import {
-  getZabbixList, listTemplate
+  getZabbixList, listHostGroup
 } from '@/api/zabbix'
 
 import waves from "@/directive/waves"; // waves directive
@@ -172,7 +158,7 @@ import Pagination from "@/components/Pagination"; // secondary package based on 
 
 
 export default {
-  name: "zabbixTemplate",
+  name: "zabbixHostGroup",
   components: { Pagination },
   directives: { waves },
   data () {
@@ -205,9 +191,9 @@ export default {
     // 获取模板列表
     getList () {
       this.listLoading = true;
+      console.log(this.listQuery);
       //将查询参数传递给后端
-      listTemplate(this.listQuery).then((response) => {
-        console.log(response);
+      listHostGroup(this.listQuery).then((response) => {
         console.log(response.data);
         this.list = response.data.results;
         this.total = response.data.count;
