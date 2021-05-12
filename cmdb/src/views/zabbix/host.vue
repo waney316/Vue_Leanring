@@ -51,15 +51,7 @@
           >
             搜索
           </el-button>
-          <el-button
-            class="filter-item"
-            style="margin-left: 10px;"
-            type="primary"
-            icon="el-icon-edit"
-            @click="handleCreate"
-          >
-            添加
-          </el-button>
+
           <el-button
             v-waves
             :loading="downloadLoading"
@@ -105,7 +97,7 @@
 
           <el-table-column
             label="主机名"
-            width="110px"
+            width="220px"
             align="center"
           >
             <template slot-scope="{row}">
@@ -113,8 +105,19 @@
             </template>
           </el-table-column>
           <el-table-column
+            label="接入IP"
+            width="150px"
+            align="center"
+          >
+            <template slot-scope="{row}">
+              <span v-for="(item, index) in row.interfaces" :key="index" >
+                {{ item.ip }}
+              </span>
+            </template>
+          </el-table-column>
+          <el-table-column
             label="监控项"
-            width="110px"
+            width="80px"
             align="center"
           >
             <template slot-scope="{row}">
@@ -123,7 +126,7 @@
           </el-table-column>
           <el-table-column
             label="应用集"
-            width="110px"
+            width="80px"
             align="center"
           >
             <template slot-scope="{row}">
@@ -132,7 +135,7 @@
           </el-table-column>
           <el-table-column
             label="触发器"
-            width="110px"
+            width="80px"
             align="center"
           >
             <template slot-scope="{row}">
@@ -142,7 +145,7 @@
 
           <el-table-column
             label="是否启用"
-            width="110px"
+            width="80px"
             align="center"
           >
             <template slot-scope="{row}">
@@ -150,12 +153,21 @@
             </template>
           </el-table-column>
           <el-table-column
-            label="状态"
-            width="110px"
+            label="监控状态"
+            width="80px"
             align="center"
           >
             <template slot-scope="{row}">
               <span>{{ row.available }}</span>
+            </template>
+          </el-table-column>
+                    <el-table-column
+            label="代理"
+            width="80px"
+            align="center"
+          >
+            <template slot-scope="{row}">
+              <span>{{ row.proxy_hostid }}</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -169,16 +181,16 @@
             </template>
           </el-table-column>
           <el-table-column
-            label="Actions"
+            label="操作"
             align="center"
-            width="230"
+            width="180"
             class-name="small-padding fixed-width"
           >
             <template slot-scope="{row,$index}">
               <el-button
                 type="primary"
                 size="mini"
-                @click="handleUpdate(row)"
+                @click="getDetail(row.hostid)"
               >
                 详情
               </el-button>
@@ -284,36 +296,7 @@
           </div>
         </el-dialog>
 
-        <el-dialog
-          :visible.sync="dialogPvVisible"
-          title="Reading statistics"
-        >
-          <el-table
-            :data="pvData"
-            border
-            fit
-            highlight-current-row
-            style="width: 100%"
-          >
-            <el-table-column
-              prop="key"
-              label="Channel"
-            />
-            <el-table-column
-              prop="pv"
-              label="Pv"
-            />
-          </el-table>
-          <span
-            slot="footer"
-            class="dialog-footer"
-          >
-            <el-button
-              type="primary"
-              @click="dialogPvVisible = false"
-            >Confirm</el-button>
-          </span>
-        </el-dialog>
+
       </div>
     </el-card>
   </div>
@@ -397,7 +380,7 @@ export default {
       })
     },
     getList () {
-      this.listLoading = false
+      this.listLoading = true
       listHost(this.listQuery).then(response => {
         console.log(response);
         this.list = response.data.results
@@ -434,71 +417,9 @@ export default {
       }
       this.handleFilter()
     },
-    resetTemp () {
-      this.temp = {
-        id: undefined,
-        importance: 1,
-        remark: '',
-        timestamp: new Date(),
-        title: '',
-        status: 'published',
-        type: ''
-      }
-    },
-    handleCreate () {
-      this.resetTemp()
-      this.dialogStatus = 'create'
-      this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
-    },
-    createData () {
-      this.$refs['dataForm'].validate((valid) => {
-        if (valid) {
-          this.temp.id = parseInt(Math.random() * 100) + 1024 // mock a id
-          this.temp.author = 'vue-element-admin'
-          createArticle(this.temp).then(() => {
-            this.list.unshift(this.temp)
-            this.dialogFormVisible = false
-            this.$notify({
-              title: 'Success',
-              message: 'Created Successfully',
-              type: 'success',
-              duration: 2000
-            })
-          })
-        }
-      })
-    },
-    handleUpdate (row) {
-      this.temp = Object.assign({}, row) // copy obj
-      this.temp.timestamp = new Date(this.temp.timestamp)
-      this.dialogStatus = 'update'
-      this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
-    },
-    updateData () {
-      this.$refs['dataForm'].validate((valid) => {
-        if (valid) {
-          const tempData = Object.assign({}, this.temp)
-          tempData.timestamp = +new Date(tempData.timestamp) // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
-          updateArticle(tempData).then(() => {
-            const index = this.list.findIndex(v => v.id === this.temp.id)
-            this.list.splice(index, 1, this.temp)
-            this.dialogFormVisible = false
-            this.$notify({
-              title: 'Success',
-              message: 'Update Successfully',
-              type: 'success',
-              duration: 2000
-            })
-          })
-        }
-      })
-    },
+
+    // 过去某个主机详情
+
     handleDelete (row, index) {
       this.$notify({
         title: 'Success',
