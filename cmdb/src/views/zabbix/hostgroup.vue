@@ -174,11 +174,6 @@ export default {
       },
       //数据源选择
       dataSourceOption: [],
-      temp: {
-        id: undefined,
-        dataSource: ""
-      },
-
       downloadLoading: false,
     };
   },

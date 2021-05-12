@@ -70,3 +70,13 @@ export function listHostGroup(params) {
     params
   })
 }
+
+
+//获取主机列表
+export function listHost(params) {
+  return request({
+    url: '/api/v1/zabbix/host/',
+    method: "get",
+    params
+  })
+}

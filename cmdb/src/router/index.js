@@ -152,15 +152,6 @@ export const constantRoutes = [{
           icon: 'eye-open'
         }
       },
-      {
-        path: 'configuration',
-        name: 'configManger',
-        component: () => import('@/views/zabbix/configuration'),
-        meta: {
-          title: '配置管理',
-          icon: 'documentation'
-        }
-      },
     ]
   },
 
