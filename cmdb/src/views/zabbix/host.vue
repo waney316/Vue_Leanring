@@ -97,7 +97,6 @@
 
           <el-table-column
             label="主机名"
-            width="220px"
             align="center"
           >
             <template slot-scope="{row}">
@@ -110,7 +109,10 @@
             align="center"
           >
             <template slot-scope="{row}">
-              <span v-for="(item, index) in row.interfaces" :key="index" >
+              <span
+                v-for="(item, index) in row.interfaces"
+                :key="index"
+              >
                 {{ item.ip }}
               </span>
             </template>
@@ -161,7 +163,7 @@
               <span>{{ row.available }}</span>
             </template>
           </el-table-column>
-                    <el-table-column
+          <el-table-column
             label="代理"
             width="80px"
             align="center"
@@ -190,7 +192,7 @@
               <el-button
                 type="primary"
                 size="mini"
-                @click="getDetail(row.hostid)"
+                @click="getDetail(row,$index)"
               >
                 详情
               </el-button>
@@ -216,86 +218,86 @@
         />
 
         <el-dialog
-          :title="textMap[dialogStatus]"
+          :title="title"
           :visible.sync="dialogFormVisible"
         >
           <el-form
             ref="dataForm"
-            :rules="rules"
             :model="temp"
             label-position="left"
             label-width="70px"
-            style="width: 400px; margin-left:50px;"
+            style="width: 450px; margin-left:50px;"
           >
             <el-form-item
-              label="Type"
-              prop="type"
+              label="主机名"
+              prop="host"
             >
+              {{temp.host}}
+            </el-form-item>
+            <el-form-item
+              label="主机ID"
+              prop="hostid"
+            >
+              {{temp.hostid}}
+            </el-form-item>
+            <el-form-item
+              label="主机组"
+              prop="groups"
+            >
+              <span v-for="item of temp.groups">
+                {{ item.name }}
+              </span>
+            </el-form-item>
+            <el-form-item
+              label="接口"
+              prop="interfaces"
+            >
+              <span v-for="item of temp.interfaces">
+                接入IP: {{ item.ip }}
+                接入类型：{{ item.type}}
+                接入端口： {{ item.port }}
+              </span>
+            </el-form-item>
+            <el-form-item
+              label="模板"
+              prop="parentTemplates"
+            >
+              <span v-for="item of temp.parentTemplates">
+                {{ item.name }}
+              </span>
+            </el-form-item>
+            <el-form-item
+              label="类型"
+              prop="flags"
+            >
+              {{temp.flags}}
+            </el-form-item>
+            <el-form-item
+              label="异常"
+              prop="error"
+            >
+              {{temp.error}}
+            </el-form-item>
+            <el-form-item
+              label="异常开始时间"
+              prop="error_from"
+            >
+              {{temp.error_from}}
+            </el-form-item>
 
-            </el-form-item>
-            <el-form-item
-              label="Date"
-              prop="timestamp"
-            >
-              <el-date-picker
-                v-model="temp.timestamp"
-                type="datetime"
-                placeholder="Please pick a date"
-              />
-            </el-form-item>
-            <el-form-item
-              label="Title"
-              prop="title"
-            >
-              <el-input v-model="temp.title" />
-            </el-form-item>
-            <el-form-item label="Status">
-              <el-select
-                v-model="temp.status"
-                class="filter-item"
-                placeholder="Please select"
-              >
-                <el-option
-                  v-for="item in statusOptions"
-                  :key="item"
-                  :label="item"
-                  :value="item"
-                />
-              </el-select>
-            </el-form-item>
-            <el-form-item label="Imp">
-              <el-rate
-                v-model="temp.importance"
-                :colors="['#99A9BF', '#F7BA2A', '#FF9900']"
-                :max="3"
-                style="margin-top:8px;"
-              />
-            </el-form-item>
-            <el-form-item label="Remark">
-              <el-input
-                v-model="temp.remark"
-                :autosize="{ minRows: 2, maxRows: 4}"
-                type="textarea"
-                placeholder="Please input"
-              />
-            </el-form-item>
           </el-form>
           <div
             slot="footer"
             class="dialog-footer"
           >
-            <el-button @click="dialogFormVisible = false">
-              Cancel
-            </el-button>
             <el-button
-              type="primary"
-              @click="dialogStatus==='create'?createData():updateData()"
+              @click="dialogFormVisible = false"
+              type="success"
             >
-              Confirm
+              确认
             </el-button>
           </div>
         </el-dialog>
-
 
       </div>
     </el-card>
@@ -342,14 +344,18 @@ export default {
       },
       statusOptions: ['published', 'draft', 'deleted'],
       showReviewer: false,
+      // 主机详情信息变量定义
+      title: "",
       temp: {
-        id: undefined,
-        importance: 1,
-        remark: '',
-        timestamp: new Date(),
-        title: '',
-        type: '',
-        status: 'published'
+        hostid: undefined,
+        host: "",
+        error: "",
+        error_from: "",
+        flags: [],
+        groups: [],
+        interfaces: [],
+        parentTemplates: [],
+
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -358,12 +364,6 @@ export default {
         create: 'Create'
       },
       dialogPvVisible: false,
-      pvData: [],
-      rules: {
-        type: [{ required: true, message: 'type is required', trigger: 'change' }],
-        timestamp: [{ type: 'date', required: true, message: 'timestamp is required', trigger: 'change' }],
-        title: [{ required: true, message: 'title is required', trigger: 'blur' }]
-      },
       downloadLoading: false
     }
   },
@@ -379,6 +379,7 @@ export default {
         console.log(this.classifyOption)
       })
     },
+    //获取主机列表
     getList () {
       this.listLoading = true
       listHost(this.listQuery).then(response => {
@@ -392,17 +393,13 @@ export default {
         }, 1.5 * 1000)
       })
     },
+
+
     handleFilter () {
       this.listQuery.page = 1
       this.getList()
     },
-    handleModifyStatus (row, status) {
-      this.$message({
-        message: '操作Success',
-        type: 'success'
-      })
-      row.status = status
-    },
+
     sortChange (data) {
       const { prop, order } = data
       if (prop === 'id') {
@@ -417,9 +414,22 @@ export default {
       }
       this.handleFilter()
     },
+    //获取单个主机详情
+    getDetail (row, index) {
+      console.log(row, index);
+      this.temp.host, this.title = row.host
+      this.temp.hostid = row.hostid,
+        this.temp.error = row.error,
+        this.temp.error_from = row.error_from,
+        this.temp.flags = row.flags,
+        this.temp.groups = row.groups,
+        this.temp.interfaces = row.interfaces,
+        this.temp.parentTemplates = row.parentTemplates
+      console.log(this.temp);
 
-    // 过去某个主机详情
-
+      this.dialogFormVisible = true
+    },
+    //删除单个主机
     handleDelete (row, index) {
       this.$notify({
         title: 'Success',
@@ -429,12 +439,7 @@ export default {
       })
       this.list.splice(index, 1)
     },
-    handleFetchPv (pv) {
-      fetchPv(pv).then(response => {
-        this.pvData = response.data.pvData
-        this.dialogPvVisible = true
-      })
-    },
+
     handleDownload () {
       this.downloadLoading = true
       import('@/vendor/Export2Excel').then(excel => {
