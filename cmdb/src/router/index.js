@@ -152,6 +152,15 @@ export const constantRoutes = [{
           icon: 'eye-open'
         }
       },
+      {
+        path: 'operation',
+        name: 'operation',
+        component: () => import('@/views/zabbix/operation'),
+        meta: {
+          title: 'API操作',
+          icon: 'eye-open'
+        }
+      },
     ]
   },
 
