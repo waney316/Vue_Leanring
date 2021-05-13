@@ -20,15 +20,13 @@
 export default {
   data () {
     return {
-      info =[
+      info: [
         {
-          "name": "a",
           "interfaces": ["ip": "1.1.1.1"]
         },
         {
-          "name": "b",
           "interfaces": ["ip": "2.2.2.2"]
-        },
+        }
       ]
     }
   }
