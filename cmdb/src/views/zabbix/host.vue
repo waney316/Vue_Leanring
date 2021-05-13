@@ -97,7 +97,6 @@
 
           <el-table-column
             label="主机名"
-            width="220px"
             align="center"
           >
             <template slot-scope="{row}">
