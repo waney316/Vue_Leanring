@@ -35,48 +35,61 @@
                 </el-option>
               </el-select>
             </el-form-item>
+
             <el-form-item
-              label="活动名称"
+              label="接入类型选择"
+              prop="createTypeOption"
+            >
+              <el-select
+                v-model="createType"
+                clearable
+                placeholder="请选择接入类型"
+                style="margin-left: 10px"
+              >
+                <el-option
+                  v-for="item in createTypeOption"
+                  :key="item.name"
+                  :label="item.alias"
+                  :value="item.name"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item
+              label="主机群组"
               prop="name"
             >
               <el-input v-model="ruleForm.name"></el-input>
             </el-form-item>
-
             <el-form-item
-              label="活动时间"
-              required
+              label="关联模板"
+              prop="name"
             >
-              <el-col :span="11">
-                <el-form-item prop="date1">
-                  <el-date-picker
-                    type="date"
-                    placeholder="选择日期"
-                    v-model="ruleForm.date1"
-                    style="width: 100%;"
-                  ></el-date-picker>
-                </el-form-item>
-              </el-col>
-              <el-col
-                class="line"
-                :span="2"
-              >-</el-col>
-              <el-col :span="11">
-                <el-form-item prop="date2">
-                  <el-time-picker
-                    placeholder="选择时间"
-                    v-model="ruleForm.date2"
-                    style="width: 100%;"
-                  ></el-time-picker>
-                </el-form-item>
-              </el-col>
+              <el-input v-model="ruleForm.name"></el-input>
             </el-form-item>
             <el-form-item
-              label="即时配送"
+              label="代理"
+              prop="name"
+            >
+              <el-input v-model="ruleForm.name"></el-input>
+            </el-form-item>
+            <el-form-item
+              label="主机列表"
+              prop="desc"
+            >
+              <el-input
+                type="textarea"
+                v-model="ruleForm.desc"
+              ></el-input>
+            </el-form-item>
+
+            <el-form-item
+              label="是否启用"
               prop="delivery"
             >
               <el-switch v-model="ruleForm.delivery"></el-switch>
             </el-form-item>
-            <el-form-item
+            <!-- <el-form-item
               label="活动性质"
               prop="type"
             >
@@ -107,9 +120,75 @@
                 <el-radio label="线上品牌商赞助"></el-radio>
                 <el-radio label="线下场地免费"></el-radio>
               </el-radio-group>
+            </el-form-item> -->
+
+            <el-form-item>
+              <el-button
+                type="primary"
+                @click="submitForm('ruleForm')"
+              >立即创建</el-button>
+              <el-button @click="resetForm('ruleForm')">重置</el-button>
+            </el-form-item>
+          </el-form>
+        </el-tab-pane>
+        <el-tab-pane
+          label="主机-群组管理"
+          name="second"
+        >
+          <el-form
+            :model="ruleForm"
+            :rules="rules"
+            ref="ruleForm"
+            label-width="100px"
+            class="demo-ruleForm"
+          >
+            <el-form-item
+              label="数据源选择"
+              prop="dataSource"
+            >
+              <el-select
+                v-model="dataSource"
+                clearable
+                placeholder="请选择Zabbix数据源"
+                style="margin-left: 10px"
+              >
+                <el-option
+                  v-for="item in dataSourceOption"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.name"
+                >
+                </el-option>
+              </el-select>
             </el-form-item>
             <el-form-item
-              label="活动形式"
+              label="操作类型"
+              prop="operationTypeOption"
+            >
+              <el-select
+                v-model="operationType"
+                clearable
+                placeholder="请选择操作类型"
+                style="margin-left: 10px"
+              >
+                <el-option
+                  v-for="item in operationTypeOption"
+                  :key="item.name"
+                  :label="item.alias"
+                  :value="item.name"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item
+              label="主机组选择"
+              prop="name"
+            >
+              <el-input v-model="ruleForm.name"></el-input>
+            </el-form-item>
+
+            <el-form-item
+              label="主机列表"
               prop="desc"
             >
               <el-input
@@ -127,13 +206,79 @@
           </el-form>
         </el-tab-pane>
         <el-tab-pane
-          label="主机组关联"
-          name="second"
-        >配置管理</el-tab-pane>
-        <el-tab-pane
-          label="模版关联"
+          label="主机-模板管理"
           name="third"
-        >角色管理</el-tab-pane>
+        >
+          <el-form
+            :model="ruleForm"
+            :rules="rules"
+            ref="ruleForm"
+            label-width="100px"
+            class="demo-ruleForm"
+          >
+            <el-form-item
+              label="数据源选择"
+              prop="dataSource"
+            >
+              <el-select
+                v-model="dataSource"
+                clearable
+                placeholder="请选择Zabbix数据源"
+                style="margin-left: 10px"
+              >
+                <el-option
+                  v-for="item in dataSourceOption"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.name"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item
+              label="操作类型"
+              prop="operationTypeOption"
+            >
+              <el-select
+                v-model="operationType"
+                clearable
+                placeholder="请选择操作类型"
+                style="margin-left: 10px"
+              >
+                <el-option
+                  v-for="item in operationTypeOption"
+                  :key="item.name"
+                  :label="item.alias"
+                  :value="item.name"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item
+              label="模板选择"
+              prop="name"
+            >
+              <el-input v-model="ruleForm.name"></el-input>
+            </el-form-item>
+
+            <el-form-item
+              label="主机列表"
+              prop="desc"
+            >
+              <el-input
+                type="textarea"
+                v-model="ruleForm.desc"
+              ></el-input>
+            </el-form-item>
+            <el-form-item>
+              <el-button
+                type="primary"
+                @click="submitForm('ruleForm')"
+              >立即创建</el-button>
+              <el-button @click="resetForm('ruleForm')">重置</el-button>
+            </el-form-item>
+          </el-form>
+        </el-tab-pane>
       </el-tabs>
     </el-card>
   </div>
@@ -149,6 +294,20 @@ export default {
     return {
       dataSource: "",
       dataSourceOption: "",
+      //创建接入类型
+      createType: "",
+      createTypeOption: [
+        { "name": "agent", "alais": "agent接入" },
+        { "name": "snmp", "alais": "snmp接入" },
+      ],
+      //操作类型，添加、删除、替换
+      operationType: "",
+      operationTypeOption: [
+        { "name": "add", "alias": "添加" },
+        { "name": "replcae", "alias": "替换" },
+        { "name": "remove", "alias": "移除" }
+      ],
+
       listQuery: "",
       activeName: 'second',
       ruleForm: {
