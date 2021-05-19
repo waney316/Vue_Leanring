@@ -1,6 +1,6 @@
 module.exports = {
 
-  title: 'CMDB',
+  title: '监控运维平台',
 
   /**
    * @type {boolean} true | false

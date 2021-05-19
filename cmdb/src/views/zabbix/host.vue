@@ -193,6 +193,7 @@
                 type="primary"
                 size="mini"
                 @click="getDetail(row,$index)"
+                 icon="el-icon-message"
               >
                 详情
               </el-button>
@@ -202,6 +203,7 @@
                 size="mini"
                 type="danger"
                 @click="handleDelete(row,$index)"
+                 icon="el-icon-delete"
               >
                 删除
               </el-button>

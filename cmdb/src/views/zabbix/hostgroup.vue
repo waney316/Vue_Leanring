@@ -50,9 +50,18 @@
 
           <div
             style="float: right"
-            v-show="listQuery.dataSource"
+            v-show="showButton"
           >
-            <el-button type="danger">
+            <el-button
+            class="filter-item"
+            style="margin-left: 10px"
+            type="primary"
+            icon="el-icon-edit"
+            @click="handleCreate"
+          >
+            新建
+          </el-button>
+            <el-button type="danger" icon="el-icon-delete">
               删除
             </el-button>
           </div>
@@ -67,7 +76,6 @@
           fit
           highlight-current-row
           style="width: 100%; margin-top:10px"
-          @sort-change="sortChange"
         >
           <el-table-column
             type="selection"
@@ -78,9 +86,7 @@
           <el-table-column
             label="主机组ID"
             prop="id"
-            sortable="custom"
             align="center"
-            :class-name="getSortClass('id')"
             width="100"
           >
             <template slot-scope="{ row }">
@@ -91,9 +97,7 @@
           <el-table-column
             label="主机组名称"
             prop="name"
-            sortable="custom"
             align="center"
-            :class-name="getSortClass('name')"
             min-width="200"
           >
             <template slot-scope="{ row }">
@@ -134,6 +138,22 @@
               <span v-else>主机组</span>
             </template>
           </el-table-column>
+          <el-table-column
+            label="操作"
+            align="center"
+            class-name="small-padding fixed-width"
+          >
+            <template slot-scope="{ row, $index }">
+              <el-button
+                type="primary"
+                size="mini"
+                @click="handleUpdate(row)"
+                icon="el-icon-edit"
+              >
+                编辑
+              </el-button>
+            </template>
+          </el-table-column>
 
         </el-table>
         <pagination
@@ -145,6 +165,41 @@
         />
       </div>
     </el-card>
+    <el-dialog
+      :title="textMap[dialogStatus]"
+      :visible.sync="dialogFormVisible"
+    >
+      <el-form
+        ref="dataForm"
+        :model="temp"
+        label-position="left"
+        label-width="80px"
+        style="width: 80%; margin-left: 50px"
+      >
+
+        <el-form-item
+          label="群组名称"
+          prop="name"
+        >
+          <el-input
+            v-model="temp.name"
+            placeholder="请输入主机组名称"
+          />
+        </el-form-item>
+      </el-form>
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="dialogFormVisible = false"> 关闭 </el-button>
+        <el-button
+          type="primary"
+          @click="dialogStatus === 'create' ? createData() : updateData()"
+        >
+          确认
+        </el-button>
+      </div>
+    </el-dialog>
 
   </div>
 </template>
@@ -153,7 +208,7 @@
 
 //分类的增删改查
 import {
-  getZabbixList, listHostGroup
+  getZabbixList, listHostGroup, delHostgroup, UpdateHostgroup, createHostGroup
 } from '@/api/zabbix'
 
 import waves from "@/directive/waves"; // waves directive
@@ -175,6 +230,16 @@ export default {
         page: 1,
         size: 10,
       },
+      dialogFormVisible: false,
+      dialogStatus: "",
+      showButton: false,
+      temp: {
+        name: undefined
+      },
+      textMap: {
+        update: "更新主机组名称",
+        create: "添加主机组",
+      },
       //数据源选择
       dataSourceOption: [],
       downloadLoading: false,
@@ -195,28 +260,73 @@ export default {
         console.log(response.data);
         this.list = response.data.results;
         this.total = response.data.count;
-        this.listLoading = false
+        this.listLoading = false;
+        this.showButton = true
       });
     },
 
+    //过滤查询
     handleFilter () {
       this.listQuery.page = 1;
       this.getList();
     },
-
-    sortChange (data) {
-      const { prop, order } = data;
-      if (prop === "id") {
-        this.sortByID(order);
-      }
+    //重置
+    resetTemp () {
+      this.temp = {};
     },
-    sortByID (order) {
-      if (order === "ascending") {
-        this.listQuery.ordering = "+id";
-      } else {
-        this.listQuery.ordering = "-id";
-      }
-      this.handleFilter();
+    //数据更新
+    handleUpdate (row) {
+      this.temp = Object.assign({}, row); // copy obj
+      console.log(this.temp);
+      this.dialogStatus = "update";
+      this.dialogFormVisible = true;
+      this.$nextTick(() => {
+        this.$refs["dataForm"].clearValidate();
+      });
+    },
+    updateData(){
+      const data = {}
+      UpdateHostgroup(data).then(response=>{
+        console.log(response);
+      })
+    },
+    //主机组新建
+    handleCreate () {
+      this.resetTemp();
+      this.dialogStatus = "create";
+      this.dialogFormVisible = true;
+      this.$nextTick(() => {
+        this.$refs["dataForm"].clearValidate();
+      });
+    },
+    //添加数据源
+    createData () {
+      this.$refs["dataForm"].validate((valid) => {
+        if (valid) {
+          createHostGroup(this.temp).then((response) => {
+            console.log(response);
+            // 如果后端返回的状态码为0,则创建成功
+            if (response.code === 0) {
+              this.$notify({
+                title: "创建成功",
+                message: response.message,
+                type: "success",
+                duration: 2000
+              })
+              this.dialogFormVisible = false // 关闭输入框
+              this.getList()   //重新获取列表
+
+            } else {
+              this.$notify({
+                title: "创建失败",
+                message: response.data.message,
+                type: "error",
+                duration: 2000
+              })
+            }
+          })
+        }
+      });
     },
 
     //获取数据分类列表
@@ -230,20 +340,30 @@ export default {
 
     //数据删除
     handleDelete (row, index) {
-      // console.log(row, index);  //index:当前列表页的索引顺序值
-      this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
+      console.log(this.multipleSelection);
+      this.templateids.length = 0
+      //获取到模板id加入templteids
+      this.multipleSelection.forEach(element => {
+        this.templateids.push(element.templateid)
+      });
+      const data = {
+        "dataSource": this.listQuery.dataSource,
+        "templateids": this.templateids
+      }
+      this.$confirm('此操作将直接删除主机组, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        deleteDataDict(row.id).then(response => {
-          console.log(response);
+        delHostgroup(data).then(response => {
+          console.log(data);
           if (response.code === 0) {
             this.$notify({
               title: "删除成功",
               message: response.message,
               type: "success"
             })
+            this.listQuery.name = ""
             this.getList()
           } else {
             this.$notify({
@@ -261,11 +381,7 @@ export default {
       });
 
     },
-    getSortClass: function (key) {
-      const sort = this.listQuery.sort;
-      // console.log(sort);
-      return sort === `+${key}` ? "ascending" : "descending";
-    },
+
   },
 };
 </script>

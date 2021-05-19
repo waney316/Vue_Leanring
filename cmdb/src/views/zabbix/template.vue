@@ -50,11 +50,12 @@
 
           <div
             style="float: right"
-            v-show="listQuery.dataSource"
+            v-show="showButton"
           >
             <el-button
               type="danger"
               @click="handleDelete"
+              icon="el-icon-delete"
             >
               删除
             </el-button>
@@ -137,6 +138,22 @@
               <span>{{ row.discoveries }}</span>
             </template>
           </el-table-column>
+          <el-table-column
+            label="操作"
+            align="center"
+            class-name="small-padding fixed-width"
+          >
+            <template slot-scope="{ row, $index }">
+              <el-button
+                type="primary"
+                size="mini"
+                @click="handleUpdate(row)"
+                icon="el-icon-edit"
+              >
+                编辑
+              </el-button>
+            </template>
+          </el-table-column>
 
         </el-table>
         <pagination
@@ -149,6 +166,42 @@
       </div>
     </el-card>
 
+    <el-dialog
+      title="更新模版名称"
+      :visible.sync="dialogFormVisible"
+    >
+      <el-form
+        ref="dataForm"
+        :model="temp"
+        label-position="left"
+        label-width="80px"
+        style="width: 80%; margin-left: 50px"
+      >
+
+        <el-form-item
+          label="模版名称"
+          prop="name"
+        >
+          <el-input
+            v-model="temp.name"
+            placeholder="请输入模版名称"
+          />
+        </el-form-item>
+      </el-form>
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="dialogFormVisible = false"> 关闭 </el-button>
+        <el-button
+          type="primary"
+          @click="updateTemplate()"
+        >
+          确认
+        </el-button>
+      </div>
+    </el-dialog>
+
   </div>
 </template>
 
@@ -156,12 +209,11 @@
 
 //分类的增删改查
 import {
-  getZabbixList, listTemplate, delTemplate
+  getZabbixList, listTemplate, delTemplate, updateTemplate
 } from '@/api/zabbix'
 
 import waves from "@/directive/waves"; // waves directive
 import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
-
 
 
 export default {
@@ -173,6 +225,9 @@ export default {
       //多选框选中
       multipleSelection: [],
       templateids: [],
+
+      //是否显示按钮
+      showButton: false,
       tableKey: 0,
       list: null,
       total: 0,
@@ -182,11 +237,11 @@ export default {
         page: 1,
         size: 10,
       },
+      dialogFormVisible: false,
       //数据源选择
       dataSourceOption: [],
       temp: {
-        id: undefined,
-        dataSource: ""
+        name: undefined
       },
       downloadLoading: false,
     };
@@ -207,6 +262,8 @@ export default {
         this.list = response.data.results;
         this.total = response.data.count;
         this.listLoading = false
+        //显示删除导出按钮
+        this.showButton = true
       });
     },
 
@@ -227,7 +284,23 @@ export default {
         this.dataSourceOption = response.data.results
       })
     },
+    //数据更新
+    handleUpdate (row) {
+      this.temp = Object.assign({}, row); // copy obj
+      console.log(this.temp);
+      this.dialogStatus = "update";
+      this.dialogFormVisible = true;
+      this.$nextTick(() => {
+        this.$refs["dataForm"].clearValidate();
+      });
+    },
 
+    updateData(){
+      const data = {}
+      updateTemplate(data).then(response=>{
+        console.log(response);
+      })
+    },
     //数据删除
     handleDelete (row, index) {
       console.log(this.multipleSelection);

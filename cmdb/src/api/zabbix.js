@@ -71,12 +71,47 @@ export function delTemplate(data) {
   })
 }
 
+//更新模版名称
+export function updateTemplate(data) {
+  return request({
+    url: '/api/v1/zabbix/template/',
+    method: "put",
+    data: data
+  })
+}
 //获取主机组列表
 export function listHostGroup(params) {
   return request({
     url: '/api/v1/zabbix/hostgroup/',
     method: "get",
     params
+  })
+}
+
+//删除主机组列表
+export function delHostGroup(data) {
+  return request({
+    url: '/api/v1/zabbix/hostgroup/',
+    method: "delete",
+    data: data
+  })
+}
+
+//更新主机组名称
+export function updateHostGroup(data) {
+  return request({
+    url: '/api/v1/zabbix/hostgroup/',
+    method: "put",
+    data: data
+  })
+}
+
+//创建主机组
+export function createHostGroup(data) {
+  return request({
+    url: '/api/v1/zabbix/hostgroup/',
+    method: "post",
+    data: data
   })
 }
 
