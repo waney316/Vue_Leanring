@@ -48,7 +48,10 @@
             搜索
           </el-button>
 
-          <div style="float: right">
+          <div
+            style="float: right"
+            v-show="listQuery.dataSource"
+          >
             <el-button
               type="danger"
               @click="handleDelete"
