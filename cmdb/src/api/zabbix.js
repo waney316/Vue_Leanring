@@ -62,6 +62,15 @@ export function listTemplate(params) {
   })
 }
 
+//删除模板
+export function delTemplate(data) {
+  return request({
+    url: '/api/v1/zabbix/template/',
+    method: "delete",
+    data: data
+  })
+}
+
 //获取主机组列表
 export function listHostGroup(params) {
   return request({

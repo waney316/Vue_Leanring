@@ -30,7 +30,7 @@
 
           <span style="margin-left: 5px">主机组名称</span>
           <el-input
-            v-model="listQuery.search"
+            v-model="listQuery.name"
             placeholder="请输入主机组名称"
             style="width: 200px; margin-left: 5px"
             class="filter-item"
