@@ -243,7 +243,13 @@
             </template>
           </el-table-column>
         </el-table>
-        
+        <pagination
+          v-show="total > 0"
+          :total="total"
+          :page.sync="listQuery.page"
+          :limit.sync="listQuery.size"
+          @pagination="getList"
+        />
       </div>
       <div v-else style="text-align: center; font-size: 20px; padding-top: 30px; padding-bottom: 30px">
         请选择数据源，来加载数据
