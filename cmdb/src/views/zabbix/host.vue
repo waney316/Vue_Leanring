@@ -13,7 +13,6 @@
 
           <el-select
             v-model="listQuery.dataSource"
-            clearable
             placeholder="请选择数据源"
             style="margin-left: 10px"
             @change="getList"
@@ -26,27 +25,21 @@
             >
             </el-option>
           </el-select>
-          <span>字段</span>
+          <span style="margin-left: 15px">IP地址</span>
           <el-input
-            v-model="listQuery.title"
-            placeholder="Title"
-            style="width: 200px;"
+            v-model="listQuery.ip"
+            placeholder="请输入要查询的主机名或IP地址"
+            style="width: 200px;margin-left: 10px"
             class="filter-item"
             @keyup.enter.native="handleFilter"
           />
-          <el-select
-            v-model="listQuery.sort"
-            style="width: 140px"
-            class="filter-item"
-            @change="handleFilter"
-          >
 
-          </el-select>
           <el-button
             v-waves
             class="filter-item"
             type="primary"
             icon="el-icon-search"
+            style="margin-left: 5px"
             @click="handleFilter"
           >
             搜索
@@ -63,12 +56,19 @@
             导出
           </el-button>
           <el-checkbox
-            v-model="showReviewer"
+            v-model="showTemplates"
             class="filter-item"
-            style="margin-left:15px;"
+            style="margin-left:10px;"
             @change="tableKey=tableKey+1"
           >
-            扩展列
+            显示模板
+          </el-checkbox>
+          <el-checkbox
+            v-model="showGroups"
+            class="filter-item"
+            @change="tableKey=tableKey+1"
+          >
+            显示群组
           </el-checkbox>
         </div>
 
@@ -79,16 +79,13 @@
           border
           fit
           highlight-current-row
-          style="width: 100%;"
-          @sort-change="sortChange"
+          style="width: 110%; margin-top: 10px"
         >
           <el-table-column
             label="主机ID"
             prop="id"
-            sortable="custom"
             align="center"
             width="80"
-            :class-name="getSortClass('id')"
           >
             <template slot-scope="{row}">
               <span>{{ row.hostid }}</span>
@@ -154,15 +151,7 @@
               <span>{{ row.status }}</span>
             </template>
           </el-table-column>
-          <el-table-column
-            label="监控状态"
-            width="80px"
-            align="center"
-          >
-            <template slot-scope="{row}">
-              <span>{{ row.available }}</span>
-            </template>
-          </el-table-column>
+
           <el-table-column
             label="代理"
             width="80px"
@@ -173,19 +162,57 @@
             </template>
           </el-table-column>
           <el-table-column
-            v-if="showReviewer"
-            label="Reviewer"
-            width="110px"
+            v-if="showTemplates"
+            label="关联模板"
+            width="220"
             align="center"
           >
             <template slot-scope="{row}">
-              <span style="color:red;">{{ row.reviewer }}</span>
+              <el-tag
+                size="small"
+                v-for="item in row.parentTemplates"
+                :key="item.templateid"
+                type="info"
+              >
+                {{ item.name }}
+              </el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column
+            v-if="showGroups"
+            label="主机群组"
+            width="180"
+            align="center"
+          >
+            <template slot-scope="{row}">
+              <el-tag
+                size="small"
+                v-for="item in row.groups"
+                :key="item.groupid"
+                type="info"
+              >
+                {{ item.name }}
+              </el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="监控状态"
+            width="80px"
+            align="center"
+          >
+            <template slot-scope="{row}">
+              <el-tag
+                size="small"
+                :type="showTags(row.available)"
+              >
+                {{ row.available }}
+              </el-tag>
             </template>
           </el-table-column>
           <el-table-column
             label="操作"
             align="center"
-            width="180"
+            width="190"
             class-name="small-padding fixed-width"
           >
             <template slot-scope="{row,$index}">
@@ -193,7 +220,7 @@
                 type="primary"
                 size="mini"
                 @click="getDetail(row,$index)"
-                 icon="el-icon-message"
+                icon="el-icon-message"
               >
                 详情
               </el-button>
@@ -203,7 +230,7 @@
                 size="mini"
                 type="danger"
                 @click="handleDelete(row,$index)"
-                 icon="el-icon-delete"
+                icon="el-icon-delete"
               >
                 删除
               </el-button>
@@ -228,19 +255,31 @@
             :model="temp"
             label-position="left"
             label-width="70px"
+            :inline="true"
             style="width: 450px; margin-left:50px;"
           >
+
             <el-form-item
               label="主机名"
               prop="host"
             >
-              {{temp.host}}
+              <el-input
+                :value="temp.host"
+                :disabled="true"
+              >
+              </el-input>
             </el-form-item>
+
             <el-form-item
               label="主机ID"
               prop="hostid"
             >
-              {{temp.hostid}}
+              <el-input
+                :value="temp.hostid"
+                :disabled="true"
+                style="width: 30px"
+              >
+              </el-input>
             </el-form-item>
             <el-form-item
               label="主机组"
@@ -335,6 +374,7 @@ export default {
   },
   data () {
     return {
+
       dataSourceOption: "",
       tableKey: 0,
       list: null,
@@ -345,20 +385,11 @@ export default {
         limit: 20,
       },
       statusOptions: ['published', 'draft', 'deleted'],
-      showReviewer: false,
+      showTemplates: false,
+      showGroups: false,
       // 主机详情信息变量定义
       title: "",
-      temp: {
-        hostid: undefined,
-        host: "",
-        error: "",
-        error_from: "",
-        flags: [],
-        groups: [],
-        interfaces: [],
-        parentTemplates: [],
-
-      },
+      temp: {},
       dialogFormVisible: false,
       dialogStatus: '',
       textMap: {
@@ -396,39 +427,28 @@ export default {
       })
     },
 
+    //主机状态tag选择
+    showTags (val) {
+      if (val === "未知") {
+        return "info"
+      } else if (val === "正常") {
+        return "success"
+      } else if (val === "异常") {
+        return "danger"
+      }
+    },
 
+    //过滤查询
     handleFilter () {
       this.listQuery.page = 1
       this.getList()
     },
 
-    sortChange (data) {
-      const { prop, order } = data
-      if (prop === 'id') {
-        this.sortByID(order)
-      }
-    },
-    sortByID (order) {
-      if (order === 'ascending') {
-        this.listQuery.sort = '+id'
-      } else {
-        this.listQuery.sort = '-id'
-      }
-      this.handleFilter()
-    },
     //获取单个主机详情
-    getDetail (row, index) {
-      console.log(row, index);
-      this.temp.host, this.title = row.host
-      this.temp.hostid = row.hostid,
-        this.temp.error = row.error,
-        this.temp.error_from = row.error_from,
-        this.temp.flags = row.flags,
-        this.temp.groups = row.groups,
-        this.temp.interfaces = row.interfaces,
-        this.temp.parentTemplates = row.parentTemplates
+    getDetail (row) {
+      this.temp = Object.assign({}, row); // copy obj
+      this.title = this.temp.host + " 主机详情"
       console.log(this.temp);
-
       this.dialogFormVisible = true
     },
     //删除单个主机

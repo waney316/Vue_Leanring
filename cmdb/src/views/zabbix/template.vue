@@ -59,10 +59,16 @@
             >
               删除
             </el-button>
-            <el-button type="success">
+            <el-button
+              type="success"
+              icon="el-icon-upload"
+            >
               逐个导出
             </el-button>
-            <el-button type="success">
+            <el-button
+              type="success"
+              icon="el-icon-upload"
+            >
               合并导出
             </el-button>
           </div>
@@ -173,6 +179,7 @@
       <el-form
         ref="dataForm"
         :model="temp"
+        :rules="rules"
         label-position="left"
         label-width="80px"
         style="width: 80%; margin-left: 50px"
@@ -244,6 +251,12 @@ export default {
         name: undefined
       },
       downloadLoading: false,
+
+      rules: {
+        name: [
+          { required: true, message: "模板名称必须填写", trigger: "blur" },
+        ],
+      },
     };
   },
   //页面刷新时执行
@@ -295,53 +308,61 @@ export default {
       });
     },
 
-    updateData(){
+    updateData () {
       const data = {}
-      updateTemplate(data).then(response=>{
+      updateTemplate(data).then(response => {
         console.log(response);
       })
     },
     //数据删除
     handleDelete (row, index) {
-      console.log(this.multipleSelection);
-      this.templateids.length = 0
-      //获取到模板id加入templteids
-      this.multipleSelection.forEach(element => {
-        this.templateids.push(element.templateid)
-      });
-      const data = {
-        "dataSource": this.listQuery.dataSource,
-        "templateids": this.templateids
-      }
-      this.$confirm('此操作将直接删除模板, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        delTemplate(data).then(response => {
-          console.log(data);
-          if (response.code === 0) {
-            this.$notify({
-              title: "删除成功",
-              message: response.message,
-              type: "success"
-            })
-            this.listQuery.name = ""
-            this.getList()
-          } else {
-            this.$notify({
-              title: "删除失败",
-              message: response.message,
-              type: "failed"
-            })
-          }
-        })
-      }).catch(() => {
+      if (this.multipleSelection.length === 0) {
         this.$message({
-          type: 'info',
-          message: '已取消删除'
+          "message": "必须选中至少一个模板",
+          "type": "warning"
+        })
+      } else {
+        console.log(this.multipleSelection);
+        this.templateids.length = 0
+        //获取到模板id加入templteids
+        this.multipleSelection.forEach(element => {
+          this.templateids.push(element.templateid)
         });
-      });
+        const data = {
+          "dataSource": this.listQuery.dataSource,
+          "templateids": this.templateids
+        }
+        this.$confirm('此操作将直接删除模板, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          delTemplate(data).then(response => {
+            console.log(data);
+            if (response.code === 0) {
+              this.$notify({
+                title: "删除成功",
+                message: response.message,
+                type: "success"
+              })
+              this.listQuery.name = ""
+              this.getList()
+            } else {
+              this.$notify({
+                title: "删除失败",
+                message: response.message,
+                type: "failed"
+              })
+            }
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
+      }
+
 
     },
   },

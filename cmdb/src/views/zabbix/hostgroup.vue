@@ -53,15 +53,19 @@
             v-show="showButton"
           >
             <el-button
-            class="filter-item"
-            style="margin-left: 10px"
-            type="primary"
-            icon="el-icon-edit"
-            @click="handleCreate"
-          >
-            新建
-          </el-button>
-            <el-button type="danger" icon="el-icon-delete">
+              class="filter-item"
+              style="margin-left: 10px"
+              type="primary"
+              icon="el-icon-edit"
+              @click="handleCreate"
+            >
+              新建
+            </el-button>
+            <el-button
+              type="danger"
+              icon="el-icon-delete"
+              @click="handleDelete"
+            >
               删除
             </el-button>
           </div>
@@ -76,6 +80,7 @@
           fit
           highlight-current-row
           style="width: 100%; margin-top:10px"
+          @selection-change="handleSelectionChange"
         >
           <el-table-column
             type="selection"
@@ -172,6 +177,7 @@
       <el-form
         ref="dataForm"
         :model="temp"
+        :rules="rules"
         label-position="left"
         label-width="80px"
         style="width: 80%; margin-left: 50px"
@@ -208,7 +214,7 @@
 
 //分类的增删改查
 import {
-  getZabbixList, listHostGroup, delHostgroup, UpdateHostgroup, createHostGroup
+  getZabbixList, listHostGroup, delHostGroup, UpdateHostgroup, createHostGroup
 } from '@/api/zabbix'
 
 import waves from "@/directive/waves"; // waves directive
@@ -221,6 +227,9 @@ export default {
   directives: { waves },
   data () {
     return {
+      //多选框选中
+      multipleSelection: [],
+      groupids: [],
       tableKey: 0,
       list: null,
       total: 0,
@@ -243,6 +252,11 @@ export default {
       //数据源选择
       dataSourceOption: [],
       downloadLoading: false,
+      rules: {
+        name: [
+          { required: true, message: "主机组名称必须填写", trigger: "blur" },
+        ],
+      },
     };
   },
   //页面刷新时执行
@@ -251,6 +265,11 @@ export default {
   },
 
   methods: {
+    //表格多选框选中
+    handleSelectionChange (row) {
+      this.multipleSelection = row;
+    },
+
     // 获取模板列表
     getList () {
       this.listLoading = true;
@@ -284,9 +303,9 @@ export default {
         this.$refs["dataForm"].clearValidate();
       });
     },
-    updateData(){
+    updateData () {
       const data = {}
-      UpdateHostgroup(data).then(response=>{
+      updateHostGroup(data).then(response => {
         console.log(response);
       })
     },
@@ -341,44 +360,52 @@ export default {
     //数据删除
     handleDelete (row, index) {
       console.log(this.multipleSelection);
-      this.templateids.length = 0
-      //获取到模板id加入templteids
-      this.multipleSelection.forEach(element => {
-        this.templateids.push(element.templateid)
-      });
-      const data = {
-        "dataSource": this.listQuery.dataSource,
-        "templateids": this.templateids
-      }
-      this.$confirm('此操作将直接删除主机组, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        delHostgroup(data).then(response => {
-          console.log(data);
-          if (response.code === 0) {
-            this.$notify({
-              title: "删除成功",
-              message: response.message,
-              type: "success"
-            })
-            this.listQuery.name = ""
-            this.getList()
-          } else {
-            this.$notify({
-              title: "删除失败",
-              message: response.message,
-              type: "failed"
-            })
-          }
-        })
-      }).catch(() => {
+      if (this.multipleSelection.length === 0) {
         this.$message({
-          type: 'info',
-          message: '已取消删除'
+          "message": '必须选中至少一个主机组',
+          "type": "warning"
         });
-      });
+      } else {
+        this.groupids.length = 0
+        //获取到模板id加入templteids
+        this.multipleSelection.forEach(element => {
+          this.groupids.push(element.groupid)
+        });
+        const data = {
+          "dataSource": this.listQuery.dataSource,
+          "groupids": this.groupids
+        }
+        this.$confirm('此操作将直接删除主机组, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          delHostGroup(data).then(response => {
+            console.log(data);
+            if (response.code === 0) {
+              this.$notify({
+                title: "删除成功",
+                message: response.message,
+                type: "success"
+              })
+              this.listQuery.name = ""
+              this.getList()
+            } else {
+              this.$notify({
+                title: "删除失败",
+                message: response.message,
+                type: "failed"
+              })
+            }
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
+      }
+
 
     },
 
