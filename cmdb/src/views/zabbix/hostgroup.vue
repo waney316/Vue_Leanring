@@ -71,7 +71,7 @@
           </div>
 
         </div>
-
+      <div v-if="listQuery.dataSource !== ''">
         <el-table
           :key="tableKey"
           v-loading="listLoading"
@@ -169,6 +169,11 @@
           @pagination="getList"
         />
       </div>
+      <div v-else style="text-align: center; font-size: 20px; padding-top: 30px; padding-bottom: 30px">
+        请选择数据源，来加载数据
+      </div>
+
+      </div>
     </el-card>
     <el-dialog
       :title="textMap[dialogStatus]"
@@ -238,6 +243,7 @@ export default {
         //分页向后端传递的参数
         page: 1,
         size: 10,
+        dataSource: ""
       },
       dialogFormVisible: false,
       dialogStatus: "",
@@ -272,16 +278,21 @@ export default {
 
     // 获取模板列表
     getList () {
-      this.listLoading = true;
-      console.log(this.listQuery);
-      //将查询参数传递给后端
-      listHostGroup(this.listQuery).then((response) => {
-        console.log(response.data);
-        this.list = response.data.results;
-        this.total = response.data.count;
-        this.listLoading = false;
-        this.showButton = true
-      });
+      if(this.listQuery.dataSource){
+        this.listLoading = true;
+        console.log(this.listQuery);
+        //将查询参数传递给后端
+        listHostGroup(this.listQuery).then((response) => {
+          console.log(response.data);
+          this.list = response.data.results;
+          this.total = response.data.count;
+          this.listLoading = false;
+          this.showButton = true
+        });       
+      }else{
+        this.showButton = false
+      }
+
     },
 
     //过滤查询

@@ -123,6 +123,7 @@
             label="操作"
             align="center"
             class-name="small-padding fixed-width"
+            width="240"
           >
             <template slot-scope="{ row, $index }">
               <el-button

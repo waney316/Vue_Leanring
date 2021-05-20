@@ -13,6 +13,7 @@
 
           <el-select
             v-model="listQuery.dataSource"
+            clearable
             placeholder="请选择数据源"
             style="margin-left: 10px"
             @change="getList"
@@ -55,7 +56,9 @@
           >
             导出
           </el-button>
+
           <el-checkbox
+            v-show="showFiled"
             v-model="showTemplates"
             class="filter-item"
             style="margin-left:10px;"
@@ -64,14 +67,17 @@
             显示模板
           </el-checkbox>
           <el-checkbox
+            v-show="showFiled"
             v-model="showGroups"
             class="filter-item"
             @change="tableKey=tableKey+1"
           >
             显示群组
           </el-checkbox>
-        </div>
 
+
+        </div>
+      <div v-if="listQuery.dataSource !== ''">
         <el-table
           :key="tableKey"
           v-loading="listLoading"
@@ -237,14 +243,12 @@
             </template>
           </el-table-column>
         </el-table>
+        
+      </div>
+      <div v-else style="text-align: center; font-size: 20px; padding-top: 30px; padding-bottom: 30px">
+        请选择数据源，来加载数据
+      </div>
 
-        <pagination
-          v-show="total>0"
-          :total="total"
-          :page.sync="listQuery.page"
-          :limit.sync="listQuery.limit"
-          @pagination="getList"
-        />
 
         <el-dialog
           :title="title"
@@ -256,74 +260,80 @@
             label-position="left"
             label-width="70px"
             :inline="true"
+            class="demo-form-inline"
             style="width: 450px; margin-left:50px;"
           >
 
             <el-form-item
               label="主机名"
               prop="host"
+              style="width: 60%; margin-bottom: 0"
+              size="small"
             >
-              <el-input
-                :value="temp.host"
-                :disabled="true"
-              >
-              </el-input>
+            {{temp.host}}
             </el-form-item>
 
             <el-form-item
               label="主机ID"
               prop="hostid"
+              style="width: 40%; margin-bottom: 0"
+              size="small"
             >
-              <el-input
-                :value="temp.hostid"
-                :disabled="true"
-                style="width: 30px"
-              >
-              </el-input>
-            </el-form-item>
-            <el-form-item
-              label="主机组"
-              prop="groups"
-            >
-              <span v-for="item of temp.groups">
-                {{ item.name }}
-              </span>
-            </el-form-item>
-            <el-form-item
-              label="接口"
-              prop="interfaces"
-            >
-              <span v-for="item of temp.interfaces">
-                接入IP: {{ item.ip }}
-                接入类型：{{ item.type}}
-                接入端口： {{ item.port }}
-              </span>
-            </el-form-item>
-            <el-form-item
-              label="模板"
-              prop="parentTemplates"
-            >
-              <span v-for="item of temp.parentTemplates">
-                {{ item.name }}
-              </span>
+            {{temp.hostid}}
             </el-form-item>
             <el-form-item
               label="类型"
               prop="flags"
+              style="width: 40%; margin-bottom: 0"
+              size="small"
             >
               {{temp.flags}}
             </el-form-item>
+              <el-form-item
+              label="异常时间"
+              prop="error_from"
+              style="width:500%; margin-bottom: 0"
+               size="small"
+            >
+              {{temp.error_from}}
+            </el-form-item>
             <el-form-item
-              label="异常"
+              label="异常详情"
               prop="error"
+              style="width: 50%; margin-bottom: 0"
+              size="small"
             >
               {{temp.error}}
             </el-form-item>
             <el-form-item
-              label="异常开始时间"
-              prop="error_from"
+              prop="interfaces"
+              style="margin-bottom: 0"
             >
-              {{temp.error_from}}
+            <el-table :data="temp.interfaces" style="width: 100%" size="small">
+              <el-table-column property="ip" label="接口IP" width="180" />
+              <el-table-column property="type" label="接入类型" width="180"/>
+              <el-table-column property="port" label="端口" width="180" />
+            </el-table>
+            </el-form-item>
+            <el-form-item
+              prop="groups"
+              style="margin-bottom: 0"
+            >
+            <el-table :data="temp.groups"  style="width: 100%"  size="small">
+              <el-table-column property="groupid" label="主机组id" width="180"/>
+              <el-table-column property="name" label="主机组名称" width="360"/>
+            </el-table>
+            </el-form-item>
+
+            <el-form-item
+              prop="parentTemplates"
+              style="margin-bottom: 0"
+            >
+            <el-table :data="temp.parentTemplates" style="width: 100%" size="small">
+              <el-table-column property="templateid" label="模版ID" width="180"/>
+              <el-table-column property="name" label="模版名称" width="360" />
+            </el-table>
+ 
             </el-form-item>
 
           </el-form>
@@ -383,12 +393,15 @@ export default {
       listQuery: {
         page: 1,
         limit: 20,
+        dataSource: ""
       },
       statusOptions: ['published', 'draft', 'deleted'],
       showTemplates: false,
       showGroups: false,
       // 主机详情信息变量定义
       title: "",
+      //是否显示扩展字段
+      showFiled: false,
       temp: {},
       dialogFormVisible: false,
       dialogStatus: '',
@@ -414,17 +427,21 @@ export default {
     },
     //获取主机列表
     getList () {
-      this.listLoading = true
-      listHost(this.listQuery).then(response => {
-        console.log(response);
-        this.list = response.data.results
-        this.total = response.data.count
+      if(this.listQuery.dataSource){
+          this.listLoading = true
+          listHost(this.listQuery).then(response => {
+            console.log(response);
+            this.list = response.data.results
+            this.total = response.data.count
+            this.showFiled = true
 
-        // Just to simulate the time of the request
-        setTimeout(() => {
-          this.listLoading = false
-        }, 1.5 * 1000)
-      })
+            // Just to simulate the time of the request
+            setTimeout(() => {
+              this.listLoading = false
+            }, 1.5 * 1000)
+          })
+      }
+ 
     },
 
     //主机状态tag选择
@@ -437,6 +454,7 @@ export default {
         return "danger"
       }
     },
+
 
     //过滤查询
     handleFilter () {

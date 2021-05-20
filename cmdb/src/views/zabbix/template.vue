@@ -73,6 +73,7 @@
             </el-button>
           </div>
         </div>
+      <div v-if="listQuery.dataSource !== ''">
         <el-table
           :key="tableKey"
           v-loading="listLoading"
@@ -162,6 +163,10 @@
           </el-table-column>
 
         </el-table>
+      </div>
+      <div v-else style="text-align: center; font-size: 20px; padding-top: 30px; padding-bottom: 30px">
+        请选择数据源，来加载数据
+      </div>
         <pagination
           v-show="total > 0"
           :total="total"
@@ -243,6 +248,7 @@ export default {
         //分页向后端传递的参数
         page: 1,
         size: 10,
+        dataSource: ""
       },
       dialogFormVisible: false,
       //数据源选择
@@ -267,17 +273,22 @@ export default {
   methods: {
     // 获取模板列表
     getList () {
-      this.listLoading = true;
-      //将查询参数传递给后端
-      listTemplate(this.listQuery).then((response) => {
-        console.log(response);
-        console.log(response.data);
-        this.list = response.data.results;
-        this.total = response.data.count;
-        this.listLoading = false
-        //显示删除导出按钮
-        this.showButton = true
-      });
+      if(this.listQuery.dataSource){
+        this.listLoading = true;
+        //将查询参数传递给后端
+        listTemplate(this.listQuery).then((response) => {
+          console.log(response);
+          console.log(response.data);
+          this.list = response.data.results;
+          this.total = response.data.count;
+          this.listLoading = false
+          //显示删除导出按钮
+          this.showButton = true
+        });
+      }else{
+        this.showButton = false
+      }
+
     },
 
     //搜索查询

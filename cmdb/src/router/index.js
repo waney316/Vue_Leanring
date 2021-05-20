@@ -164,7 +164,69 @@ export const constantRoutes = [{
     ]
   },
 
+  //proemtheus管理
+  {
 
+    path: '/prom',
+    component: Layout,
+    name: 'Example',
+    meta: {
+      title: 'Prom管理',
+      icon: 'el-icon-message-solid',
+    },
+    children: [{
+        path: 'info',
+        name: 'PromInfo',
+        component: () => import('@/views/prom/promInfo'),
+        meta: {
+          title: 'Prom管理',
+          icon: 'el-icon-s-promotion'
+        }
+      },
+    ]
+  },
+  //snmpTrap管理
+  {
+
+    path: '/snmptrap',
+    component: Layout,
+    name: 'Example',
+    meta: {
+      title: 'Trap管理',
+      icon: 'el-icon-s-open'
+    },
+    children: [{
+        path: 'info',
+        name: 'PromInfo',
+        // component: () => import('@/views/prom/promInfo'),
+        meta: {
+          title: 'Trap管理',
+          icon: 'el-icon-s-open'
+        }
+      },
+    ]
+  },
+  //Agent管理
+  {
+
+    path: '/agent',
+    component: Layout,
+    name: 'Example',
+    meta: {
+      title: 'Agent管理',
+      icon: 'el-icon-cherry'
+    },
+    children: [{
+        path: 'info',
+        name: 'PromInfo',
+        // component: () => import('@/views/prom/promInfo'),
+        meta: {
+          title: 'Agent管理',
+          icon: 'el-icon-s-marketing'
+        }
+      },
+    ]
+  },
 
   // 404 page must be placed at the end !!!
   {
