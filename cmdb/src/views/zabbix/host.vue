@@ -75,186 +75,206 @@
             显示群组
           </el-checkbox>
 
-
         </div>
-      <div v-if="listQuery.dataSource !== ''">
-        <el-table
-          :key="tableKey"
-          v-loading="listLoading"
-          :data="list"
-          border
-          fit
-          highlight-current-row
-          style="width: 110%; margin-top: 10px"
+        <div v-if="listQuery.dataSource !== ''">
+          <el-table
+            :key="tableKey"
+            v-loading="listLoading"
+            :data="list"
+            border
+            fit
+            highlight-current-row
+            style="width: 110%; margin-top: 10px"
+          >
+            <el-table-column
+              label="主机ID"
+              prop="id"
+              align="center"
+              width="80"
+            >
+              <template slot-scope="{row}">
+                <span>{{ row.hostid }}</span>
+              </template>
+            </el-table-column>
+
+            <el-table-column
+              label="主机名"
+              align="center"
+            >
+              <template slot-scope="{row}">
+                <span>{{ row.host }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="接入IP"
+              width="150px"
+              align="center"
+            >
+              <template slot-scope="{row}">
+                <span
+                  v-for="(item, index) in row.interfaces"
+                  :key="index"
+                >
+                  {{ item.ip }}
+                </span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="监控项"
+              width="80px"
+              align="center"
+            >
+              <template slot-scope="{row}">
+                <span>{{ row.items }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="应用集"
+              width="80px"
+              align="center"
+            >
+              <template slot-scope="{row}">
+                <span>{{ row.applications }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="触发器"
+              width="80px"
+              align="center"
+            >
+              <template slot-scope="{row}">
+                <span>{{ row.triggers }}</span>
+              </template>
+            </el-table-column>
+
+            <el-table-column
+              label="是否启用"
+              width="80px"
+              align="center"
+            >
+              <template slot-scope="{row}">
+                <span>{{ row.status }}</span>
+              </template>
+            </el-table-column>
+
+            <el-table-column
+              label="代理"
+              width="80px"
+              align="center"
+            >
+              <template slot-scope="{row}">
+                <span>{{ row.proxy_hostid }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              v-if="showTemplates"
+              label="关联模板"
+              width="220"
+              align="center"
+            >
+              <template slot-scope="{row}">
+                <el-tag
+                  size="small"
+                  v-for="item in row.parentTemplates"
+                  :key="item.templateid"
+                  type="info"
+                >
+                  {{ item.name }}
+                </el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column
+              v-if="showGroups"
+              label="主机群组"
+              width="180"
+              align="center"
+            >
+              <template slot-scope="{row}">
+                <el-tag
+                  size="small"
+                  v-for="item in row.groups"
+                  :key="item.groupid"
+                  type="info"
+                >
+                  {{ item.name }}
+                </el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="监控状态"
+              width="80px"
+              align="center"
+            >
+              <template slot-scope="{row}">
+                <el-popover
+                  ref="popover"
+                  placement="top-start"
+                  width="200"
+                  trigger="hover"
+                  :content="row.error"
+                >
+                </el-popover>
+                <el-tag
+                  size="small"
+                  slot="reference"
+                  :type="showTags(row.available)"
+                  v-popover:popover
+                  v-show="row.available==='异常'"
+                >
+                  {{ row.available }}
+                </el-tag>
+                <el-tag
+                  size="small"
+                  slot="reference"
+                  :type="showTags(row.available)"
+                  v-show="row.available!='异常'"
+                >
+                  {{ row.available }}
+                </el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="操作"
+              align="center"
+              width="190"
+              class-name="small-padding fixed-width"
+            >
+              <template slot-scope="{row,$index}">
+                <el-button
+                  type="primary"
+                  size="mini"
+                  @click="getDetail(row,$index)"
+                  icon="el-icon-message"
+                >
+                  详情
+                </el-button>
+
+                <el-button
+                  v-if="row.status!='deleted'"
+                  size="mini"
+                  type="danger"
+                  @click="handleDelete(row,$index)"
+                  icon="el-icon-delete"
+                >
+                  删除
+                </el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+          <pagination
+            v-show="total > 0"
+            :total="total"
+            :page.sync="listQuery.page"
+            :limit.sync="listQuery.size"
+            @pagination="getList"
+          />
+        </div>
+        <div
+          v-else
+          style="text-align: center; font-size: 20px; padding-top: 30px; padding-bottom: 30px"
         >
-          <el-table-column
-            label="主机ID"
-            prop="id"
-            align="center"
-            width="80"
-          >
-            <template slot-scope="{row}">
-              <span>{{ row.hostid }}</span>
-            </template>
-          </el-table-column>
-
-          <el-table-column
-            label="主机名"
-            align="center"
-          >
-            <template slot-scope="{row}">
-              <span>{{ row.host }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="接入IP"
-            width="150px"
-            align="center"
-          >
-            <template slot-scope="{row}">
-              <span
-                v-for="(item, index) in row.interfaces"
-                :key="index"
-              >
-                {{ item.ip }}
-              </span>
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="监控项"
-            width="80px"
-            align="center"
-          >
-            <template slot-scope="{row}">
-              <span>{{ row.items }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="应用集"
-            width="80px"
-            align="center"
-          >
-            <template slot-scope="{row}">
-              <span>{{ row.applications }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="触发器"
-            width="80px"
-            align="center"
-          >
-            <template slot-scope="{row}">
-              <span>{{ row.triggers }}</span>
-            </template>
-          </el-table-column>
-
-          <el-table-column
-            label="是否启用"
-            width="80px"
-            align="center"
-          >
-            <template slot-scope="{row}">
-              <span>{{ row.status }}</span>
-            </template>
-          </el-table-column>
-
-          <el-table-column
-            label="代理"
-            width="80px"
-            align="center"
-          >
-            <template slot-scope="{row}">
-              <span>{{ row.proxy_hostid }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column
-            v-if="showTemplates"
-            label="关联模板"
-            width="220"
-            align="center"
-          >
-            <template slot-scope="{row}">
-              <el-tag
-                size="small"
-                v-for="item in row.parentTemplates"
-                :key="item.templateid"
-                type="info"
-              >
-                {{ item.name }}
-              </el-tag>
-            </template>
-          </el-table-column>
-          <el-table-column
-            v-if="showGroups"
-            label="主机群组"
-            width="180"
-            align="center"
-          >
-            <template slot-scope="{row}">
-              <el-tag
-                size="small"
-                v-for="item in row.groups"
-                :key="item.groupid"
-                type="info"
-              >
-                {{ item.name }}
-              </el-tag>
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="监控状态"
-            width="80px"
-            align="center"
-          >
-            <template slot-scope="{row}">
-              <el-tag
-                size="small"
-                :type="showTags(row.available)"
-              >
-                {{ row.available }}
-              </el-tag>
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="操作"
-            align="center"
-            width="190"
-            class-name="small-padding fixed-width"
-          >
-            <template slot-scope="{row,$index}">
-              <el-button
-                type="primary"
-                size="mini"
-                @click="getDetail(row,$index)"
-                icon="el-icon-message"
-              >
-                详情
-              </el-button>
-
-              <el-button
-                v-if="row.status!='deleted'"
-                size="mini"
-                type="danger"
-                @click="handleDelete(row,$index)"
-                icon="el-icon-delete"
-              >
-                删除
-              </el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-        <pagination
-          v-show="total > 0"
-          :total="total"
-          :page.sync="listQuery.page"
-          :limit.sync="listQuery.size"
-          @pagination="getList"
-        />
-      </div>
-      <div v-else style="text-align: center; font-size: 20px; padding-top: 30px; padding-bottom: 30px">
-        请选择数据源，来加载数据
-      </div>
-
+          请选择数据源，来加载数据
+        </div>
 
         <el-dialog
           :title="title"
@@ -276,7 +296,7 @@
               style="width: 60%; margin-bottom: 0"
               size="small"
             >
-            {{temp.host}}
+              {{temp.host}}
             </el-form-item>
 
             <el-form-item
@@ -285,7 +305,7 @@
               style="width: 40%; margin-bottom: 0"
               size="small"
             >
-            {{temp.hostid}}
+              {{temp.hostid}}
             </el-form-item>
             <el-form-item
               label="类型"
@@ -295,18 +315,18 @@
             >
               {{temp.flags}}
             </el-form-item>
-              <el-form-item
+            <el-form-item
               label="异常时间"
               prop="error_from"
-              style="width:500%; margin-bottom: 0"
-               size="small"
+              style="width:50%; margin-bottom: 0"
+              size="small"
             >
               {{temp.error_from}}
             </el-form-item>
             <el-form-item
               label="异常详情"
               prop="error"
-              style="width: 50%; margin-bottom: 0"
+              style="width: 100%; margin-bottom: 0"
               size="small"
             >
               {{temp.error}}
@@ -315,31 +335,71 @@
               prop="interfaces"
               style="margin-bottom: 0"
             >
-            <el-table :data="temp.interfaces" style="width: 100%" size="small">
-              <el-table-column property="ip" label="接口IP" width="180" />
-              <el-table-column property="type" label="接入类型" width="180"/>
-              <el-table-column property="port" label="端口" width="180" />
-            </el-table>
+              <el-table
+                :data="temp.interfaces"
+                style="width: 100%"
+                size="small"
+              >
+                <el-table-column
+                  property="ip"
+                  label="接口IP"
+                  width="180"
+                />
+                <el-table-column
+                  property="type"
+                  label="接入类型"
+                  width="180"
+                />
+                <el-table-column
+                  property="port"
+                  label="端口"
+                  width="180"
+                />
+              </el-table>
             </el-form-item>
             <el-form-item
               prop="groups"
               style="margin-bottom: 0"
             >
-            <el-table :data="temp.groups"  style="width: 100%"  size="small">
-              <el-table-column property="groupid" label="主机组id" width="180"/>
-              <el-table-column property="name" label="主机组名称" width="360"/>
-            </el-table>
+              <el-table
+                :data="temp.groups"
+                style="width: 100%"
+                size="small"
+              >
+                <el-table-column
+                  property="groupid"
+                  label="主机组id"
+                  width="180"
+                />
+                <el-table-column
+                  property="name"
+                  label="主机组名称"
+                  width="360"
+                />
+              </el-table>
             </el-form-item>
 
             <el-form-item
               prop="parentTemplates"
               style="margin-bottom: 0"
             >
-            <el-table :data="temp.parentTemplates" style="width: 100%" size="small">
-              <el-table-column property="templateid" label="模版ID" width="180"/>
-              <el-table-column property="name" label="模版名称" width="360" />
-            </el-table>
- 
+              <el-table
+                :data="temp.parentTemplates"
+                style="width: 100%"
+                size="small"
+              >
+                <el-table-column
+                  property="templateid"
+                  label="模版ID"
+                  width="180"
+                />
+                <el-table-column
+                  property="name"
+                  label="模版名称"
+                  width="360"
+                />
+              </el-table>
+
             </el-form-item>
 
           </el-form>
@@ -433,21 +493,21 @@ export default {
     },
     //获取主机列表
     getList () {
-      if(this.listQuery.dataSource){
-          this.listLoading = true
-          listHost(this.listQuery).then(response => {
-            console.log(response);
-            this.list = response.data.results
-            this.total = response.data.count
-            this.showFiled = true
+      if (this.listQuery.dataSource) {
+        this.listLoading = true
+        listHost(this.listQuery).then(response => {
+          console.log(response);
+          this.list = response.data.results
+          this.total = response.data.count
+          this.showFiled = true
 
-            // Just to simulate the time of the request
-            setTimeout(() => {
-              this.listLoading = false
-            }, 1.5 * 1000)
-          })
+          // Just to simulate the time of the request
+          setTimeout(() => {
+            this.listLoading = false
+          }, 1.5 * 1000)
+        })
       }
- 
+
     },
 
     //主机状态tag选择

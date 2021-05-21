@@ -90,7 +90,6 @@
               <el-switch v-model="ruleForm.delivery"></el-switch>
             </el-form-item>
 
-
             <el-form-item>
               <el-button
                 type="primary"
@@ -101,7 +100,7 @@
           </el-form>
         </el-tab-pane>
         <el-tab-pane
-          label="主机-群组管理"
+          label="主机 - 群组管理"
           name="second"
         >
           <el-form
@@ -172,10 +171,12 @@
               >立即创建</el-button>
               <el-button @click="resetForm('ruleForm')">重置</el-button>
             </el-form-item>
+
           </el-form>
+
         </el-tab-pane>
         <el-tab-pane
-          label="主机-模板管理"
+          label="主机 - 模板管理"
           name="third"
         >
           <el-form
@@ -307,8 +308,6 @@
               </el-select>
             </el-form-item>
 
-
-
             <el-form-item>
               <el-button
                 type="primary"
@@ -318,7 +317,12 @@
             </el-form-item>
           </el-form>
         </el-tab-pane>
-
+        <el-tab-pane
+          label="日志显示"
+          name="five"
+        >
+          <log data="dasdadsa"></log>
+        </el-tab-pane>
 
       </el-tabs>
     </el-card>
@@ -329,8 +333,11 @@
 <script>
 import {
   getZabbixList
-} from '@/api/zabbix'
+} from '@/api/zabbix';
+import Log from "@/components/LogShow";
+
 export default {
+  components: { Log },
   data () {
     return {
       dataSource: "",
@@ -368,12 +375,8 @@ export default {
         desc: ''
       },
       rules: {
-        name: [
-          { required: true, message: '请输入活动名称', trigger: 'blur' },
-          { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
-        ],
         dataSource: [
-          { required: true, message: '请选择Zabbix数据源', trigger: 'change' }
+          { required: true, message: '请选择Zabbix数据源', trigger: 'blur' }
         ],
         date1: [
           { type: 'date', required: true, message: '请选择日期', trigger: 'change' }

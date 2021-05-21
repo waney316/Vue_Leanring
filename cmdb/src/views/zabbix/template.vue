@@ -73,107 +73,110 @@
             </el-button>
           </div>
         </div>
-      <div v-if="listQuery.dataSource !== ''">
-        <el-table
-          :key="tableKey"
-          v-loading="listLoading"
-          :data="list"
-          border
-          fit
-          highlight-current-row
-          style="width: 100%; margin-top:10px"
-          @selection-change="handleSelectionChange"
+        <div v-if="listQuery.dataSource !== ''">
+          <el-table
+            :key="tableKey"
+            v-loading="listLoading"
+            :data="list"
+            border
+            fit
+            highlight-current-row
+            style="width: 100%; margin-top:10px"
+            @selection-change="handleSelectionChange"
+          >
+
+            <el-table-column
+              type="selection"
+              width="55"
+            >
+            </el-table-column>
+
+            <el-table-column
+              label="模板ID"
+              prop="id"
+              align="center"
+              width="100"
+            >
+              <template slot-scope="{ row }">
+                <span>{{ row.templateid }}</span>
+              </template>
+            </el-table-column>
+
+            <el-table-column
+              label="模板名称"
+              prop="name"
+              align="center"
+              min-width="200"
+            >
+              <template slot-scope="{ row }">
+                <span>{{ row.name }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="关联主机"
+              align="center"
+            >
+              <template slot-scope="{ row }">
+                <span>{{ row.hosts }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="监控项数"
+              align="center"
+            >
+              <template slot-scope="{ row }">
+                <span>{{ row.items }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="触发器数量"
+              align="center"
+            >
+              <template slot-scope="{ row }">
+                <span>{{ row.triggers }}</span>
+              </template>
+            </el-table-column>
+
+            <el-table-column
+              label="自动发现"
+              align="center"
+            >
+              <template slot-scope="{ row }">
+                <span>{{ row.discoveries }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="操作"
+              align="center"
+              class-name="small-padding fixed-width"
+            >
+              <template slot-scope="{ row, $index }">
+                <el-button
+                  type="primary"
+                  size="mini"
+                  @click="handleUpdate(row)"
+                  icon="el-icon-edit"
+                >
+                  编辑
+                </el-button>
+              </template>
+            </el-table-column>
+
+          </el-table>
+          <pagination
+            v-show="total > 0"
+            :total="total"
+            :page.sync="listQuery.page"
+            :limit.sync="listQuery.size"
+            @pagination="getList"
+          />
+        </div>
+        <div
+          v-else
+          style="text-align: center; font-size: 20px; padding-top: 30px; padding-bottom: 30px"
         >
-
-          <el-table-column
-            type="selection"
-            width="55"
-          >
-          </el-table-column>
-
-          <el-table-column
-            label="模板ID"
-            prop="id"
-            align="center"
-            width="100"
-          >
-            <template slot-scope="{ row }">
-              <span>{{ row.templateid }}</span>
-            </template>
-          </el-table-column>
-
-          <el-table-column
-            label="模板名称"
-            prop="name"
-            align="center"
-            min-width="200"
-          >
-            <template slot-scope="{ row }">
-              <span>{{ row.name }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="关联主机"
-            align="center"
-          >
-            <template slot-scope="{ row }">
-              <span>{{ row.hosts }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="监控项数"
-            align="center"
-          >
-            <template slot-scope="{ row }">
-              <span>{{ row.items }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="触发器数量"
-            align="center"
-          >
-            <template slot-scope="{ row }">
-              <span>{{ row.triggers }}</span>
-            </template>
-          </el-table-column>
-
-          <el-table-column
-            label="自动发现"
-            align="center"
-          >
-            <template slot-scope="{ row }">
-              <span>{{ row.discoveries }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="操作"
-            align="center"
-            class-name="small-padding fixed-width"
-          >
-            <template slot-scope="{ row, $index }">
-              <el-button
-                type="primary"
-                size="mini"
-                @click="handleUpdate(row)"
-                icon="el-icon-edit"
-              >
-                编辑
-              </el-button>
-            </template>
-          </el-table-column>
-
-        </el-table>
-        <pagination
-          v-show="total > 0"
-          :total="total"
-          :page.sync="listQuery.page"
-          :limit.sync="listQuery.size"
-          @pagination="getList"
-        />
-      </div>
-      <div v-else style="text-align: center; font-size: 20px; padding-top: 30px; padding-bottom: 30px">
-        请选择数据源，来加载数据
-      </div>
+          请选择数据源，来加载数据
+        </div>
 
       </div>
     </el-card>
@@ -274,7 +277,7 @@ export default {
   methods: {
     // 获取模板列表
     getList () {
-      if(this.listQuery.dataSource){
+      if (this.listQuery.dataSource) {
         this.listLoading = true;
         //将查询参数传递给后端
         listTemplate(this.listQuery).then((response) => {
@@ -286,7 +289,7 @@ export default {
           //显示删除导出按钮
           this.showButton = true
         });
-      }else{
+      } else {
         this.showButton = false
       }
 
