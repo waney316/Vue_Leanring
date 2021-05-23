@@ -140,6 +140,12 @@ export default [
     path: '/axios/demo1',
     name: 'axios-demo1',
     component: () => import('../views/axios/demo1.vue')
+  },
+  // vuex demo
+  {
+    path: '/vuex/demo1',
+    name: 'vuex-demo1',
+    component: () => import('../views/vuex/demo1.vue')
   }
 
 ]

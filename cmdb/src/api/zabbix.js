@@ -124,3 +124,48 @@ export function listHost(params) {
     params
   })
 }
+
+//获取代理列表
+export function listProxy(params){
+  return request({
+    url: '/api/v1/zabbix/proxy/',
+    method: "get",
+    params
+  })
+}
+
+// 创建主机
+export function hostCreate(data){
+  return request({
+    url: '/api/v1/zabbix/op_host_create/',
+    method: "post",
+    data: data
+  })
+}
+
+//主机模版操作
+export function hostTemplate(data){
+  return request({
+    url: '/api/v1/zabbix/op_host_template/',
+    method: "post",
+    data: data
+  })
+}
+
+//主机群组操作
+export function hostGroup(data){
+  return request({
+    url: '/api/v1/zabbix/op_host_group/',
+    method: "post",
+    data: data
+  })
+}
+
+//主机接口操作
+export function hostManager(data){
+  return request({
+    url: '/api/v1/zabbix/op_host/',
+    method: "post",
+    data: data
+  })
+}
