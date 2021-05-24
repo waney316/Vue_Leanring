@@ -289,57 +289,85 @@
             class="demo-form-inline"
             style="width: 450px; margin-left:50px;"
           >
+            <el-row>
+              <el-col :span="10">
+                <el-form-item
+                  label="主机ID"
+                  prop="hostid"
+                  style="width: 40%; margin-bottom: 0"
+                  size="small"
+                >
+                  {{temp.hostid}}
+                </el-form-item>
+              </el-col>
+              <el-col :span="14">
+                <el-form-item
+                  label="主机名"
+                  prop="host"
+                  style="width: 60%; margin-bottom: 0"
+                  size="small"
+                >
+                  {{temp.host}}
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="6">
+                <el-form-item
+                  label="类型"
+                  prop="flags"
+                  style="width: 40%; margin-bottom: 0"
+                  size="small"
+                >
+                  {{temp.flags}}
+                </el-form-item>
+              </el-col>
+              <el-col :span="6">
+                <el-form-item
+                  label="状态"
+                  prop="flags"
+                  style="width: 40%; margin-bottom: 0"
+                  size="small"
+                >
+                  {{temp.available}}
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="12">
+                <el-form-item
+                  label="异常时间"
+                  prop="error_from"
+                  style="width:50%; margin-bottom: 0"
+                  size="small"
+                >
+                  {{temp.error_from}}
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item
+                  label="异常详情"
+                  prop="error"
+                  style="width: 100%; margin-bottom: 0"
+                  size="small"
+                >
+                  {{temp.error}}
+                </el-form-item>
+              </el-col>
 
-            <el-form-item
-              label="主机名"
-              prop="host"
-              style="width: 60%; margin-bottom: 0"
-              size="small"
-            >
-              {{temp.host}}
-            </el-form-item>
+            </el-row>
 
-            <el-form-item
-              label="主机ID"
-              prop="hostid"
-              style="width: 40%; margin-bottom: 0"
-              size="small"
-            >
-              {{temp.hostid}}
-            </el-form-item>
-            <el-form-item
-              label="类型"
-              prop="flags"
-              style="width: 40%; margin-bottom: 0"
-              size="small"
-            >
-              {{temp.flags}}
-            </el-form-item>
-            <el-form-item
-              label="异常时间"
-              prop="error_from"
-              style="width:50%; margin-bottom: 0"
-              size="small"
-            >
-              {{temp.error_from}}
-            </el-form-item>
-            <el-form-item
-              label="异常详情"
-              prop="error"
-              style="width: 100%; margin-bottom: 0"
-              size="small"
-            >
-              {{temp.error}}
-            </el-form-item>
             <el-form-item
               prop="interfaces"
               style="margin-bottom: 0"
             >
+
               <el-table
                 :data="temp.interfaces"
                 style="width: 100%"
-                size="small"
+                size="medium"
               >
+
                 <el-table-column
                   property="ip"
                   label="接口IP"
@@ -356,7 +384,9 @@
                   width="180"
                 />
               </el-table>
+
             </el-form-item>
+
             <el-form-item
               prop="groups"
               style="margin-bottom: 0"
@@ -364,7 +394,7 @@
               <el-table
                 :data="temp.groups"
                 style="width: 100%"
-                size="small"
+                size="medium"
               >
                 <el-table-column
                   property="groupid"
@@ -386,7 +416,7 @@
               <el-table
                 :data="temp.parentTemplates"
                 style="width: 100%"
-                size="small"
+                size="medium"
               >
                 <el-table-column
                   property="templateid"
