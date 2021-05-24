@@ -25,10 +25,10 @@
                   prop="dataSource"
                 >
                   <el-select
-                    v-model="hostCreateForm.dataSource"
+                    v-model="dataSource"
                     clearable
                     placeholder="请选择Zabbix数据源"
-                    @change="getProxyList(hostCreateForm.dataSource)"
+                    @change="getProxyList(dataSource)"
                   >
                     <el-option
                       v-for="item in dataSourceOption"
@@ -76,7 +76,7 @@
                   >
                     <el-option
                       label="不挂载代理"
-                      value="none"
+                      value=""
                     ></el-option>
                     <el-option
                       v-for="item in proxyList"
@@ -240,30 +240,20 @@
                 v-model="hostCreateForm.host"
               ></el-input>
             </el-form-item>
-            <el-row>
-              <el-col :span="3">
-                <el-form-item
-                  label="是否启用"
-                  prop="status"
-                  active-value="1"
-                  inactive-value="0"
-                >
-                  <el-switch v-model="hostCreateForm.status"></el-switch>
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item
-                  label="是否以IP作为主机名"
-                  prop="show_field"
-                  label-width="30%"
-                  active-value="true"
-                  inactive-value="false"
-                >
-                  <el-switch v-model="hostCreateForm.show_field"></el-switch>
-                </el-form-item>
-              </el-col>
-            </el-row>
-
+            <el-form-item
+              label="是否以IP作为主机名"
+              prop="show_field"
+              label-width="14%"
+               
+            >
+              <el-switch v-model="show_field"  active-value="true" inactive-value="false"></el-switch>
+            </el-form-item>
+            <el-form-item
+              label="是否启用"
+              prop="status"
+            >
+              <el-switch v-model="hostCreateForm.status"       active-value="1"     inactive-value="0"></el-switch>
+            </el-form-item>
             <el-button
               type="primary"
               @click="submitForm('hostCreateForm')"
@@ -289,7 +279,12 @@ export default {
   components: { Log },
   data () {
     return {
+      dataSource: "",
       dataSourceOption: "",
+      show_field: "",
+      hostArr: [],
+      templateArr: [],
+      groupArr: [],
 
       //操作类型，添加、删除、替换
       operationType: "",
@@ -322,10 +317,6 @@ export default {
       authprotocol: "",
       privprotocol: "",
       hostCreateForm: {
-        //数据源选择
-        dataSource: "",
-
-        show_field: true, //是否已ip作为host
         host: '', //创建的主机列表
         proxy: '', // 关联代理,默认空字符即不关联代理
         group: '',  //主机组
@@ -341,9 +332,6 @@ export default {
       },
 
       rules: {
-        dataSource: [
-          { required: true, message: '请选择Zabbix数据源', trigger: 'blur' }
-        ],
         port: [
           { required: true, message: '请输入端口', trigger: 'blur' }
         ],
@@ -368,7 +356,6 @@ export default {
     //获取数据分类列表
     getDataSourceList () {
       getZabbixList().then(response => {
-        console.log(response.data)
         this.dataSourceOption = response.data.results
       })
     },
@@ -389,12 +376,17 @@ export default {
       console.log(tab, event);
     },
     submitForm (formName) {
-      console.log(this.dataSource);
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          console.log(this.hostCreateForm);
-          console.log(this.$refs[formName]);
-          alert('submit!');
+          //复制表单
+          const tempData = {}
+          tempData.data = Object.assign({}, this.hostCreateForm);
+          tempData.dataSource = this.dataSource
+          tempData.show_field = this.show_field
+          this.validateHost(this.hostCreateForm.host)
+          tempData.data.host = this.hostArr
+          console.log(tempData);
+          // alert('submit!');
         } else {
           console.log('error submit!!');
           return false;
@@ -404,11 +396,19 @@ export default {
     resetForm (formName) {
       this.$refs[formName].resetFields();
     },
+
+    //处理切换接入类型后表单问题
     handleType () {
       this.snmpversion = ""
-      console.log(this.hostCreateForm.type);
-      console.log(this.snmpversion);
-      console.log(this.dataSource);
+      // console.log(this.hostCreateForm.type);
+      // console.log(this.snmpversion);
+      // console.log(this.dataSource);
+    },
+    //处理表单中host数据, 输入为数组项
+    validateHost(host){
+      host.split("\n").forEach(element => {
+        this.hostArr.push(element.replace(/^\s\s*/, '').replace(/\s\s*$/, ''));
+      });
     }
   }
 };
