@@ -271,13 +271,18 @@
 
 <script>
 import {
-  getZabbixList, hostCreate, hostTemplate, hostGroup, hostManager, listProxy
-} from '@/api/zabbix';
+  getZabbixList,
+  hostCreate,
+  hostTemplate,
+  hostGroup,
+  hostManager,
+  listProxy,
+} from "@/api/zabbix";
 import Log from "@/components/LogShow";
 
 export default {
   components: { Log },
-  data () {
+  data() {
     return {
       dataSource: "",
       dataSourceOption: "",
@@ -289,23 +294,23 @@ export default {
       //操作类型，添加、删除、替换
       operationType: "",
       operationTypeOption: [
-        { "name": "add", "alias": "添加" },
-        { "name": "replcae", "alias": "替换" },
-        { "name": "remove", "alias": "移除" }
+        { name: "add", alias: "添加" },
+        { name: "replcae", alias: "替换" },
+        { name: "remove", alias: "移除" },
       ],
 
       //主机管理接口：查询启用禁用删除
       hostoperation: "",
       hostoperationOption: [
-        { "name": "show", "alias": "查询" },
-        { "name": "enable", "alias": "启用" },
-        { "name": "disable", "alias": "禁用" },
-        { "name": "delete", "alias": "删除" }
+        { name: "show", alias: "查询" },
+        { name: "enable", alias: "启用" },
+        { name: "disable", alias: "禁用" },
+        { name: "delete", alias: "删除" },
       ],
 
       listQuery: "",
       //默认显示第几个tab
-      activeName: 'first',
+      activeName: "first",
       //代理列表
       proxyList: "",
       //主机新建数据样例
@@ -317,99 +322,88 @@ export default {
       authprotocol: "",
       privprotocol: "",
       hostCreateForm: {
-        host: '', //创建的主机列表
-        proxy: '', // 关联代理,默认空字符即不关联代理
-        group: '',  //主机组
-        template: '', //模版
-        type: '',  //接入类型
-        status: '',  //是否启用
-        port: ''    //端口
+        host: "", //创建的主机列表
+        proxy: "", // 关联代理,默认空字符即不关联代理
+        group: "", //主机组
+        template: "", //模版
+        type: "", //接入类型
+        status: "", //是否启用
+        port: "", //端口
       },
 
       //主机接口管理数据样例
       hostManagerForm: {
-        name: ""
+        name: "",
       },
 
       rules: {
-        port: [
-          { required: true, message: '请输入端口', trigger: 'blur' }
-        ],
-        type: [
-          { required: true, message: '请选择接入类型', trigger: 'blur' }
-        ],
-        group: [
-          { required: true, message: '请关联主机组', trigger: 'blur' }
-        ],
-        host: [
-          { required: true, message: '请输入ip列表', trigger: 'blur' }
-        ],
-
-
-      }
+        port: [{ required: true, message: "请输入端口", trigger: "blur" }],
+        type: [{ required: true, message: "请选择接入类型", trigger: "blur" }],
+        group: [{ required: true, message: "请关联主机组", trigger: "blur" }],
+        host: [{ required: true, message: "请输入ip列表", trigger: "blur" }],
+      },
     };
   },
-  created () {
+  created() {
     this.getDataSourceList();
   },
   methods: {
     //获取数据分类列表
-    getDataSourceList () {
-      getZabbixList().then(response => {
-        this.dataSourceOption = response.data.results
-      })
+    getDataSourceList() {
+      getZabbixList().then((response) => {
+        this.dataSourceOption = response.data.results;
+      });
     },
 
     //获取代理列表
-    getProxyList (params) {
+    getProxyList(params) {
       console.log(params);
       const data = {
-        "dataSource": params,
-      }
-      listProxy(data).then(response => {
-        this.proxyList = response.data.results
-      })
-
+        dataSource: params,
+      };
+      listProxy(data).then((response) => {
+        this.proxyList = response.data.results;
+      });
     },
 
-    handleClick (tab, event) {
+    handleClick(tab, event) {
       console.log(tab, event);
     },
-    submitForm (formName) {
+    submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           //复制表单
-          const tempData = {}
+          const tempData = {};
           tempData.data = Object.assign({}, this.hostCreateForm);
-          tempData.dataSource = this.dataSource
-          tempData.show_field = this.show_field
-          this.validateHost(this.hostCreateForm.host)
-          tempData.data.host = this.hostArr
+          tempData.dataSource = this.dataSource;
+          tempData.show_field = this.show_field;
+          this.validateHost(this.hostCreateForm.host);
+          tempData.data.host = this.hostArr;
           console.log(tempData);
           // alert('submit!');
         } else {
-          console.log('error submit!!');
+          console.log("error submit!!");
           return false;
         }
       });
     },
-    resetForm (formName) {
+    resetForm(formName) {
       this.$refs[formName].resetFields();
     },
 
     //处理切换接入类型后表单问题
-    handleType () {
-      this.snmpversion = ""
+    handleType() {
+      this.snmpversion = "";
       // console.log(this.hostCreateForm.type);
       // console.log(this.snmpversion);
       // console.log(this.dataSource);
     },
     //处理表单中host数据, 输入为数组项
-    validateHost(host){
-      host.split("\n").forEach(element => {
-        this.hostArr.push(element.replace(/^\s\s*/, '').replace(/\s\s*$/, ''));
+    validateHost(host) {
+      host.split("\n").forEach((element) => {
+        this.hostArr.push(element.replace(/^\s\s*/, "").replace(/\s\s*$/, ""));
       });
-    }
-  }
+    },
+  },
 };
 </script>
