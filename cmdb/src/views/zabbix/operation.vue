@@ -108,20 +108,20 @@
               <el-select
                 v-model="snmpversion"
                 placeholder="请选择snmp版本"
-                @change=handleType
+
               >
                 <el-option
                   label="SNMPv2"
-                  value=2
+                  value="2"
                 ></el-option>
                 <el-option
                   label="SNMPv3"
-                  value=3
+                  value="3"
                 ></el-option>
               </el-select>
             </el-form-item>
             <template>
-              <div v-show="snmpversion==2 && snmpversion!= undefined ">
+              <div v-show="snmpversion==='2' && snmpversion!='' ">
                 <el-form-item label="SNMP团体字">
                   <el-input v-model="community"></el-input>
                 </el-form-item>
@@ -129,14 +129,19 @@
             </template>
 
             <template>
-              <div v-show="snmpversion==3">
-                <el-form-item label="上下文名称">
-                  <el-input v-model="contextname"></el-input>
-                </el-form-item>
-
+              <div v-show="snmpversion==='3'">
+                <el-row :gutter="16">
+                  <el-col :span='8'>
                 <el-form-item label="用户名称">
                   <el-input v-model="user"></el-input>
                 </el-form-item>
+                  </el-col>
+                  <el-col :span='8'>
+                  <el-form-item label="上下文名称">
+                  <el-input v-model="contextname"></el-input>
+                </el-form-item>
+                  </el-col>
+                </el-row>
 
                 <el-form-item label="安全级别">
                   <el-select
@@ -145,21 +150,21 @@
                   >
                     <el-option
                       label="noAuthnoPriv"
-                      value=0
+                      value='0'
                     ></el-option>
                     <el-option
                       label="authNoPriv"
-                      value=1
+                      value='1'
                     ></el-option>
                     <el-option
                       label="authPriv"
-                      value=2
+                      value='2'
                     ></el-option>
                   </el-select>
                 </el-form-item>
                 <el-form-item
                   label="验证协议"
-                  v-show="snmpversion&&(securityLevel==1||securityLevel==2)"
+                  v-show="snmpversion&&(securityLevel==='1'||securityLevel==='2')"
                 >
                   <el-row :gutter="10">
                     <el-col :span="3">
@@ -169,11 +174,11 @@
                       >
                         <el-option
                           label="MD5"
-                          value=0
+                          value='0'
                         ></el-option>
                         <el-option
                           label="SHA"
-                          value=1
+                          value='1'
                         ></el-option>
                       </el-select>
                     </el-col>
@@ -188,7 +193,7 @@
 
                 <el-form-item
                   label="隐私协议"
-                  v-show="securityLevel==2"
+                  v-show="securityLevel==='2'"
                 >
                   <el-row :gutter="10">
                     <el-col :span="3">
@@ -198,11 +203,11 @@
                       >
                         <el-option
                           label="DES"
-                          value=0
+                          value='0'
                         ></el-option>
                         <el-option
                           label="AES"
-                          value=1
+                          value='1'
                         ></el-option>
                       </el-select>
                     </el-col>
@@ -231,7 +236,7 @@
                 :loading="groupLoading"
                 style="width:100%"
                 placeholder="请选择关联的主机群组"
-                @visible-change="getHostGroupList"
+                @visible-change="getHostGroupList(groupArr)"
               >
                 <el-option
                   v-for="item in groupArr"
@@ -255,7 +260,7 @@
                 style="width:100%"
                 :loading="templateLoading"
                 placeholder="请选择关联的模板"
-                @visible-change="getTemplateList"
+                @visible-change="getTemplateList(templateArr)"
               >
                 <el-option
                   v-for="item in templateArr"
@@ -306,6 +311,245 @@
             </el-form-item>
           </el-form>
         </el-tab-pane>
+                <el-tab-pane
+          label="主机-群组-模版-代理管理"
+          name="second"
+        >
+          <el-form
+            :model="hostManagerForm"
+            :rules="rules"
+            ref="ruleForm"
+            label-width="100px"
+            class="demo-ruleForm"
+          >
+            <el-form-item
+              label="数据源选择"
+              prop="dataSource"
+            >
+              <el-select
+                v-model="dataSource"
+                clearable
+                placeholder="请选择Zabbix数据源"
+                style="margin-left: 10px"
+              >
+                <el-option
+                  v-for="item in dataSourceOption"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.name"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item
+              label="操作类型"
+              prop="operationTypeOption"
+            >
+              <el-select
+                v-model="operationModule"
+                clearable
+                placeholder="请选择模块"
+                style="margin-left: 10px"
+              >
+                <el-option label="主机群组管理" value="hostGroupManager"></el-option>
+                <el-option label="主机模版管理" value="hostTemplateManager"></el-option>
+                <el-option label="主机代理管理" value="hostProxyManager"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item
+              label="操作类型"
+              prop="operationTypeOption"
+            >
+              <el-select
+                v-model="operationType"
+                clearable
+                placeholder="请选择操作类型"
+                style="margin-left: 10px"
+              >
+                 <el-option label="添加" value="add"></el-option>
+                  <el-option label="移除" value="remove"></el-option>
+                  <el-option label="替换" value="replace"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item
+              label="主机组选择"
+              prop="name"
+              v-show="operationModule==='hostGroupManager'"
+            >
+                            <el-select
+                v-model="groupArr2"
+                multiple
+                filterable
+                clearable
+                allow-create
+                style="width:100%"
+                :loading="templateLoading"
+                placeholder="请选择主机群组"
+                                @visible-change="getHostGroupList(groupArr2)"
+              >
+                <el-option
+                  v-for="item in groupArr2"
+                  :key="item.templateid"
+                  :label="item.name"
+                  :value="item.name"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+                        <el-form-item
+              label="模版选择"
+              prop="name"
+              v-show="operationModule==='hostTemplateManager'"
+            >
+                            <el-select
+                v-model="templateArr2"
+                multiple
+                filterable
+                clearable
+                allow-create
+                style="width:100%"
+                :loading="templateLoading"
+                placeholder="请选择模板"
+                                @visible-change="getTemplateList(templateArr2)"
+              >
+                <el-option
+                  v-for="item in templateArr2"
+                  :key="item.templateid"
+                  :label="item.name"
+                  :value="item.name"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+                        <el-form-item
+              label="代理选择"
+              prop="name"
+              v-show="operationModule==='hostProxyManager'"
+            >
+              <el-select
+                v-model="proxyArr"
+                multiple
+                filterable
+                clearable
+                allow-create
+                style="width:100%"
+                :loading="templateLoading"
+                placeholder="请选择代理"
+                 @visible-change="getProxyList(proxyList2)"
+              >
+                <el-option
+                  v-for="item in proxyArr"
+                  :key="item.templateid"
+                  :label="item.name"
+                  :value="item.name"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+
+            <el-form-item
+              label="主机列表"
+              prop="desc"
+            >
+              <el-input
+                type="textarea"
+                v-model="hostManagerForm.desc"
+              ></el-input>
+            </el-form-item>
+            <el-form-item>
+              <el-button
+                type="primary"
+                @click="submitForm('hostManagerForm')"
+              >立即执行</el-button>
+              <el-button @click="resetForm('hostManagerForm')">重置</el-button>
+            </el-form-item>
+
+          </el-form>
+
+        </el-tab-pane>
+
+                <el-tab-pane
+          label="主机管理"
+          name="four"
+        >
+          <el-form
+            :model="hostManagerForm"
+            :rules="rules"
+            ref="ruleForm"
+            label-width="100px"
+            class="demo-ruleForm"
+          >
+            <el-form-item
+              label="数据源选择"
+              prop="dataSource"
+            >
+              <el-select
+                v-model="hostManagerForm.dataSource"
+                clearable
+                placeholder="请选择Zabbix数据源"
+                style="margin-left: 10px"
+              >
+                <el-option
+                  v-for="item in dataSourceOption"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.name"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item
+              label="操作类型"
+              prop="hostoperation"
+            >
+              <el-select
+                v-model="hostoperation"
+                clearable
+                placeholder="请选择操作类型"
+                style="margin-left: 10px"
+              >
+                <el-option
+                  label="查询主机"
+                  value="show"
+                >
+                </el-option>
+                <el-option
+                  label="禁用主机"
+                  value="disable"
+                >
+                </el-option>
+                  <el-option
+                  label="启用主机"
+                  value="enable"
+                >
+                </el-option>
+                  <el-option
+                  label="删除主机"
+                  value="delete"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item
+              label="主机列表"
+              prop="desc"
+            >
+              <el-input
+                type="textarea"
+                v-model="hostManagerForm.desc"
+              ></el-input>
+            </el-form-item>
+
+
+            <el-form-item>
+              <el-button
+                type="primary"
+                @click="submitForm('hostManagerForm')"
+              >立即创建</el-button>
+              <el-button @click="resetForm('hostManagerForm')">重置</el-button>
+            </el-form-item>
+          </el-form>
+        </el-tab-pane>
 
       </el-tabs>
     </el-card>
@@ -316,8 +560,8 @@
 <script>
 import {
   getZabbixList,
-  listTemplate,
-  listHostGroup,
+  listAllTemplates,
+  listAllHostGroup,
   hostCreate,
   hostTemplate,
   hostGroup,
@@ -335,40 +579,38 @@ export default {
       dataSource: "",
       dataSourceOption: "",
       show_field: "true",
+      //主机新建
       templateArr: [],
       groupArr: [],
+      proxyList: "",
+      //主机管理
+      templateArr2: [],
+      groupArr2: [],
+      proxyList2: [],
 
+      //主机群组/主机模版/主机代理
+      operationModule: "",
       //操作类型，添加、删除、替换
       operationType: "",
-      operationTypeOption: [
-        { name: "add", alias: "添加" },
-        { name: "replcae", alias: "替换" },
-        { name: "remove", alias: "移除" },
-      ],
+
 
       //主机管理接口：查询启用禁用删除
       hostoperation: "",
-      hostoperationOption: [
-        { name: "show", alias: "查询" },
-        { name: "enable", alias: "启用" },
-        { name: "disable", alias: "禁用" },
-        { name: "delete", alias: "删除" },
-      ],
+   
 
       listQuery: "",
       //默认显示第几个tab
       activeName: "first",
-      //代理列表
-      proxyList: "",
+
       //主机新建数据样例
-      snmpversion: undefined,
+      snmpversion: '',
       community: "",
       contextname: "",
       user: "",
-      securityLevel: undefined,
-      authprotocol: undefined,
+      securityLevel: '',
+      authprotocol: '',
       authpassphrase: "",
-      privprotocol: undefined,
+      privprotocol: '',
       privpassphrase: "",
       hostCreateForm: {
         host: "", //创建的主机列表
@@ -404,27 +646,27 @@ export default {
       });
     },
     //主机主机组列表
-    getHostGroupList () {
+    getHostGroupList (item) {
       if (this.dataSource) {
         const data = {
           dataSource: this.dataSource
         }
-        listHostGroup(data).then(response => {
+        listAllHostGroup(data).then(response => {
           console.log(response.data);
-          this.groupArr = response.data.results
+          this.item = response.data.results
           this.groupLoading = false
         })
       }
     },
     //获取模板列表
-    getTemplateList () {
+    getTemplateList (item) {
       if (this.dataSource) {
         const data = {
           dataSource: this.dataSource
         }
-        listTemplate(data).then(response => {
+        listAllTemplates(data).then(response => {
           console.log(response.data);
-          this.templateArr = response.data.results
+          this.item = response.data
           this.templateLoading = false
         })
       }
@@ -436,7 +678,7 @@ export default {
         dataSource: params,
       };
       listProxy(data).then((response) => {
-        this.proxyList = response.data.results;
+        this.proxyList = response.data
       });
     },
 
@@ -494,9 +736,9 @@ export default {
     //处理切换接入类型后表单问题
     handleType () {
       console.log(typeof (this.snmpversion));
-      // this.snmpversion = undefined
+      this.snmpversion = ''
       // console.log(this.hostCreateForm.type);
-      console.log(this.snmpversion);
+      // console.log(this.snmpversion);
       // console.log(this.dataSource);
     },
     //处理表单中host数据, 输入为数组项
@@ -519,23 +761,23 @@ export default {
         bulk: 1,
       };
       console.log(this.community);
-      if (this.snmpversion == 2) {
+      if (this.snmpversion === '2') {
         details.community = this.community
-      } else if (this.snmpversion == 3) {
+      } else if (this.snmpversion === '3') {
         if (this.contextname != "") {
           details.contextname = this.contextname;
         }
         details.securityname = this.user;
         details.securityLevel = this.securityLevel
-        if (this.securityLevel == 2) {
+        if (this.securityLevel === '2') {
           details.authprotocol = this.authprotocol;
           details.privprotocol = this.privprotocol;
           details.authpassphrase = this.authpassphrase;
           details.privpassphrase = this.privpassphrase
-        } else if (this.securityLevel == 1) {
+        } else if (this.securityLevel === '1') {
           details.authprotocol = this.authprotocol;
           details.authpassphrase = this.authpassphrase;
-        } else if (this.securityLevel == 0) {
+        } else if (this.securityLevel === '0') {
 
         }
       }

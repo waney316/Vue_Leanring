@@ -169,3 +169,20 @@ export function hostManager(data){
     data: data
   })
 }
+
+//获取所有主机群组和主机模版
+export function listAllHostGroup(params){
+  return request({
+    url: '/api/v1/zabbix/all_hostgroups/',
+    method: "get",
+    params
+  })
+}
+
+export function listAllTemplates(params){
+  return request({
+    url: '/api/v1/zabbix/all_templates/',
+    method: "get",
+    params
+  })
+}
