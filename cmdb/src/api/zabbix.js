@@ -126,7 +126,7 @@ export function listHost(params) {
 }
 
 //获取代理列表
-export function listProxy(params){
+export function listProxy(params) {
   return request({
     url: '/api/v1/zabbix/proxy/',
     method: "get",
@@ -135,7 +135,7 @@ export function listProxy(params){
 }
 
 // 创建主机
-export function hostCreate(data){
+export function hostCreate(data) {
   return request({
     url: '/api/v1/zabbix/op_host_create/',
     method: "post",
@@ -144,7 +144,7 @@ export function hostCreate(data){
 }
 
 //主机模版操作
-export function hostTemplate(data){
+export function hostTemplate(data) {
   return request({
     url: '/api/v1/zabbix/op_host_template/',
     method: "post",
@@ -153,7 +153,7 @@ export function hostTemplate(data){
 }
 
 //主机群组操作
-export function hostGroup(data){
+export function hostGroup(data) {
   return request({
     url: '/api/v1/zabbix/op_host_group/',
     method: "post",
@@ -162,7 +162,7 @@ export function hostGroup(data){
 }
 
 //主机接口操作
-export function hostManager(data){
+export function hostManager(data) {
   return request({
     url: '/api/v1/zabbix/op_host/',
     method: "post",
@@ -170,8 +170,8 @@ export function hostManager(data){
   })
 }
 
-//获取所有主机群组和主机模版
-export function listAllHostGroup(params){
+//获取所有主机群组和主机模版大力
+export function listAllHostGroup(params) {
   return request({
     url: '/api/v1/zabbix/all_hostgroups/',
     method: "get",
@@ -179,9 +179,17 @@ export function listAllHostGroup(params){
   })
 }
 
-export function listAllTemplates(params){
+export function listAllTemplates(params) {
   return request({
     url: '/api/v1/zabbix/all_templates/',
+    method: "get",
+    params
+  })
+}
+
+export function listAllProxies(params) {
+  return request({
+    url: '/api/v1/zabbix/all_proxy/',
     method: "get",
     params
   })

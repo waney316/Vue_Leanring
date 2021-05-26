@@ -108,7 +108,6 @@
               <el-select
                 v-model="snmpversion"
                 placeholder="请选择snmp版本"
-
               >
                 <el-option
                   label="SNMPv2"
@@ -132,14 +131,14 @@
               <div v-show="snmpversion==='3'">
                 <el-row :gutter="16">
                   <el-col :span='8'>
-                <el-form-item label="用户名称">
-                  <el-input v-model="user"></el-input>
-                </el-form-item>
+                    <el-form-item label="用户名称">
+                      <el-input v-model="user"></el-input>
+                    </el-form-item>
                   </el-col>
                   <el-col :span='8'>
-                  <el-form-item label="上下文名称">
-                  <el-input v-model="contextname"></el-input>
-                </el-form-item>
+                    <el-form-item label="上下文名称">
+                      <el-input v-model="contextname"></el-input>
+                    </el-form-item>
                   </el-col>
                 </el-row>
 
@@ -311,245 +310,6 @@
             </el-form-item>
           </el-form>
         </el-tab-pane>
-                <el-tab-pane
-          label="主机-群组-模版-代理管理"
-          name="second"
-        >
-          <el-form
-            :model="hostManagerForm"
-            :rules="rules"
-            ref="ruleForm"
-            label-width="100px"
-            class="demo-ruleForm"
-          >
-            <el-form-item
-              label="数据源选择"
-              prop="dataSource"
-            >
-              <el-select
-                v-model="dataSource"
-                clearable
-                placeholder="请选择Zabbix数据源"
-                style="margin-left: 10px"
-              >
-                <el-option
-                  v-for="item in dataSourceOption"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.name"
-                >
-                </el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item
-              label="操作类型"
-              prop="operationTypeOption"
-            >
-              <el-select
-                v-model="operationModule"
-                clearable
-                placeholder="请选择模块"
-                style="margin-left: 10px"
-              >
-                <el-option label="主机群组管理" value="hostGroupManager"></el-option>
-                <el-option label="主机模版管理" value="hostTemplateManager"></el-option>
-                <el-option label="主机代理管理" value="hostProxyManager"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item
-              label="操作类型"
-              prop="operationTypeOption"
-            >
-              <el-select
-                v-model="operationType"
-                clearable
-                placeholder="请选择操作类型"
-                style="margin-left: 10px"
-              >
-                 <el-option label="添加" value="add"></el-option>
-                  <el-option label="移除" value="remove"></el-option>
-                  <el-option label="替换" value="replace"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item
-              label="主机组选择"
-              prop="name"
-              v-show="operationModule==='hostGroupManager'"
-            >
-                            <el-select
-                v-model="groupArr2"
-                multiple
-                filterable
-                clearable
-                allow-create
-                style="width:100%"
-                :loading="templateLoading"
-                placeholder="请选择主机群组"
-                                @visible-change="getHostGroupList(groupArr2)"
-              >
-                <el-option
-                  v-for="item in groupArr2"
-                  :key="item.templateid"
-                  :label="item.name"
-                  :value="item.name"
-                >
-                </el-option>
-              </el-select>
-            </el-form-item>
-                        <el-form-item
-              label="模版选择"
-              prop="name"
-              v-show="operationModule==='hostTemplateManager'"
-            >
-                            <el-select
-                v-model="templateArr2"
-                multiple
-                filterable
-                clearable
-                allow-create
-                style="width:100%"
-                :loading="templateLoading"
-                placeholder="请选择模板"
-                                @visible-change="getTemplateList(templateArr2)"
-              >
-                <el-option
-                  v-for="item in templateArr2"
-                  :key="item.templateid"
-                  :label="item.name"
-                  :value="item.name"
-                >
-                </el-option>
-              </el-select>
-            </el-form-item>
-                        <el-form-item
-              label="代理选择"
-              prop="name"
-              v-show="operationModule==='hostProxyManager'"
-            >
-              <el-select
-                v-model="proxyArr"
-                multiple
-                filterable
-                clearable
-                allow-create
-                style="width:100%"
-                :loading="templateLoading"
-                placeholder="请选择代理"
-                 @visible-change="getProxyList(proxyList2)"
-              >
-                <el-option
-                  v-for="item in proxyArr"
-                  :key="item.templateid"
-                  :label="item.name"
-                  :value="item.name"
-                >
-                </el-option>
-              </el-select>
-            </el-form-item>
-
-            <el-form-item
-              label="主机列表"
-              prop="desc"
-            >
-              <el-input
-                type="textarea"
-                v-model="hostManagerForm.desc"
-              ></el-input>
-            </el-form-item>
-            <el-form-item>
-              <el-button
-                type="primary"
-                @click="submitForm('hostManagerForm')"
-              >立即执行</el-button>
-              <el-button @click="resetForm('hostManagerForm')">重置</el-button>
-            </el-form-item>
-
-          </el-form>
-
-        </el-tab-pane>
-
-                <el-tab-pane
-          label="主机管理"
-          name="four"
-        >
-          <el-form
-            :model="hostManagerForm"
-            :rules="rules"
-            ref="ruleForm"
-            label-width="100px"
-            class="demo-ruleForm"
-          >
-            <el-form-item
-              label="数据源选择"
-              prop="dataSource"
-            >
-              <el-select
-                v-model="hostManagerForm.dataSource"
-                clearable
-                placeholder="请选择Zabbix数据源"
-                style="margin-left: 10px"
-              >
-                <el-option
-                  v-for="item in dataSourceOption"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.name"
-                >
-                </el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item
-              label="操作类型"
-              prop="hostoperation"
-            >
-              <el-select
-                v-model="hostoperation"
-                clearable
-                placeholder="请选择操作类型"
-                style="margin-left: 10px"
-              >
-                <el-option
-                  label="查询主机"
-                  value="show"
-                >
-                </el-option>
-                <el-option
-                  label="禁用主机"
-                  value="disable"
-                >
-                </el-option>
-                  <el-option
-                  label="启用主机"
-                  value="enable"
-                >
-                </el-option>
-                  <el-option
-                  label="删除主机"
-                  value="delete"
-                >
-                </el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item
-              label="主机列表"
-              prop="desc"
-            >
-              <el-input
-                type="textarea"
-                v-model="hostManagerForm.desc"
-              ></el-input>
-            </el-form-item>
-
-
-            <el-form-item>
-              <el-button
-                type="primary"
-                @click="submitForm('hostManagerForm')"
-              >立即创建</el-button>
-              <el-button @click="resetForm('hostManagerForm')">重置</el-button>
-            </el-form-item>
-          </el-form>
-        </el-tab-pane>
 
       </el-tabs>
     </el-card>
@@ -566,7 +326,7 @@ import {
   hostTemplate,
   hostGroup,
   hostManager,
-  listProxy,
+  listAllProxies,
 } from "@/api/zabbix";
 import Log from "@/components/LogShow";
 
@@ -596,7 +356,7 @@ export default {
 
       //主机管理接口：查询启用禁用删除
       hostoperation: "",
-   
+
 
       listQuery: "",
       //默认显示第几个tab
@@ -677,7 +437,8 @@ export default {
       const data = {
         dataSource: params,
       };
-      listProxy(data).then((response) => {
+      listAllProxies(data).then((response) => {
+        console.log(response);
         this.proxyList = response.data
       });
     },
