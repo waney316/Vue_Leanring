@@ -82,7 +82,7 @@
               v-show="operationModule==='hostGroupManager'"
             >
               <el-select
-                v-model="groupArr2"
+                v-model="hostManagerForm.group"
                 multiple
                 filterable
                 clearable
@@ -90,10 +90,10 @@
                 style="width:100%"
                 :loading="templateLoading"
                 placeholder="请选择主机群组"
-                @visible-change="getHostGroupList(groupArr2)"
+                @visible-change="getHostGroupList"
               >
                 <el-option
-                  v-for="item in groupArr2"
+                  v-for="item in groupArr"
                   :key="item.templateid"
                   :label="item.name"
                   :value="item.name"
@@ -107,7 +107,7 @@
               v-show="operationModule==='hostTemplateManager'"
             >
               <el-select
-                v-model="templateArr2"
+                v-model="hostManagerForm.template"
                 multiple
                 filterable
                 clearable
@@ -115,10 +115,10 @@
                 style="width:100%"
                 :loading="templateLoading"
                 placeholder="请选择模板"
-                @visible-change="getTemplateList(templateArr2)"
+                @visible-change="getTemplateList"
               >
                 <el-option
-                  v-for="item in templateArr2"
+                  v-for="item in templateArr"
                   :key="item.templateid"
                   :label="item.name"
                   :value="item.name"
@@ -132,7 +132,7 @@
               v-show="operationModule==='hostProxyManager'"
             >
               <el-select
-                v-model="proxyArr"
+                v-model="hostManagerForm.proxy"
                 multiple
                 filterable
                 clearable
@@ -140,10 +140,10 @@
                 style="width:100%"
                 :loading="templateLoading"
                 placeholder="请选择代理"
-                @visible-change="getProxyList(proxyList2)"
+                @visible-change="getProxyList"
               >
                 <el-option
-                  v-for="item in proxyArr"
+                  v-for="item in proxyList"
                   :key="item.templateid"
                   :label="item.name"
                   :value="item.name"
