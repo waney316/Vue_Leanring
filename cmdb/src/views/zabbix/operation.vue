@@ -144,7 +144,7 @@
 
                 <el-form-item label="安全级别">
                   <el-select
-                    v-model="securityLevel"
+                    v-model="securitylevel"
                     placeholder="选择安全级别"
                   >
                     <el-option
@@ -163,7 +163,7 @@
                 </el-form-item>
                 <el-form-item
                   label="验证协议"
-                  v-show="snmpversion&&(securityLevel==='1'||securityLevel==='2')"
+                  v-show="snmpversion&&(securitylevel==='1'||securitylevel==='2')"
                 >
                   <el-row :gutter="10">
                     <el-col :span="3">
@@ -192,7 +192,7 @@
 
                 <el-form-item
                   label="隐私协议"
-                  v-show="securityLevel==='2'"
+                  v-show="securitylevel==='2'"
                 >
                   <el-row :gutter="10">
                     <el-col :span="3">
@@ -400,7 +400,6 @@
                 style="width:100%"
                 :loading="templateLoading"
                 placeholder="请选择主机群组"
-
               >
                 <el-option
                   v-for="item in groupArr2"
@@ -609,7 +608,7 @@ export default {
       community: "",
       contextname: "",
       user: "",
-      securityLevel: '',
+      securitylevel: '',
       authprotocol: '',
       authpassphrase: "",
       privprotocol: '',
@@ -671,14 +670,14 @@ export default {
     },
     //获取代理列表
     getProxyList (params) {
-      if(this.dataSource){
-          const data = {
-            dataSource: this.dataSource,
+      if (this.dataSource) {
+        const data = {
+          dataSource: this.dataSource,
         };
-      listAllProxies(data).then((response) => {
-        console.log(response);
-        params == "hostCreate" ? this.proxyList = response.data : this.proxyList2 = response.data
-      });
+        listAllProxies(data).then((response) => {
+          console.log(response);
+          params == "hostCreate" ? this.proxyList = response.data : this.proxyList2 = response.data
+        });
       }
 
     },
@@ -687,11 +686,10 @@ export default {
       this.dataSource = ""
       console.log(tab, event);
     },
+    //用于新建主机
     submitForm (formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          console.log(this.snmpversion);
-          console.log(this.securityLevel);
           const formData = []
           const copyForm = Object.assign({}, this.hostCreateForm)
           if (copyForm.type === "snmp") {
@@ -723,7 +721,92 @@ export default {
               });
             }
           })
+          // alert('submit!');
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
+    },
 
+    //用于主机模板群组管理
+    managerForm (formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          const formData = []
+          const copyForm = Object.assign({}, this.hostCreateForm)
+          if (copyForm.type === "snmp") {
+            copyForm.details = this.handleSnmp()
+          }
+          formData.push(this.validateHost(copyForm)) //处理文本框中的ip,写入hostArr
+          const tempData = {
+            dataSource: this.dataSource,
+            show_field: this.show_field,
+            api_version: "5",
+            data: formData
+          };
+          console.log(tempData);
+
+          //向后端发起post请求
+          hostCreate(tempData).then(response => {
+            console.log(response);
+            if (response.code != 0) {
+              this.$message({
+                showClose: true,
+                message: response.message,
+                type: 'error'
+              });
+            } else {
+              this.$message({
+                showClose: true,
+                message: response.data,
+                type: 'success'
+              });
+            }
+          })
+          // alert('submit!');
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
+    },
+
+    //用于主机管理表
+    hostForm (formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          const formData = []
+          const copyForm = Object.assign({}, this.hostCreateForm)
+          if (copyForm.type === "snmp") {
+            copyForm.details = this.handleSnmp()
+          }
+          formData.push(this.validateHost(copyForm)) //处理文本框中的ip,写入hostArr
+          const tempData = {
+            dataSource: this.dataSource,
+            show_field: this.show_field,
+            api_version: "5",
+            data: formData
+          };
+          console.log(tempData);
+
+          //向后端发起post请求
+          hostCreate(tempData).then(response => {
+            console.log(response);
+            if (response.code != 0) {
+              this.$message({
+                showClose: true,
+                message: response.message,
+                type: 'error'
+              });
+            } else {
+              this.$message({
+                showClose: true,
+                message: response.data,
+                type: 'success'
+              });
+            }
+          })
           // alert('submit!');
         } else {
           console.log("error submit!!");
@@ -739,9 +822,6 @@ export default {
     handleType () {
       console.log(typeof (this.snmpversion));
       this.snmpversion = ''
-      // console.log(this.hostCreateForm.type);
-      // console.log(this.snmpversion);
-      // console.log(this.dataSource);
     },
     //处理表单中host数据, 输入为数组项
     validateHost (formTem) {
@@ -770,16 +850,16 @@ export default {
           details.contextname = this.contextname;
         }
         details.securityname = this.user;
-        details.securityLevel = this.securityLevel
-        if (this.securityLevel === '2') {
+        details.securitylevel = this.securitylevel
+        if (this.securitylevel === '2') {
           details.authprotocol = this.authprotocol;
           details.privprotocol = this.privprotocol;
           details.authpassphrase = this.authpassphrase;
           details.privpassphrase = this.privpassphrase
-        } else if (this.securityLevel === '1') {
+        } else if (this.securitylevel === '1') {
           details.authprotocol = this.authprotocol;
           details.authpassphrase = this.authpassphrase;
-        } else if (this.securityLevel === '0') {
+        } else if (this.securitylevel === '0') {
 
         }
       }

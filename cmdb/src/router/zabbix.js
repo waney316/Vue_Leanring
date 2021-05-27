@@ -74,6 +74,16 @@ export default [
           icon: 'eye-open'
         }
       },
+
+      {
+        path: 'logshow',
+        name: 'logshow',
+        component: () => import('@/views/zabbix/logShow'),
+        meta: {
+          title: '日志回显',
+          icon: 'eye-open'
+        }
+      },
     ]
   },
 
@@ -88,15 +98,14 @@ export default [
       icon: 'el-icon-message-solid',
     },
     children: [{
-        path: 'info',
-        name: 'PromInfo',
-        component: () => import('@/views/prom/promInfo'),
-        meta: {
-          title: 'Prom管理',
-          icon: 'el-icon-s-promotion'
-        }
-      },
-    ]
+      path: 'info',
+      name: 'PromInfo',
+      component: () => import('@/views/prom/promInfo'),
+      meta: {
+        title: 'Prom管理',
+        icon: 'el-icon-s-promotion'
+      }
+    }, ]
   },
   //snmpTrap管理
   {
@@ -109,15 +118,14 @@ export default [
       icon: 'el-icon-s-open'
     },
     children: [{
-        path: 'info',
-        name: 'PromInfo',
-        // component: () => import('@/views/prom/promInfo'),
-        meta: {
-          title: 'Trap管理',
-          icon: 'el-icon-s-open'
-        }
-      },
-    ]
+      path: 'info',
+      name: 'PromInfo',
+      // component: () => import('@/views/prom/promInfo'),
+      meta: {
+        title: 'Trap管理',
+        icon: 'el-icon-s-open'
+      }
+    }, ]
   },
   //Agent管理
   {
@@ -130,14 +138,13 @@ export default [
       icon: 'el-icon-cherry'
     },
     children: [{
-        path: 'info',
-        name: 'PromInfo',
-        // component: () => import('@/views/prom/promInfo'),
-        meta: {
-          title: 'Agent管理',
-          icon: 'el-icon-s-marketing'
-        }
-      },
-    ]
+      path: 'info',
+      name: 'PromInfo',
+      // component: () => import('@/views/prom/promInfo'),
+      meta: {
+        title: 'Agent管理',
+        icon: 'el-icon-s-marketing'
+      }
+    }, ]
   },
 ]
