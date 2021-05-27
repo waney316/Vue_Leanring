@@ -1,20 +1,10 @@
 <template>
-  <div class="log">
-    <p
-      class="log-item"
-      v-for="host in hosts"
-      :key="host.hostid"
-    >
-      <span>{{ host }}</span>
-      <span>{{ host.ip}}</span>
-      <span>{{ host.hostid}}</span>
-      <span>{{ host.status}}</span>
-    </p>
-    <div>
-      <el-button @click="handleClick">显示后端输出</el-button>
+  <div>
+    <div class="log">
+      <p v-for="(item, index) in log" :key="index">{{ item }}</p>
     </div>
+    <el-button @click="handleClick">显示后端输出</el-button>
   </div>
-
 </template>
 
 <script>
@@ -26,7 +16,7 @@ export default {
   // },
   data () {
     return {
-      hosts: []
+      log: []
     }
   },
   mounted () {
@@ -59,7 +49,7 @@ export default {
           var received_msg = evt.data;
           if (received_msg.indexOf("sorry") == -1) {
             // alert("收到消息："+received_msg);
-            self.hosts.push(received_msg)
+            self.log.push(received_msg)
           }
 
         };
@@ -88,7 +78,4 @@ export default {
   height: 300px;
 }
 
-.log-item span {
-  padding: 5px 10px;
-}
 </style>
