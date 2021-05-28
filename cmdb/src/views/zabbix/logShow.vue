@@ -1,9 +1,12 @@
 <template>
   <div>
     <div class="log">
-      <p v-for="(item, index) in log" :key="index">{{ item }}</p>
+      <p
+        v-for="(item, index) in log"
+        :key="index"
+      >{{ item }}</p>
     </div>
-    <el-button @click="handleClick">显示后端输出</el-button>
+    <el-button @click="handleClick2">显示后端输出</el-button>
   </div>
 </template>
 
@@ -19,15 +22,16 @@ export default {
       log: []
     }
   },
-  mounted () {
-    this.WebSocketTest()
-  },
+  // mounted () {
+  //   this.WebSocketTest()
+  // },
   methods: {
-    handleClick () {
+
+    handleClick2 () {
+      this.WebSocketTest()
       socketRequest().then(response => {
         console.log(response);
       })
-
     },
 
     WebSocketTest () {
@@ -36,12 +40,13 @@ export default {
         // 打开一个 web socket
         var ws = new WebSocket("ws://127.0.0.1:8000/ws/");
 
-        // 连接建立后的回调函数
-        // ws.onopen = function () {
-        //   // Web Socket 已连接上，使用 send() 方法发送数据
-        //   ws.send("admin:123456");
-        //   alert("正在发送：admin:123456");
-        // };
+        //连接建立后的回调函数
+        ws.onopen = function () {
+          // Web Socket 已连接上，使用 send() 方法发送数据
+          // ws.send("admin:123456");
+          console.log("socket已连接");
+          alert("socket已连接");
+        };
 
         // 接收到服务器消息后的回调函数
         ws.onmessage = function (evt) {
@@ -77,5 +82,4 @@ export default {
   color: #fff;
   height: 300px;
 }
-
 </style>
