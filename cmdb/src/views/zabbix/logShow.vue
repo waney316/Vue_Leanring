@@ -2,11 +2,11 @@
   <div>
     <div class="log">
       <p
-        v-for="(item, index) in log"
-        :key="index"
-      >{{ item }}</p>
+        v-for="(item,index) in log" :key="index"
+      >{{index}} --- {{ item }}</p>
     </div>
-    <el-button @click="handleClick2">显示后端输出</el-button>
+    <el-button @click="handleConnect">开始监听</el-button>
+    <el-button @click="closeConnect">关闭监听</el-button>
   </div>
 </template>
 
@@ -26,48 +26,45 @@ export default {
   //   this.WebSocketTest()
   // },
   methods: {
+    //socket连接
+    handleConnect(){
+      if ("WebSocket" in window) {
+        //创建socket
+        let self = this
+        window.ws = new WebSocket(
+          "ws://127.0.0.1:8000/ws/"
+        )
 
-    handleClick2 () {
-      this.WebSocketTest()
-      socketRequest().then(response => {
-        console.log(response);
-      })
+       // 连接建立后的回调函数
+        ws.onopen = function()
+        {
+          alert("连接已建立");
+        };
+        //监听消息
+        ws.onmessage = function (event) {
+
+          var data = JSON.parse(event.data)
+          var message = data["message"]
+          self.log.push(message)
+          console.log(message);
+        };
+
+        ws.onerror = function(event) {
+          alert('服务端连接异常！')
+        };
+
+        ws.onclose = function(event) {
+          alert('websocket已关闭！')
+        }
+      }
     },
 
-    WebSocketTest () {
-      let self = this
-      if ("WebSocket" in window) {
-        // 打开一个 web socket
-        var ws = new WebSocket("ws://127.0.0.1:8000/ws/");
-
-        //连接建立后的回调函数
-        ws.onopen = function () {
-          // Web Socket 已连接上，使用 send() 方法发送数据
-          // ws.send("admin:123456");
-          console.log("socket已连接");
-          alert("socket已连接");
-        };
-
-        // 接收到服务器消息后的回调函数
-        ws.onmessage = function (evt) {
-          console.log(evt.data);
-          var received_msg = evt.data;
-          if (received_msg.indexOf("sorry") == -1) {
-            // alert("收到消息："+received_msg);
-            self.log.push(received_msg)
-          }
-
-        };
-
-        // 连接关闭后的回调函数
-        ws.onclose = function () {
-          // 关闭 websocket
-          alert("连接已关闭...");
-        };
-      }
-      else {
-        // 浏览器不支持 WebSocket
-        alert("您的浏览器不支持 WebSocket!");
+    //关闭socket连接
+    closeConnect(){
+      console.log(window.ws);
+      window.ws.close()
+      window.ws.onclose = function(event){
+        alert("中止监听")
       }
     }
   }

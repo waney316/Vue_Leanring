@@ -13,7 +13,6 @@ export function getInfo() {
   return request({
     url: '/api/v1/user/info',
     method: 'get',
-
   })
 }
 

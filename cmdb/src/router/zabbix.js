@@ -52,7 +52,7 @@ export default [
         name: 'alertManger',
         component: () => import('@/views/zabbix/alert'),
         meta: {
-          title: '告警管理',
+          title: '告警查询',
           icon: 'message'
         }
       },

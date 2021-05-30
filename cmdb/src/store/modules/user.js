@@ -52,12 +52,8 @@ const actions = {
         username: username.trim(),
         password: password
       }).then(response => {
-        const {
-          token
-        } = response
-        console.log(token);
-        commit('SET_TOKEN', token)
-        setToken(token)
+        commit('SET_TOKEN', response.data)
+        setToken(response.data)
         resolve()
       }).catch(error => {
         reject(error)
