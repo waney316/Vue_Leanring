@@ -69,7 +69,7 @@
                     <el-button type="primary" @click="submitForm('form')">查询并导出</el-button>
                     <el-button type="error" @click="resetForm('form')">重置</el-button>
                 </el-form-item>
-                </el-form>
+            </el-form>
         </div>
         </el-card>
 

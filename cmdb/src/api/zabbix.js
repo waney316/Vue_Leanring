@@ -201,3 +201,14 @@ export function socketRequest(params) {
     params
   })
 }
+
+
+//告警查询
+export function listAlerts(params, data) {
+  return request({
+    url: '/api/v1/zabbix/alert/',
+    method: "post",
+    data: data,
+    params: params
+  })
+}
