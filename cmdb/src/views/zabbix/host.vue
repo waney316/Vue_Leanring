@@ -1,10 +1,7 @@
 <template>
   <div class="app-container">
     <el-card class="box-card">
-      <div
-        slot="header"
-        class="clearfix"
-      >
+      <div slot="header" class="clearfix">
         <span>主机管理</span>
       </div>
       <div class="text item">
@@ -62,7 +59,7 @@
             v-model="showTemplates"
             class="filter-item"
             style="margin-left:10px;"
-            @change="tableKey=tableKey+1"
+            @change="tableKey = tableKey + 1"
           >
             显示模板
           </el-checkbox>
@@ -70,11 +67,10 @@
             v-show="showFiled"
             v-model="showGroups"
             class="filter-item"
-            @change="tableKey=tableKey+1"
+            @change="tableKey = tableKey + 1"
           >
             显示群组
           </el-checkbox>
-
         </div>
         <div v-if="listQuery.dataSource !== ''">
           <el-table
@@ -86,83 +82,48 @@
             highlight-current-row
             style="width: 110%; margin-top: 10px"
           >
-            <el-table-column
-              label="主机ID"
-              prop="id"
-              align="center"
-              width="80"
-            >
-              <template slot-scope="{row}">
+            <el-table-column label="主机ID" prop="id" align="center" width="80">
+              <template slot-scope="{ row }">
                 <span>{{ row.hostid }}</span>
               </template>
             </el-table-column>
 
-            <el-table-column
-              label="主机名"
-              align="center"
-            >
-              <template slot-scope="{row}">
+            <el-table-column label="主机名" align="center">
+              <template slot-scope="{ row }">
                 <span>{{ row.host }}</span>
               </template>
             </el-table-column>
-            <el-table-column
-              label="接入IP"
-              width="150px"
-              align="center"
-            >
-              <template slot-scope="{row}">
-                <span
-                  v-for="(item, index) in row.interfaces"
-                  :key="index"
-                >
+            <el-table-column label="接入IP" width="150px" align="center">
+              <template slot-scope="{ row }">
+                <span v-for="(item, index) in row.interfaces" :key="index">
                   {{ item.ip }}
                 </span>
               </template>
             </el-table-column>
-            <el-table-column
-              label="监控项"
-              width="80px"
-              align="center"
-            >
-              <template slot-scope="{row}">
+            <el-table-column label="监控项" width="80px" align="center">
+              <template slot-scope="{ row }">
                 <span>{{ row.items }}</span>
               </template>
             </el-table-column>
-            <el-table-column
-              label="应用集"
-              width="80px"
-              align="center"
-            >
-              <template slot-scope="{row}">
+            <el-table-column label="应用集" width="80px" align="center">
+              <template slot-scope="{ row }">
                 <span>{{ row.applications }}</span>
               </template>
             </el-table-column>
-            <el-table-column
-              label="触发器"
-              width="80px"
-              align="center"
-            >
-              <template slot-scope="{row}">
+            <el-table-column label="触发器" width="80px" align="center">
+              <template slot-scope="{ row }">
                 <span>{{ row.triggers }}</span>
               </template>
             </el-table-column>
 
-            <el-table-column
-              label="是否启用"
-              width="80px"
-              align="center"
-            >
-              <template slot-scope="{row}">
+            <el-table-column label="是否启用" width="80px" align="center">
+              <template slot-scope="{ row }">
                 <span>{{ row.status }}</span>
               </template>
             </el-table-column>
 
-            <el-table-column
-              label="代理"
-              width="80px"
-              align="center"
-            >
-              <template slot-scope="{row}">
+            <el-table-column label="代理" width="80px" align="center">
+              <template slot-scope="{ row }">
                 <span>{{ row.proxy_hostid }}</span>
               </template>
             </el-table-column>
@@ -172,7 +133,7 @@
               width="220"
               align="center"
             >
-              <template slot-scope="{row}">
+              <template slot-scope="{ row }">
                 <el-tag
                   size="small"
                   v-for="item in row.parentTemplates"
@@ -189,7 +150,7 @@
               width="180"
               align="center"
             >
-              <template slot-scope="{row}">
+              <template slot-scope="{ row }">
                 <el-tag
                   size="small"
                   v-for="item in row.groups"
@@ -200,12 +161,8 @@
                 </el-tag>
               </template>
             </el-table-column>
-            <el-table-column
-              label="监控状态"
-              width="80px"
-              align="center"
-            >
-              <template slot-scope="{row}">
+            <el-table-column label="监控状态" width="80px" align="center">
+              <template slot-scope="{ row }">
                 <el-popover
                   ref="popover"
                   placement="top-start"
@@ -219,7 +176,7 @@
                   slot="reference"
                   :type="showTags(row.available)"
                   v-popover:popover
-                  v-show="row.available==='异常'"
+                  v-show="row.available === '异常'"
                 >
                   {{ row.available }}
                 </el-tag>
@@ -227,7 +184,7 @@
                   size="small"
                   slot="reference"
                   :type="showTags(row.available)"
-                  v-show="row.available!='异常'"
+                  v-show="row.available != '异常'"
                 >
                   {{ row.available }}
                 </el-tag>
@@ -239,21 +196,21 @@
               width="190"
               class-name="small-padding fixed-width"
             >
-              <template slot-scope="{row,$index}">
+              <template slot-scope="{ row, $index }">
                 <el-button
                   type="primary"
                   size="mini"
-                  @click="getDetail(row,$index)"
+                  @click="getDetail(row, $index)"
                   icon="el-icon-message"
                 >
                   详情
                 </el-button>
 
                 <el-button
-                  v-if="row.status!='deleted'"
+                  v-if="row.status != 'deleted'"
                   size="mini"
                   type="danger"
-                  @click="handleDelete(row,$index)"
+                  @click="handleDelete(row, $index)"
                   icon="el-icon-delete"
                 >
                   删除
@@ -276,10 +233,7 @@
           请选择数据源，来加载数据
         </div>
 
-        <el-dialog
-          :title="title"
-          :visible.sync="dialogFormVisible"
-        >
+        <el-dialog :title="title" :visible.sync="dialogFormVisible">
           <el-form
             ref="dataForm"
             :model="temp"
@@ -297,7 +251,7 @@
                   style="width: 40%; margin-bottom: 0"
                   size="small"
                 >
-                  {{temp.hostid}}
+                  {{ temp.hostid }}
                 </el-form-item>
               </el-col>
               <el-col :span="14">
@@ -307,7 +261,7 @@
                   style="width: 60%; margin-bottom: 0"
                   size="small"
                 >
-                  {{temp.host}}
+                  {{ temp.host }}
                 </el-form-item>
               </el-col>
             </el-row>
@@ -319,7 +273,7 @@
                   style="width: 40%; margin-bottom: 0"
                   size="small"
                 >
-                  {{temp.flags}}
+                  {{ temp.flags }}
                 </el-form-item>
               </el-col>
               <el-col :span="6">
@@ -329,7 +283,7 @@
                   style="width: 40%; margin-bottom: 0"
                   size="small"
                 >
-                  {{temp.available}}
+                  {{ temp.available }}
                 </el-form-item>
               </el-col>
             </el-row>
@@ -341,7 +295,7 @@
                   style="width:50%; margin-bottom: 0"
                   size="small"
                 >
-                  {{temp.error_from}}
+                  {{ temp.error_from }}
                 </el-form-item>
               </el-col>
               <el-col :span="12">
@@ -351,51 +305,25 @@
                   style="width: 100%; margin-bottom: 0"
                   size="small"
                 >
-                  {{temp.error}}
+                  {{ temp.error }}
                 </el-form-item>
               </el-col>
-
             </el-row>
 
-            <el-form-item
-              prop="interfaces"
-              style="margin-bottom: 0"
-            >
-
+            <el-form-item prop="interfaces" style="margin-bottom: 0">
               <el-table
                 :data="temp.interfaces"
                 style="width: 100%"
                 size="medium"
               >
-
-                <el-table-column
-                  property="ip"
-                  label="接口IP"
-                  width="180"
-                />
-                <el-table-column
-                  property="type"
-                  label="接入类型"
-                  width="180"
-                />
-                <el-table-column
-                  property="port"
-                  label="端口"
-                  width="180"
-                />
+                <el-table-column property="ip" label="接口IP" width="180" />
+                <el-table-column property="type" label="接入类型" width="180" />
+                <el-table-column property="port" label="端口" width="180" />
               </el-table>
-
             </el-form-item>
 
-            <el-form-item
-              prop="groups"
-              style="margin-bottom: 0"
-            >
-              <el-table
-                :data="temp.groups"
-                style="width: 100%"
-                size="medium"
-              >
+            <el-form-item prop="groups" style="margin-bottom: 0">
+              <el-table :data="temp.groups" style="width: 100%" size="medium">
                 <el-table-column
                   property="groupid"
                   label="主机组id"
@@ -409,10 +337,7 @@
               </el-table>
             </el-form-item>
 
-            <el-form-item
-              prop="parentTemplates"
-              style="margin-bottom: 0"
-            >
+            <el-form-item prop="parentTemplates" style="margin-bottom: 0">
               <el-table
                 :data="temp.parentTemplates"
                 style="width: 100%"
@@ -423,64 +348,47 @@
                   label="模版ID"
                   width="180"
                 />
-                <el-table-column
-                  property="name"
-                  label="模版名称"
-                  width="360"
-                />
+                <el-table-column property="name" label="模版名称" width="360" />
               </el-table>
-
             </el-form-item>
-
           </el-form>
-          <div
-            slot="footer"
-            class="dialog-footer"
-          >
-            <el-button
-              @click="dialogFormVisible = false"
-              type="success"
-            >
+          <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogFormVisible = false" type="success">
               确认
             </el-button>
           </div>
         </el-dialog>
-
       </div>
     </el-card>
   </div>
 </template>
 
 <script>
-import {
-  listHost, getZabbixList
-} from '@/api/zabbix'
+import { listHost, getZabbixList } from "@/api/zabbix";
 
-import waves from '@/directive/waves' // waves directive
-import { parseTime } from '@/utils'
-import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-
+import waves from "@/directive/waves"; // waves directive
+import { parseTime } from "@/utils";
+import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
 
 export default {
-  name: 'Host',
+  name: "Host",
   components: { Pagination },
   directives: { waves },
   filters: {
-    statusFilter (status) {
+    statusFilter(status) {
       const statusMap = {
-        published: 'success',
-        draft: 'info',
-        deleted: 'danger'
-      }
-      return statusMap[status]
+        published: "success",
+        draft: "info",
+        deleted: "danger"
+      };
+      return statusMap[status];
     },
-    typeFilter (type) {
-      return calendarTypeKeyValue[type]
+    typeFilter(type) {
+      return calendarTypeKeyValue[type];
     }
   },
-  data () {
+  data() {
     return {
-
       dataSourceOption: "",
       tableKey: 0,
       list: null,
@@ -491,7 +399,7 @@ export default {
         limit: 20,
         dataSource: ""
       },
-      statusOptions: ['published', 'draft', 'deleted'],
+      statusOptions: ["published", "draft", "deleted"],
       showTemplates: false,
       showGroups: false,
       // 主机详情信息变量定义
@@ -500,106 +408,134 @@ export default {
       showFiled: false,
       temp: {},
       dialogFormVisible: false,
-      dialogStatus: '',
+      dialogStatus: "",
       textMap: {
-        update: 'Edit',
-        create: 'Create'
+        update: "Edit",
+        create: "Create"
       },
       dialogPvVisible: false,
       downloadLoading: false
-    }
+    };
   },
-  created () {
+  created() {
     this.getDataSourceList();
   },
   methods: {
     //获取数据分类列表
-    getDataSourceList () {
+    getDataSourceList() {
       getZabbixList().then(response => {
         // console.log(response.data)
-        this.dataSourceOption = response.data.results
-        console.log(this.classifyOption)
-      })
+        this.dataSourceOption = response.data.results;
+        console.log(this.classifyOption);
+      });
     },
     //获取主机列表
-    getList () {
+    getList() {
       if (this.listQuery.dataSource) {
-        this.listLoading = true
+        this.listLoading = true;
         listHost(this.listQuery).then(response => {
           console.log(response);
-          this.list = response.data.results
-          this.total = response.data.count
-          this.showFiled = true
+          this.list = response.data.results;
+          this.total = response.data.count;
+          this.showFiled = true;
 
           // Just to simulate the time of the request
           setTimeout(() => {
-            this.listLoading = false
-          }, 1.5 * 1000)
-        })
+            this.listLoading = false;
+          }, 1.5 * 1000);
+        });
       }
-
     },
 
     //主机状态tag选择
-    showTags (val) {
+    showTags(val) {
       if (val === "未知") {
-        return "info"
+        return "info";
       } else if (val === "正常") {
-        return "success"
+        return "success";
       } else if (val === "异常") {
-        return "danger"
+        return "danger";
       }
     },
 
-
     //过滤查询
-    handleFilter () {
-      this.listQuery.page = 1
-      this.getList()
+    handleFilter() {
+      this.listQuery.page = 1;
+      this.getList();
     },
 
     //获取单个主机详情
-    getDetail (row) {
+    getDetail(row) {
       this.temp = Object.assign({}, row); // copy obj
-      this.title = this.temp.host + " 主机详情"
+      this.title = this.temp.host + " 主机详情";
       console.log(this.temp);
-      this.dialogFormVisible = true
+      this.dialogFormVisible = true;
     },
     //删除单个主机
-    handleDelete (row, index) {
+    handleDelete(row, index) {
       this.$notify({
-        title: 'Success',
-        message: 'Delete Successfully',
-        type: 'success',
+        title: "Success",
+        message: "Delete Successfully",
+        type: "success",
         duration: 2000
-      })
-      this.list.splice(index, 1)
+      });
+      this.list.splice(index, 1);
     },
 
-    handleDownload () {
-      this.downloadLoading = true
-      import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['主机ID', '主机名', '接入IP', '监控项数量', '应用集数量', "触发器", "是否启用", "代理", "监控状态", "模板", "分组"]
-        const filterVal = ['timestamp', 'title', 'type', 'importance', 'status']
-        const data = this.formatJson(filterVal)
+    handleDownload() {
+      this.downloadLoading = true;
+      import("@/vendor/Export2Excel").then(excel => {
+        const tHeader = [
+          "主机ID",
+          "主机名",
+          "接入IP",
+          "监控项数量",
+          "应用集数量",
+          "触发器",
+          "是否启用",
+          "代理",
+          "监控状态",
+          "模板",
+          "分组"
+        ];
+        const filterVal = [
+          "hostid",
+          "host",
+
+          "interfaces['ip']",
+          "items",
+          "applications",
+          "triggers",
+          "status",
+          "proxy_hostid",
+          "available",
+          "parentTemplates['name']",
+          "groups"
+        ];
+        const data = this.formatJson(filterVal);
         excel.export_json_to_excel({
           header: tHeader,
           data,
-          filename: 'table-list'
+          filename:
+            "主机数据-" +
+            this.listQuery.dataSource +
+            "-" +
+            new Date().toISOString()
+        });
+        this.downloadLoading = false;
+      });
+    },
+    formatJson(filterVal) {
+      return this.list.map(v =>
+        filterVal.map(j => {
+          if (j === "timestamp") {
+            return parseTime(v[j]);
+          } else {
+            return v[j];
+          }
         })
-        this.downloadLoading = false
-      })
-    },
-    formatJson (filterVal) {
-      return this.list.map(v => filterVal.map(j => {
-        if (j === 'timestamp') {
-          return parseTime(v[j])
-        } else {
-          return v[j]
-        }
-      }))
-    },
-
+      );
+    }
   }
-}
+};
 </script>
