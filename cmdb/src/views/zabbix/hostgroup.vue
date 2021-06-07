@@ -71,107 +71,110 @@
           </div>
 
         </div>
-      <div v-if="listQuery.dataSource !== ''">
-        <el-table
-          :key="tableKey"
-          v-loading="listLoading"
-          :data="list"
-          border
-          fit
-          highlight-current-row
-          style="width: 100%; margin-top:10px"
-          @selection-change="handleSelectionChange"
+        <div v-if="listQuery.dataSource !== ''">
+          <el-table
+            :key="tableKey"
+            v-loading="listLoading"
+            :data="list"
+            border
+            fit
+            highlight-current-row
+            style="width: 100%; margin-top:10px"
+            @selection-change="handleSelectionChange"
+          >
+            <el-table-column
+              type="selection"
+              width="55"
+            >
+            </el-table-column>
+
+            <el-table-column
+              label="主机组ID"
+              prop="id"
+              align="center"
+              width="100"
+            >
+              <template slot-scope="{ row }">
+                <span>{{ row.groupid }}</span>
+              </template>
+            </el-table-column>
+
+            <el-table-column
+              label="主机组名称"
+              prop="name"
+              align="center"
+              min-width="200"
+            >
+              <template slot-scope="{ row }">
+                <span>{{ row.name }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="关联主机"
+              align="center"
+            >
+              <template slot-scope="{ row }">
+                <span>{{ row.hosts }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="模板数量"
+              align="center"
+            >
+              <template slot-scope="{ row }">
+                <span>{{ row.templates }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="发现类型"
+              align="center"
+            >
+              <template slot-scope="{ row }">
+                <span>{{ row.flags }}</span>
+              </template>
+            </el-table-column>
+
+            <el-table-column
+              label="组类型"
+              align="center"
+            >
+              <template slot-scope="{ row }">
+                <span v-if="row.templates!='0'">模板组</span>
+                <span v-else>主机组</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="操作"
+              align="center"
+              class-name="small-padding fixed-width"
+            >
+              <template slot-scope="{ row, $index }">
+                <el-button
+                  type="primary"
+                  size="mini"
+                  @click="handleUpdate(row)"
+                  icon="el-icon-edit"
+                >
+                  编辑
+                </el-button>
+              </template>
+            </el-table-column>
+
+          </el-table>
+          <pagination
+            v-show="total > 0"
+            :total="total"
+            :page.sync="listQuery.page"
+            :limit.sync="listQuery.size"
+            @pagination="getList"
+          />
+        </div>
+        <div
+          v-else
+          style="text-align: center; font-size: 20px; padding-top: 30px; padding-bottom: 30px"
         >
-          <el-table-column
-            type="selection"
-            width="55"
-          >
-          </el-table-column>
-
-          <el-table-column
-            label="主机组ID"
-            prop="id"
-            align="center"
-            width="100"
-          >
-            <template slot-scope="{ row }">
-              <span>{{ row.groupid }}</span>
-            </template>
-          </el-table-column>
-
-          <el-table-column
-            label="主机组名称"
-            prop="name"
-            align="center"
-            min-width="200"
-          >
-            <template slot-scope="{ row }">
-              <span>{{ row.name }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="关联主机"
-            align="center"
-          >
-            <template slot-scope="{ row }">
-              <span>{{ row.hosts }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="模板数量"
-            align="center"
-          >
-            <template slot-scope="{ row }">
-              <span>{{ row.templates }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="发现类型"
-            align="center"
-          >
-            <template slot-scope="{ row }">
-              <span>{{ row.flags }}</span>
-            </template>
-          </el-table-column>
-
-          <el-table-column
-            label="组类型"
-            align="center"
-          >
-            <template slot-scope="{ row }">
-              <span v-if="row.templates!='0'">模板组</span>
-              <span v-else>主机组</span>
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="操作"
-            align="center"
-            class-name="small-padding fixed-width"
-          >
-            <template slot-scope="{ row, $index }">
-              <el-button
-                type="primary"
-                size="mini"
-                @click="handleUpdate(row)"
-                icon="el-icon-edit"
-              >
-                编辑
-              </el-button>
-            </template>
-          </el-table-column>
-
-        </el-table>
-        <pagination
-          v-show="total > 0"
-          :total="total"
-          :page.sync="listQuery.page"
-          :limit.sync="listQuery.size"
-          @pagination="getList"
-        />
-      </div>
-      <div v-else style="text-align: center; font-size: 20px; padding-top: 30px; padding-bottom: 30px">
-        请选择数据源，来加载数据
-      </div>
+          请选择数据源，来加载数据
+        </div>
 
       </div>
     </el-card>
@@ -219,7 +222,7 @@
 
 //分类的增删改查
 import {
-  getZabbixList, listHostGroup, delHostGroup, UpdateHostgroup, createHostGroup
+  getZabbixList, listHostGroup, delHostGroup, updateHostGroup, createHostGroup
 } from '@/api/zabbix'
 
 import waves from "@/directive/waves"; // waves directive
@@ -278,7 +281,7 @@ export default {
 
     // 获取模板列表
     getList () {
-      if(this.listQuery.dataSource){
+      if (this.listQuery.dataSource) {
         this.listLoading = true;
         console.log(this.listQuery);
         //将查询参数传递给后端
@@ -288,8 +291,8 @@ export default {
           this.total = response.data.count;
           this.listLoading = false;
           this.showButton = true
-        });       
-      }else{
+        });
+      } else {
         this.showButton = false
       }
 
@@ -314,10 +317,33 @@ export default {
         this.$refs["dataForm"].clearValidate();
       });
     },
+
     updateData () {
-      const data = {}
-      updateHostGroup(data).then(response => {
+      const tempData = {
+        dataSource: this.listQuery.dataSource,
+        groupid: this.temp.groupid,
+        name: this.temp.name
+      }
+      updateHostGroup(tempData).then(response => {
         console.log(response);
+        if (response.code === 0) {
+          this.$notify({
+            title: "更新成功",
+            message: response.message,
+            type: "success",
+            duration: 2000
+          })
+          this.dialogFormVisible = false // 关闭输入框
+          this.getList()   //重新获取列表
+
+        } else {
+          this.$notify({
+            title: "更新失败",
+            message: response.data.message,
+            type: "error",
+            duration: 2000
+          })
+        }
       })
     },
     //主机组新建
@@ -329,11 +355,15 @@ export default {
         this.$refs["dataForm"].clearValidate();
       });
     },
-    //添加数据源
+    //创建分组
     createData () {
       this.$refs["dataForm"].validate((valid) => {
         if (valid) {
-          createHostGroup(this.temp).then((response) => {
+          const tempData = {
+            dataSource: this.listQuery.dataSource,
+            name: this.temp.name
+          }
+          createHostGroup(tempData).then((response) => {
             console.log(response);
             // 如果后端返回的状态码为0,则创建成功
             if (response.code === 0) {
@@ -399,7 +429,7 @@ export default {
                 message: response.message,
                 type: "success"
               })
-              this.listQuery.name = ""
+              // this.listQuery.name = ""
               this.getList()
             } else {
               this.$notify({
@@ -416,8 +446,6 @@ export default {
           });
         });
       }
-
-
     },
 
   },

@@ -579,7 +579,7 @@ export default {
     handleDownload () {
       this.downloadLoading = true
       import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['timestamp', 'title', 'type', 'importance', 'status']
+        const tHeader = ['主机ID', '主机名', '接入IP', '监控项数量', '应用集数量', "触发器", "是否启用", "代理", "监控状态", "模板", "分组"]
         const filterVal = ['timestamp', 'title', 'type', 'importance', 'status']
         const data = this.formatJson(filterVal)
         excel.export_json_to_excel({
@@ -599,10 +599,7 @@ export default {
         }
       }))
     },
-    getSortClass: function (key) {
-      const sort = this.listQuery.sort
-      return sort === `+${key}` ? 'ascending' : 'descending'
-    }
+
   }
 }
 </script>

@@ -6,111 +6,140 @@
         class="clearfix"
       >
         <span style="margin-top: 3px">告警查询</span>
-        <i :class="['el-collapse-item__arrow', 'el-icon-arrow-right', showForm?'is_active': 'active']" ref="collapse" @click="selectcollapse()" style="float: right"></i>
+        <i
+          :class="['el-collapse-item__arrow', 'el-icon-arrow-right', showForm?'is_active': 'active']"
+          ref="collapse"
+          @click="selectcollapse()"
+          style="float: right"
+        ></i>
       </div>
 
       <div class="text item">
 
-            <el-form ref="form" :model="form" label-width="80px" :rules="rules"  size="mini" v-show="showForm">
-              <el-row :gutter="24">
-                <el-col :span="8">
-                <el-form-item label="数据源" prop="dataSource">
-                    <el-select
-                    v-model="form.dataSource"
-                    clearable
-                    placeholder="请选择数据源"
-                    style="margin-left: 10px"
-
-                    @change="getDataSourceList"
+        <el-form
+          ref="form"
+          :model="form"
+          label-width="80px"
+          :rules="rules"
+          size="mini"
+          v-show="showForm"
+        >
+          <el-row :gutter="24">
+            <el-col :span="8">
+              <el-form-item
+                label="数据源"
+                prop="dataSource"
+              >
+                <el-select
+                  v-model="form.dataSource"
+                  clearable
+                  placeholder="请选择数据源"
+                  style="margin-left: 10px"
+                  @change="getDataSourceList"
                 >
-                        <el-option
-                            v-for="item in dataSourceOption"
-                            :key="item.id"
-                            :label="item.name"
-                            :value="item.name"
-                        >
-                        </el-option>
-                    </el-select>
-                </el-form-item>
-                </el-col>
-                  <el-col :span="16">
-                    <el-form-item label="主机组">
-                        <el-select
-                            v-model="form.groupids"
-                            clearable
-                            multiple
-                            filterable
-                            :loading="groupLoading"
-                            placeholder="请选择主机组"
-                            style="display: block; width: 100%;"
-                              
-                        >
-                            <el-option
-                            v-for="item in optionGroups"
-                            :key="item.groupid"
-                            :label="item.name"
-                            :value="item.groupid"
-                            >
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
-                  </el-col>
+                  <el-option
+                    v-for="item in dataSourceOption"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.name"
+                  >
+                  </el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="16">
+              <el-form-item label="主机组">
+                <el-select
+                  v-model="form.groupids"
+                  clearable
+                  multiple
+                  filterable
+                  :loading="groupLoading"
+                  placeholder="请选择主机组"
+                  style="display: block; width: 100%;"
+                >
+                  <el-option
+                    v-for="item in optionGroups"
+                    :key="item.groupid"
+                    :label="item.name"
+                    :value="item.groupid"
+                  >
+                  </el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
 
-                    </el-row>
+          </el-row>
 
-                <el-form-item label="查询IP">
-                    <el-input type="textarea" v-model="form.hosts" :autosize="{ minRows: 1}"></el-input>
-                </el-form-item>
-                <el-row :gutter="24">
+          <el-form-item label="查询IP">
+            <el-input
+              type="textarea"
+              v-model="form.hosts"
+              :autosize="{ minRows: 1}"
+            ></el-input>
+          </el-form-item>
+          <el-row :gutter="24">
 
-                <el-col :span="12">
-                  <el-form-item label="时间范围">
-                      <div class="block">
-                          <el-date-picker
-                          v-model="selectTime"
-                          type="datetimerange"
-                          :picker-options="pickerOptions"
-                          range-separator="至"
-                          start-placeholder="开始时间"
-                          end-placeholder="结束时间"
-                          clearable
-                          value-format="timestamp"
-                          align="right">
-                          </el-date-picker>
-                      </div>
-                  </el-form-item>
-                </el-col>
-                <el-col  :span="12">
-                <el-form-item label="告警级别">
-                    <el-checkbox-group v-model="form.severities">
-                      <el-checkbox label="1">信息</el-checkbox>
-                      <el-checkbox label="2">警告</el-checkbox>
-                      <el-checkbox label="3">一般严重</el-checkbox>
-                      <el-checkbox label="4">严重</el-checkbox>
-                      <el-checkbox label="5">灾难</el-checkbox>
-                  </el-checkbox-group>
-                </el-form-item>
-                </el-col>
-                                </el-row>
-                <el-form-item>
-                    <el-button type="primary" @click="submitForm('form')">查询</el-button>
-                    <el-button type="error" @click="resetForm('form')">重置</el-button>
-                </el-form-item>
-            </el-form>
+            <el-col :span="10">
+              <el-form-item label="时间范围">
+                <div class="block">
+                  <el-date-picker
+                    v-model="selectTime"
+                    type="datetimerange"
+                    :picker-options="pickerOptions"
+                    range-separator="至"
+                    start-placeholder="开始时间"
+                    end-placeholder="结束时间"
+                    clearable
+                    value-format="timestamp"
+                    align="right"
+                  >
+                  </el-date-picker>
+                </div>
+              </el-form-item>
+            </el-col>
+            <el-col :span="10">
+              <el-form-item label="告警级别">
+                <el-checkbox-group v-model="form.severities">
+                  <el-checkbox label="1">信息</el-checkbox>
+                  <el-checkbox label="2">警告</el-checkbox>
+                  <el-checkbox label="3">一般严重</el-checkbox>
+                  <el-checkbox label="4">严重</el-checkbox>
+                  <el-checkbox label="5">灾难</el-checkbox>
+                </el-checkbox-group>
+              </el-form-item>
+            </el-col>
+            <el-col :span="4">
+              <el-form-item>
+                <el-button
+                  type="primary"
+                  @click="submitForm('form')"
+                >查询</el-button>
+                <el-button
+                  type="error"
+                  @click="resetForm('form')"
+                >重置</el-button>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-form>
       </div>
 
     </el-card>
     <el-card style="margin-top: 5px">
-      <div slot="header" class="clearfix">
+      <div
+        slot="header"
+        class="clearfix"
+      >
         <span style="margin-top: 3px">告警数据
         </span>
-          <el-alert
-            title="由于zabbixAPI限制,默认返回最新1000条数据"
-            type="info"
-            show-icon
-            style="display: inline; margin-left: 3px; "
+        <el-alert
+          title="由于zabbixAPI限制,默认返回最新2000条数据"
+          type="info"
+          show-icon
+          style="display: inline; margin-left: 10px; font-size: 15px"
         >
-          </el-alert>
+        </el-alert>
 
         <el-button
           type="success"
@@ -138,7 +167,7 @@
           label="问题时间"
           prop="clock"
           align="center"
-          width="150"
+          width="160"
         >
           <template slot-scope="{ row }">
             <span>{{ row.clock|transTime }}</span>
@@ -149,12 +178,15 @@
           align="center"
           width="90"
         >
-            <template slot-scope="{ row }" >
-              <!-- :style="{background: row.severity=='严重'? '#E97659':row.severity=='一般严重'?'#FFA059': '#ED3F14'}" -->
-              <div :class="addAlertLevel(row.severity)" width="20px">
-                <span >{{ row.severity }}</span>
-              </div>
-            </template>
+          <template slot-scope="{ row }">
+            <!-- :style="{background: row.severity=='严重'? '#E97659':row.severity=='一般严重'?'#FFA059': '#ED3F14'}" -->
+            <div
+              :class="addAlertLevel(row.severity)"
+              width="20px"
+            >
+              <span>{{ row.severity }}</span>
+            </div>
+          </template>
 
         </el-table-column>
         <el-table-column
@@ -176,14 +208,14 @@
           </template>
         </el-table-column>
 
-
         <el-table-column
           label="是否恢复"
           align="center"
           min-width="40"
         >
           <template slot-scope="{ row }">
-            <span>{{ row.r_eventid }}</span>
+            <span v-if="row.r_eventid==0">否</span>
+            <span v-else>是</span>
           </template>
         </el-table-column>
 
@@ -193,10 +225,10 @@
           width="120"
         >
           <template slot-scope="{ row }">
-            <span>{{ row.r_clock|transTime }}</span>
+            <span v-if="row.r_eventid==0">-</span>
+            <span v-else>{{ row.r_clock|transTime }}</span>
           </template>
         </el-table-column>
-
 
       </el-table>
       <pagination
@@ -207,7 +239,6 @@
         @pagination="getList"
       />
     </el-card>
-
 
   </div>
 </template>
@@ -231,33 +262,33 @@ export default {
   directives: { waves },
   data () {
     return {
-        pickerOptions: {
-          shortcuts: [{
-            text: '最近一周',
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
-              picker.$emit('pick', [start, end]);
-            }
-          }, {
-            text: '最近一个月',
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-              picker.$emit('pick', [start, end]);
-            }
-          }, {
-            text: '最近三个月',
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
-              picker.$emit('pick', [start, end]);
-            }
-          }]
-        },
+      pickerOptions: {
+        shortcuts: [{
+          text: '最近一周',
+          onClick (picker) {
+            const end = new Date();
+            const start = new Date();
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+            picker.$emit('pick', [start, end]);
+          }
+        }, {
+          text: '最近一个月',
+          onClick (picker) {
+            const end = new Date();
+            const start = new Date();
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+            picker.$emit('pick', [start, end]);
+          }
+        }, {
+          text: '最近三个月',
+          onClick (picker) {
+            const end = new Date();
+            const start = new Date();
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+            picker.$emit('pick', [start, end]);
+          }
+        }]
+      },
       //是否显示按钮
       showButton: false,
       showForm: true,
@@ -300,7 +331,7 @@ export default {
 
   methods: {
     //是否显示搜索表单
-    selectcollapse(){
+    selectcollapse () {
       this.showForm = !this.showForm
     },
     // 获取告警列表
@@ -316,7 +347,7 @@ export default {
           this.listLoading = false
           //显示删除导出按钮
           this.showButton = true
-                    console.log(this.list);
+          console.log(this.list);
         });
       } else {
         this.showButton = false
@@ -344,8 +375,8 @@ export default {
         })
       }
     },
-    addAlertLevel(level){
-      switch(level){
+    addAlertLevel (level) {
+      switch (level) {
         case "未分类": return "notclassify";
         case "信息": return "infomation";
         case "警告": return "warning";
@@ -354,53 +385,53 @@ export default {
         case "灾难": return "danger";
       }
     },
-      //用于查询
+    //用于查询
     submitForm (formName) {
       this.$refs[formName].validate((valid) => {
-          if (valid) {
-              // this.getList()
-            var obj = this.form
-            var tempForm = {}
-            Object.keys(obj).forEach(function(key){
-              // console.log(key, obj[key]);
-              if(obj[key].length!=0){
-                tempForm[key]=obj[key]
-              }
-            });
-          //如果时间查询不为空，则分开写入时间
-            if(this.selectTime&&this.selectTime.length!=0){
-              tempForm["time_from"] = this.selectTime[0]
-              tempForm["time_till"] = this.selectTime[1]
+        if (valid) {
+          // this.getList()
+          var obj = this.form
+          var tempForm = {}
+          Object.keys(obj).forEach(function (key) {
+            // console.log(key, obj[key]);
+            if (obj[key].length != 0) {
+              tempForm[key] = obj[key]
             }
+          });
+          //如果时间查询不为空，则分开写入时间
+          if (this.selectTime && this.selectTime.length != 0) {
+            tempForm["time_from"] = this.selectTime[0]
+            tempForm["time_till"] = this.selectTime[1]
+          }
 
           //处理hosts
           tempForm.hosts = this.validateHost(this.form)
           this.tempForm = tempForm
-                this.listQuery= {
+          this.listQuery = {
 
             page: 1,
             size: 20,
-      },
-          this.getList()
-          } else {
-              console.log("error submit!!");
+          },
+            this.getList()
+        } else {
+          console.log("error submit!!");
           return false;
-          }
+        }
       });
     },
     //重置
     resetForm (formName) {
-        this.$refs[formName].resetFields();
+      this.$refs[formName].resetFields();
     },
     //处理表单中host数据, 输入为数组项
     validateHost (formTem) {
-        if (formTem.hosts) {
-            let hostArr = []
-            formTem.hosts.split("\n").forEach((element) => {
-                hostArr.push(element.replace(/^\s\s*/, "").replace(/\s\s*$/, ""));
-            });
-            return hostArr
-        }
+      if (formTem.hosts) {
+        let hostArr = []
+        formTem.hosts.split("\n").forEach((element) => {
+          hostArr.push(element.replace(/^\s\s*/, "").replace(/\s\s*$/, ""));
+        });
+        return hostArr
+      }
     },
     //数据导出
     handleDownload () {
@@ -415,19 +446,23 @@ export default {
           "r_eventid",
           "r_clock",
         ];
+
+        clearTimeout(this.timer);  //清除延迟执行 
         const data = this.formatJson(filterVal);
-        excel.export_json_to_excel({
-          header: tHeader,
-          data,
-          filename: this.excelName,
-        });
-        this.downloadLoading = false;
+        this.timer = setTimeout(() => {   //设置延迟执行
+
+          excel.export_json_to_excel({
+            header: tHeader,
+            data,
+            filename: "告警源-" + form.dataSource + '-' + new Date().toISOString(),
+          })
+        }, 1000);
       });
     },
     formatJson (filterVal) {
-      listAlerts({size: 1000}, this.tempForm).then((response) => {
+      listAlerts({ size: this.total }, this.tempForm).then((response) => {
         console.log(response.data);
-          this.allAlerts = response.data.results;
+        this.allAlerts = response.data.results;
       })
       return this.allAlerts.map(v => filterVal.map(j => {
         if (j === 'clock') {
@@ -448,40 +483,40 @@ export default {
 
 
 <style lang="scss">
-.is_active{
+.is_active {
   transform: rotate(90deg);
 }
 .notclassify {
-    font-weight: bold;
-    border-radius: 30px;
+  font-weight: bold;
+  border-radius: 30px;
 
-    background-color: "#97AAB3";
+  background-color: "#97AAB3";
 }
 
 .infomation {
-    font-weight: bold;
-    border-radius: 30px;
-    background-color: "#7499FF";  
+  font-weight: bold;
+  border-radius: 30px;
+  background-color: "#7499FF";
 }
 .warning {
-    font-weight: bold;
-    border-radius: 30px;
-    background-color: "#FFC859";
+  font-weight: bold;
+  border-radius: 30px;
+  background-color: "#FFC859";
 }
 .average {
-    font-weight: bold;
-    border-radius: 30px;
-    background-color: "#FFA059";
+  font-weight: bold;
+  border-radius: 30px;
+  background-color: "#FFA059";
 }
-.high >>> span{
-    font-weight: bold;
-    border-radius: 30px;
-        border: 2px solid salmon;;
-    background-color: "#E97659" !important 
+.high >>> span {
+  font-weight: bold;
+  border-radius: 30px;
+  border: 2px solid salmon;
+  background-color: "#E97659" !important;
 }
 .disaster {
-    font-weight: bold;
-    border-radius: 30px;
-    background-color: "E45959";
+  font-weight: bold;
+  border-radius: 30px;
+  background-color: "E45959";
 }
 </style>

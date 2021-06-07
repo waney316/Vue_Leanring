@@ -13,7 +13,7 @@
           <span>数据源</span>
 
           <el-select
-            v-model="listQuery.dataSource"
+            v-model="dataSource"
             clearable
             placeholder="请选择数据源"
             style="margin-left: 10px"
@@ -73,7 +73,7 @@
             </el-button>
           </div>
         </div>
-        <div v-if="listQuery.dataSource !== ''">
+        <div v-if="dataSource !== ''">
           <el-table
             :key="tableKey"
             v-loading="listLoading"
@@ -188,7 +188,6 @@
       <el-form
         ref="dataForm"
         :model="temp"
-        :rules="rules"
         label-position="left"
         label-width="80px"
         style="width: 80%; margin-left: 50px"
@@ -211,7 +210,7 @@
         <el-button @click="dialogFormVisible = false"> 关闭 </el-button>
         <el-button
           type="primary"
-          @click="updateTemplate()"
+          @click="updateData()"
         >
           确认
         </el-button>
@@ -252,21 +251,16 @@ export default {
         //分页向后端传递的参数
         page: 1,
         size: 10,
-        dataSource: ""
       },
       dialogFormVisible: false,
       //数据源选择
+      dataSource: "",
       dataSourceOption: [],
       temp: {
-        name: undefined
+        name: undefined,
       },
       downloadLoading: false,
 
-      rules: {
-        name: [
-          { required: true, message: "模板名称必须填写", trigger: "blur" },
-        ],
-      },
     };
   },
   //页面刷新时执行
@@ -277,12 +271,12 @@ export default {
   methods: {
     // 获取模板列表
     getList () {
-      if (this.listQuery.dataSource) {
+      if (this.dataSource) {
         this.listLoading = true;
         //将查询参数传递给后端
+        this.listQuery["dataSource"] = this.dataSource
+        console.log(this.listQuery);
         listTemplate(this.listQuery).then((response) => {
-          console.log(response);
-          console.log(response.data);
           this.list = response.data.results;
           this.total = response.data.count;
           this.listLoading = false
@@ -308,7 +302,6 @@ export default {
     //获取数据分类列表
     getDataSourceList () {
       getZabbixList().then(response => {
-        // console.log(response.data)
         this.dataSourceOption = response.data.results
       })
     },
@@ -316,6 +309,7 @@ export default {
     handleUpdate (row) {
       this.temp = Object.assign({}, row); // copy obj
       console.log(this.temp);
+      console.log(this.dataSource);
       this.dialogStatus = "update";
       this.dialogFormVisible = true;
       this.$nextTick(() => {
@@ -324,10 +318,36 @@ export default {
     },
 
     updateData () {
-      const data = {}
-      updateTemplate(data).then(response => {
-        console.log(response);
-      })
+      console.log(this.temp);
+      this.$refs["dataForm"].validate((valid) => {
+        if (valid) {
+          const tempData = Object.assign({}, this.temp);
+          const updateData = {
+            "templateid": tempData.templateid,
+            "name": tempData.name,
+            "dataSource": this.dataSource
+          }
+          console.log(updateData);
+          updateTemplate(updateData).then(response => {
+            console.log(response);
+            if (response.code === 0) {
+              this.$notify({
+                title: "更新成功",
+                message: response.message,
+                type: "success"
+              })
+              this.dialogFormVisible = false //关闭更新输入框
+              this.getList()   //重新获取列表
+            } else {
+              this.$notify({
+                title: "更新失败",
+                message: response.message,
+                type: "failed"
+              })
+            }
+          })
+        }
+      });
     },
     //数据删除
     handleDelete (row, index) {
@@ -344,9 +364,10 @@ export default {
           this.templateids.push(element.templateid)
         });
         const data = {
-          "dataSource": this.listQuery.dataSource,
+          "dataSource": this.dataSource,
           "templateids": this.templateids
         }
+        console.log(data);
         this.$confirm('此操作将直接删除模板, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
