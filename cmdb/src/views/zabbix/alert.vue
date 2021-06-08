@@ -1,7 +1,10 @@
 <template>
   <div class="app-container">
     <el-card class="box-card">
-      <div slot="header" class="clearfix">
+      <div
+        slot="header"
+        class="clearfix"
+      >
         <span style="margin-top: 3px">告警查询</span>
         <i
           :class="[
@@ -26,7 +29,10 @@
         >
           <el-row :gutter="24">
             <el-col :span="8">
-              <el-form-item label="数据源" prop="dataSource">
+              <el-form-item
+                label="数据源"
+                prop="dataSource"
+              >
                 <el-select
                   v-model="form.dataSource"
                   clearable
@@ -106,12 +112,14 @@
             </el-col>
             <el-col :span="4">
               <el-form-item>
-                <el-button type="primary" @click="submitForm('form')"
-                  >查询</el-button
-                >
-                <el-button type="error" @click="resetForm('form')"
-                  >重置</el-button
-                >
+                <el-button
+                  type="primary"
+                  @click="submitForm('form')"
+                >查询</el-button>
+                <el-button
+                  type="error"
+                  @click="resetForm('form')"
+                >重置</el-button>
               </el-form-item>
             </el-col>
           </el-row>
@@ -119,7 +127,10 @@
       </div>
     </el-card>
     <el-card style="margin-top: 5px">
-      <div slot="header" class="clearfix">
+      <div
+        slot="header"
+        class="clearfix"
+      >
         <span style="margin-top: 3px">告警数据 </span>
         <el-alert
           title="由于zabbixAPI限制,默认返回最新2000条数据"
@@ -159,19 +170,25 @@
             <span>{{ row.clock | transTime }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="告警级别" align="center" width="100">
+        <el-table-column
+          label="告警级别"
+          align="center"
+          width="100"
+        >
           <template slot-scope="{ row }">
             <el-tag
               :color="handleSeverity(row)"
               effect="dark"
               type="info"
-              hit="true"
             >
               {{ row.severity }}
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="主机" align="center">
+        <el-table-column
+          label="主机"
+          align="center"
+        >
           <template slot-scope="{ row }">
             <span>{{ row.host }}</span>
           </template>
@@ -180,21 +197,35 @@
           label="告警名称"
           prop="name"
           align="center"
-          min-width="200"
+          min-width="180"
         >
           <template slot-scope="{ row }">
             <span>{{ row.name }}</span>
           </template>
         </el-table-column>
 
-        <el-table-column label="是否恢复" align="center" min-width="40">
+        <el-table-column
+          label="是否恢复"
+          align="center"
+          min-width="40"
+        >
           <template slot-scope="{ row }">
-            <span v-if="row.r_eventid == 0">否</span>
-            <span v-else>是</span>
+            <el-tag
+              type="danger"
+              v-if="row.r_eventid == 0"
+            >否</el-tag>
+            <el-tag
+              type="success"
+              v-else
+            >是</el-tag>
           </template>
         </el-table-column>
 
-        <el-table-column label="恢复时间" align="center" width="120">
+        <el-table-column
+          label="恢复时间"
+          align="center"
+          width="160"
+        >
           <template slot-scope="{ row }">
             <span v-if="row.r_eventid == 0">-</span>
             <span v-else>{{ row.r_clock | transTime }}</span>
@@ -225,13 +256,13 @@ export default {
   name: "zabbixAlert",
   components: { Pagination },
   directives: { waves },
-  data() {
+  data () {
     return {
       pickerOptions: {
         shortcuts: [
           {
             text: "最近一周",
-            onClick(picker) {
+            onClick (picker) {
               const end = new Date();
               const start = new Date();
               start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
@@ -240,7 +271,7 @@ export default {
           },
           {
             text: "最近一个月",
-            onClick(picker) {
+            onClick (picker) {
               const end = new Date();
               const start = new Date();
               start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
@@ -249,7 +280,7 @@ export default {
           },
           {
             text: "最近三个月",
-            onClick(picker) {
+            onClick (picker) {
               const end = new Date();
               const start = new Date();
               start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
@@ -295,17 +326,17 @@ export default {
     };
   },
   //页面刷新时执行
-  created() {
+  created () {
     this.getDataSourceList();
   },
 
   methods: {
     //是否显示搜索表单
-    selectcollapse() {
+    selectcollapse () {
       this.showForm = !this.showForm;
     },
     // 获取告警列表
-    getList() {
+    getList () {
       if (this.tempForm) {
         this.listLoading = true;
         //将查询参数传递给后端
@@ -323,7 +354,7 @@ export default {
     },
 
     //获取数据分类列表
-    getDataSourceList() {
+    getDataSourceList () {
       getZabbixList().then(response => {
         // console.log(response.data)
         this.dataSourceOption = response.data.results;
@@ -331,7 +362,7 @@ export default {
       this.getHostGroupList();
     },
     //主机主机组列表
-    getHostGroupList() {
+    getHostGroupList () {
       if (this.form.dataSource) {
         const data = {
           dataSource: this.form.dataSource
@@ -342,7 +373,7 @@ export default {
         });
       }
     },
-    addAlertLevel(level) {
+    addAlertLevel (level) {
       switch (level) {
         case "未分类":
           return "notclassify";
@@ -359,7 +390,7 @@ export default {
       }
     },
 
-    handleSeverity(row) {
+    handleSeverity (row) {
       console.log(row.severity);
       switch (row.severity) {
         case "未分类":
@@ -377,13 +408,13 @@ export default {
       }
     },
     //用于查询
-    submitForm(formName) {
+    submitForm (formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
           // this.getList()
           var obj = this.form;
           var tempForm = {};
-          Object.keys(obj).forEach(function(key) {
+          Object.keys(obj).forEach(function (key) {
             // console.log(key, obj[key]);
             if (obj[key].length != 0) {
               tempForm[key] = obj[key];
@@ -391,8 +422,8 @@ export default {
           });
           //如果时间查询不为空，则分开写入时间
           if (this.selectTime && this.selectTime.length != 0) {
-            tempForm["time_from"] = this.selectTime[0];
-            tempForm["time_till"] = this.selectTime[1];
+            tempForm["time_from"] = Math.round(this.selectTime[0] / 1000);
+            tempForm["time_till"] = Math.round(this.selectTime[1] / 1000);
           }
 
           //处理hosts
@@ -410,11 +441,11 @@ export default {
       });
     },
     //重置
-    resetForm(formName) {
+    resetForm (formName) {
       this.$refs[formName].resetFields();
     },
     //处理表单中host数据, 输入为数组项
-    validateHost(formTem) {
+    validateHost (formTem) {
       if (formTem.hosts) {
         let hostArr = [];
         formTem.hosts.split("\n").forEach(element => {
@@ -424,7 +455,7 @@ export default {
       }
     },
     //数据导出
-    handleDownload() {
+    handleDownload () {
       this.downloadLoading = true;
       import("@/vendor/Export2Excel").then(excel => {
         const tHeader = [
@@ -458,7 +489,7 @@ export default {
         }, 1000);
       });
     },
-    formatJson(filterVal) {
+    formatJson (filterVal) {
       listAlerts({ size: this.total }, this.tempForm).then(response => {
         console.log(response.data);
         this.allAlerts = response.data.results;
