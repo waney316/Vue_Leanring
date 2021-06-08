@@ -1,136 +1,119 @@
 <template>
   <div class="app-container">
     <el-card class="box-card">
-      <div
-        slot="header"
-        class="clearfix"
-      >
+      <div slot="header" class="clearfix">
         <span style="margin-top: 3px">告警查询</span>
-        <i
-          :class="[
-            'el-collapse-item__arrow',
-            'el-icon-arrow-right',
-            showForm ? 'is_active' : 'active'
-          ]"
-          ref="collapse"
-          @click="selectcollapse()"
-          style="float: right"
-        ></i>
       </div>
-
-      <div class="text item">
-        <el-form
-          ref="form"
-          :model="form"
-          label-width="80px"
-          :rules="rules"
-          size="mini"
-          v-show="showForm"
-        >
-          <el-row :gutter="24">
-            <el-col :span="8">
-              <el-form-item
-                label="数据源"
-                prop="dataSource"
-              >
-                <el-select
-                  v-model="form.dataSource"
-                  clearable
-                  placeholder="请选择数据源"
-                  style="margin-left: 10px"
-                  @change="getDataSourceList"
-                >
-                  <el-option
-                    v-for="item in dataSourceOption"
-                    :key="item.id"
-                    :label="item.name"
-                    :value="item.name"
-                  >
-                  </el-option>
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :span="16">
-              <el-form-item label="主机组">
-                <el-select
-                  v-model="form.groupids"
-                  clearable
-                  multiple
-                  filterable
-                  :loading="groupLoading"
-                  placeholder="请选择主机组"
-                  style="display: block; width: 100%;"
-                >
-                  <el-option
-                    v-for="item in optionGroups"
-                    :key="item.groupid"
-                    :label="item.name"
-                    :value="item.groupid"
-                  >
-                  </el-option>
-                </el-select>
-              </el-form-item>
-            </el-col>
-          </el-row>
-
-          <el-form-item label="查询IP">
-            <el-input
-              type="textarea"
-              v-model="form.hosts"
-              :autosize="{ minRows: 1 }"
-            ></el-input>
-          </el-form-item>
-          <el-row :gutter="24">
-            <el-col :span="10">
-              <el-form-item label="时间范围">
-                <div class="block">
-                  <el-date-picker
-                    v-model="selectTime"
-                    type="datetimerange"
-                    :picker-options="pickerOptions"
-                    range-separator="至"
-                    start-placeholder="开始时间"
-                    end-placeholder="结束时间"
+      <transition name="slide-fade">
+        <div class="text item" v-show="show">
+          <el-form
+            ref="form"
+            :model="form"
+            label-width="80px"
+            :rules="rules"
+            size="mini"
+          >
+            <el-row :gutter="24">
+              <el-col :span="8">
+                <el-form-item label="数据源" prop="dataSource">
+                  <el-select
+                    v-model="form.dataSource"
                     clearable
-                    value-format="timestamp"
-                    align="right"
+                    placeholder="请选择数据源"
+                    style="margin-left: 10px"
+                    @change="getDataSourceList"
                   >
-                  </el-date-picker>
-                </div>
-              </el-form-item>
-            </el-col>
-            <el-col :span="10">
-              <el-form-item label="告警级别">
-                <el-checkbox-group v-model="form.severities">
-                  <el-checkbox label="1">信息</el-checkbox>
-                  <el-checkbox label="2">警告</el-checkbox>
-                  <el-checkbox label="3">一般严重</el-checkbox>
-                  <el-checkbox label="4">严重</el-checkbox>
-                  <el-checkbox label="5">灾难</el-checkbox>
-                </el-checkbox-group>
-              </el-form-item>
-            </el-col>
-            <el-col :span="4">
-              <el-form-item>
-                <el-button
-                  type="primary"
-                  @click="submitForm('form')"
-                >查询</el-button>
-                <el-button
-                  type="error"
-                  @click="resetForm('form')"
-                >重置</el-button>
-              </el-form-item>
-            </el-col>
-          </el-row>
-        </el-form>
+                    <el-option
+                      v-for="item in dataSourceOption"
+                      :key="item.id"
+                      :label="item.name"
+                      :value="item.name"
+                    >
+                    </el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="16">
+                <el-form-item label="主机组">
+                  <el-select
+                    v-model="form.groupids"
+                    clearable
+                    multiple
+                    filterable
+                    :loading="groupLoading"
+                    placeholder="请选择主机组"
+                    style="display: block; width: 100%;"
+                  >
+                    <el-option
+                      v-for="item in optionGroups"
+                      :key="item.groupid"
+                      :label="item.name"
+                      :value="item.groupid"
+                    >
+                    </el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
+
+            <el-form-item label="查询IP">
+              <el-input
+                type="textarea"
+                v-model="form.hosts"
+                :autosize="{ minRows: 1 }"
+              ></el-input>
+            </el-form-item>
+            <el-row :gutter="24">
+              <el-col :span="10">
+                <el-form-item label="时间范围">
+                  <div class="block">
+                    <el-date-picker
+                      v-model="selectTime"
+                      type="datetimerange"
+                      :picker-options="pickerOptions"
+                      range-separator="至"
+                      start-placeholder="开始时间"
+                      end-placeholder="结束时间"
+                      clearable
+                      value-format="timestamp"
+                      align="right"
+                    >
+                    </el-date-picker>
+                  </div>
+                </el-form-item>
+              </el-col>
+              <el-col :span="10">
+                <el-form-item label="告警级别">
+                  <el-checkbox-group v-model="form.severities">
+                    <el-checkbox label="1">信息</el-checkbox>
+                    <el-checkbox label="2">警告</el-checkbox>
+                    <el-checkbox label="3">一般严重</el-checkbox>
+                    <el-checkbox label="4">严重</el-checkbox>
+                    <el-checkbox label="5">灾难</el-checkbox>
+                  </el-checkbox-group>
+                </el-form-item>
+              </el-col>
+              <el-col :span="4">
+                <el-form-item>
+                  <el-button type="primary" @click="submitForm('form')"
+                    >查询</el-button
+                  >
+                  <el-button type="error" @click="resetForm('form')"
+                    >重置</el-button
+                  >
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </el-form>
+        </div>
+      </transition>
+      <div style="text-align:center; font-size: 12px" @click="show = !show">
+        <i class="el-icon-arrow-up" v-show="show">隐藏查询条件</i>
+        <i class="el-icon-arrow-down" v-show="!show">展开查询条件</i>
       </div>
     </el-card>
     <el-card style="margin-top: 5px">
-      <div
-        slot="header"
-        class="clearfix"
-      >
+      <div slot="header" class="clearfix">
         <span style="margin-top: 3px">告警数据 </span>
         <el-alert
           title="由于zabbixAPI限制,默认返回最新2000条数据"
@@ -170,25 +153,14 @@
             <span>{{ row.clock | transTime }}</span>
           </template>
         </el-table-column>
-        <el-table-column
-          label="告警级别"
-          align="center"
-          width="100"
-        >
+        <el-table-column label="告警级别" align="center" width="100">
           <template slot-scope="{ row }">
-            <el-tag
-              :color="handleSeverity(row)"
-              effect="dark"
-              type="info"
-            >
+            <el-tag :color="handleSeverity(row)" effect="dark" type="info">
               {{ row.severity }}
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column
-          label="主机"
-          align="center"
-        >
+        <el-table-column label="主机" align="center">
           <template slot-scope="{ row }">
             <span>{{ row.host }}</span>
           </template>
@@ -204,28 +176,14 @@
           </template>
         </el-table-column>
 
-        <el-table-column
-          label="是否恢复"
-          align="center"
-          min-width="40"
-        >
+        <el-table-column label="是否恢复" align="center" min-width="40">
           <template slot-scope="{ row }">
-            <el-tag
-              type="danger"
-              v-if="row.r_eventid == 0"
-            >否</el-tag>
-            <el-tag
-              type="success"
-              v-else
-            >是</el-tag>
+            <el-tag type="danger" v-if="row.r_eventid == 0">否</el-tag>
+            <el-tag type="success" v-else>是</el-tag>
           </template>
         </el-table-column>
 
-        <el-table-column
-          label="恢复时间"
-          align="center"
-          width="160"
-        >
+        <el-table-column label="恢复时间" align="center" width="160">
           <template slot-scope="{ row }">
             <span v-if="row.r_eventid == 0">-</span>
             <span v-else>{{ row.r_clock | transTime }}</span>
@@ -256,13 +214,13 @@ export default {
   name: "zabbixAlert",
   components: { Pagination },
   directives: { waves },
-  data () {
+  data() {
     return {
       pickerOptions: {
         shortcuts: [
           {
             text: "最近一周",
-            onClick (picker) {
+            onClick(picker) {
               const end = new Date();
               const start = new Date();
               start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
@@ -271,7 +229,7 @@ export default {
           },
           {
             text: "最近一个月",
-            onClick (picker) {
+            onClick(picker) {
               const end = new Date();
               const start = new Date();
               start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
@@ -280,7 +238,7 @@ export default {
           },
           {
             text: "最近三个月",
-            onClick (picker) {
+            onClick(picker) {
               const end = new Date();
               const start = new Date();
               start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
@@ -291,7 +249,7 @@ export default {
       },
       //是否显示按钮
       showButton: false,
-      showForm: true,
+      show: true,
       tableKey: 0,
       allAlerts: [],
       list: null,
@@ -326,17 +284,13 @@ export default {
     };
   },
   //页面刷新时执行
-  created () {
+  created() {
     this.getDataSourceList();
   },
 
   methods: {
-    //是否显示搜索表单
-    selectcollapse () {
-      this.showForm = !this.showForm;
-    },
     // 获取告警列表
-    getList () {
+    getList() {
       if (this.tempForm) {
         this.listLoading = true;
         //将查询参数传递给后端
@@ -354,7 +308,7 @@ export default {
     },
 
     //获取数据分类列表
-    getDataSourceList () {
+    getDataSourceList() {
       getZabbixList().then(response => {
         // console.log(response.data)
         this.dataSourceOption = response.data.results;
@@ -362,7 +316,7 @@ export default {
       this.getHostGroupList();
     },
     //主机主机组列表
-    getHostGroupList () {
+    getHostGroupList() {
       if (this.form.dataSource) {
         const data = {
           dataSource: this.form.dataSource
@@ -373,24 +327,8 @@ export default {
         });
       }
     },
-    addAlertLevel (level) {
-      switch (level) {
-        case "未分类":
-          return "notclassify";
-        case "信息":
-          return "infomation";
-        case "警告":
-          return "warning";
-        case "一般严重":
-          return "average";
-        case "严重":
-          return "high";
-        case "灾难":
-          return "danger";
-      }
-    },
 
-    handleSeverity (row) {
+    handleSeverity(row) {
       console.log(row.severity);
       switch (row.severity) {
         case "未分类":
@@ -408,13 +346,13 @@ export default {
       }
     },
     //用于查询
-    submitForm (formName) {
+    submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
           // this.getList()
           var obj = this.form;
           var tempForm = {};
-          Object.keys(obj).forEach(function (key) {
+          Object.keys(obj).forEach(function(key) {
             // console.log(key, obj[key]);
             if (obj[key].length != 0) {
               tempForm[key] = obj[key];
@@ -441,11 +379,11 @@ export default {
       });
     },
     //重置
-    resetForm (formName) {
+    resetForm(formName) {
       this.$refs[formName].resetFields();
     },
     //处理表单中host数据, 输入为数组项
-    validateHost (formTem) {
+    validateHost(formTem) {
       if (formTem.hosts) {
         let hostArr = [];
         formTem.hosts.split("\n").forEach(element => {
@@ -455,7 +393,7 @@ export default {
       }
     },
     //数据导出
-    handleDownload () {
+    handleDownload() {
       this.downloadLoading = true;
       import("@/vendor/Export2Excel").then(excel => {
         const tHeader = [
@@ -489,7 +427,7 @@ export default {
         }, 1000);
       });
     },
-    formatJson (filterVal) {
+    formatJson(filterVal) {
       listAlerts({ size: this.total }, this.tempForm).then(response => {
         console.log(response.data);
         this.allAlerts = response.data.results;
@@ -508,40 +446,15 @@ export default {
 };
 </script>
 
-<style lang="scss">
-.is_active {
-  transform: rotate(90deg);
-}
-.el-table .notclassify {
-  font-weight: bold;
-  border-radius: 30px;
-  background-color: "#97AAB3";
+<style scoped lang="scss">
+.slide-fade-enter-active,
+.slide-fade-leave-active {
+  transition: all 0.3s ease;
 }
 
-.infomation {
-  font-weight: bold;
-  border-radius: 30px;
-  background-color: "#7499FF";
-}
-.el-table td .cell .warning {
-  font-weight: bold;
-  border-radius: 30px;
-  background-color: "#FFC859";
-}
-.average {
-  font-weight: bold;
-  border-radius: 30px;
-  background-color: "#FFA059";
-}
-.high >>> span {
-  font-weight: bold;
-  border-radius: 30px;
-  border: 2px solid salmon;
-  background-color: "#E97659" !important;
-}
-.disaster {
-  font-weight: bold;
-  border-radius: 30px;
-  background-color: "E45959";
+.slide-fade-enter, .slide-fade-leave-to
+/* .slide-fade-leave-active for below version 2.1.8 */ {
+  transform: translateX(10px);
+  opacity: 0;
 }
 </style>
