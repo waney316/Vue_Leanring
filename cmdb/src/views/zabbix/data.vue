@@ -15,7 +15,7 @@
       <transition name="slide-fade">
         <div class="text item" v-show="show">
           <el-form ref="form" :model="form" label-width="80px" :rules="rules">
-            <el-form-item label="数据源">
+            <el-form-item label="数据源" prop="dataSource">
               <el-select
                 v-model="form.dataSource"
                 clearable
@@ -32,7 +32,7 @@
                 </el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="监控项">
+            <el-form-item label="监控项" prop="key">
               <el-select
                 v-model="form.key"
                 clearable
@@ -51,7 +51,7 @@
               </el-select>
             </el-form-item>
 
-            <el-form-item label="时间范围">
+            <el-form-item label="时间范围" prop="time_from">
               <div class="block">
                 <el-date-picker
                   v-model="time"
@@ -67,26 +67,24 @@
                 </el-date-picker>
               </div>
             </el-form-item>
-            <el-form-item label="查询IP">
+            <el-form-item label="查询IP" prop="host">
               <el-input type="textarea" v-model="form.host"></el-input>
             </el-form-item>
             <el-form-item>
               <el-button type="primary" @click="submitForm('form')"
-                >查询并导出</el-button
+                >创建查询</el-button
               >
-              <el-button type="error" @click="resetForm('form')"
+              <el-button type="danger" @click="resetForm('form')"
                 >重置</el-button
               >
             </el-form-item>
           </el-form>
         </div>
       </transition>
-      <el-button
-        class="el-collapse-item__arrow el-icon-arrow-right"
-        @click="show = !show"
-        type="mini"
-        >隐藏</el-button
-      >
+      <div style="text-align:center; font-size: 12px" @click="show = !show">
+        <i class="el-icon-arrow-up" v-show="show">隐藏查询条件</i>
+        <i class="el-icon-arrow-down" v-show="!show">展开查询条件</i>
+      </div>
     </el-card>
 
     <el-dialog title="监控键值管理" :visible.sync="dialogFormVisible">
@@ -115,12 +113,32 @@
                   data.name.toLowerCase().includes(search.toLowerCase())
               )
             "
+            border
+            fit
+            highlight-current-row
             style="width: 100%"
           >
-            <el-table-column label="数据源" prop="date"> </el-table-column>
-            <el-table-column label="查询时间" prop="name"> </el-table-column>
-            <el-table-column label="查询键值" prop="name"> </el-table-column>
-            <el-table-column label="任务状态" prop="name"> </el-table-column>
+            <el-table-column label="数据源" prop="task_name" align="center">
+              <template slot-scope="{ row }">
+                <span>{{ row.task_name }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="查询时间" prop="create_time" align="center">
+              <template slot-scope="{ row }">
+                <span>{{ row.create_time }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="查询键值" prop="task_name" align="center">
+              <template slot-scope="{ row }">
+                <span>{{ row.task_name }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="任务状态" prop="task_status" align="center">
+              <template slot-scope="{ row }">
+                <span>{{ row.task_status }}</span>
+              </template>
+            </el-table-column>
+
             <el-table-column align="right">
               <template slot="header" slot-scope="scope">
                 <el-input
@@ -153,42 +171,38 @@
           </el-table>
         </template>
       </div>
+      <pagination
+        v-show="total > 0"
+        :total="total"
+        :page.sync="listQuery.page"
+        :limit.sync="listQuery.size"
+        @pagination="getLoadDataHistory"
+      />
     </el-card>
   </div>
 </template>
 
 <script>
 import { getZabbixList } from "@/api/zabbix";
+import { getTaskHistory } from "@/api/tasks";
+import { parseTime } from "@/utils";
+import Pagination from "@/components/Pagination";
 
 export default {
+  components: { Pagination },
   data() {
     return {
-      show: false,
+      list: null,
+      total: 0,
+      listQuery: {
+        page: 1,
+        size: 10
+      },
+      show: true,
       dialogFormVisible: false,
       dialogStatus: "",
       time: "",
-      tableData: [
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1517 弄"
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1519 弄"
-        },
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1516 弄"
-        }
-      ],
+      tableData: [],
       search: "",
 
       pickerOptions: {
@@ -235,7 +249,6 @@ export default {
       downloadLoading: false,
 
       //查询form
-
       form: {
         dataSource: "",
         time_from: "",
@@ -253,8 +266,11 @@ export default {
       }
     };
   },
+
   mounted() {
+    //刷新页面时获取数据源列表和任务列表
     this.getDataSourceList();
+    this.getLoadDataHistory();
   },
   methods: {
     keyManager() {
@@ -285,6 +301,7 @@ export default {
 
     //用户重置
     resetForm(formName) {
+      console.log(this.$refs[formName]);
       this.$refs[formName].resetFields();
     },
     //处理表单中host数据, 输入为数组项
@@ -297,6 +314,19 @@ export default {
         return hostArr;
       }
     },
+    //查询任务列表结果
+    getLoadDataHistory() {
+      //添加请求属性
+      Object.assign(this.listQuery, { task_type: "load_data" });
+      console.log(this.listQuery);
+      getTaskHistory().then(response => {
+        this.total = response.data.count;
+        this.tableData = response.data.results;
+        console.log(response);
+      });
+    },
+
+    //根据任务结果生成数据存储
     handleDownload() {
       this.downloadLoading = true;
       import("@/vendor/Export2Excel").then(excel => {
@@ -335,12 +365,11 @@ export default {
 };
 </script>
 <style scoped lang="scss">
-.slide-fade-enter-active {
+.slide-fade-enter-active,
+.slide-fade-leave-active {
   transition: all 0.3s ease;
 }
-.slide-fade-leave-active {
-  transition: all 0.8s cubic-bezier(1, 0.5, 0.8, 1);
-}
+
 .slide-fade-enter, .slide-fade-leave-to
 /* .slide-fade-leave-active for below version 2.1.8 */ {
   transform: translateX(10px);
