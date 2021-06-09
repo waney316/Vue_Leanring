@@ -264,8 +264,7 @@
       :visible.sync="dialogTaskVisible"
     >
       <el-form
-        ref="dataForm"
-        :rules="rules"
+        ref="detailForm"
         :model="rowTask"
         label-position="left"
         label-width="80px"
@@ -299,16 +298,6 @@
             v-model="rowTask.create_time"
           />
         </el-form-item>
-        <el-form-item
-          label="创建时间"
-          prop="create_time"
-        >
-
-          <el-input
-            :disabled="true"
-            v-model="rowTask.create_time"
-          />
-        </el-form-item>
 
         <el-form-item
           label="数据源"
@@ -326,10 +315,12 @@
           <el-input
             :disabled="true"
             v-model="rowTask.task_desc.time_from"
+            inline="true"
           />
           <el-input
             :disabled="true"
             v-model="rowTask.task_desc.time_till"
+            inline="true"
           />
         </el-form-item>
         <el-form-item
@@ -428,7 +419,7 @@ export default {
         task_desc: {
           key: "",
           name: "",
-          hosts: "",
+          hosts: [],
           time_from: "",
           time_till: "",
           dataSource: ""
