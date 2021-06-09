@@ -4,7 +4,7 @@ import request from "@/utils/request";
 export function getTaskHistory() {
   return request({
     url: "/api/v1/tasks/history/",
-    method: "get",
+    method: "get"
   });
 }
 
@@ -12,6 +12,16 @@ export function getTaskHistory() {
 export function delTaskHistory(pk) {
   return request({
     url: "/api/v1/tasks/history/" + pk,
-    method: "delete",
+    method: "delete"
+  });
+}
+
+//导出任务结果
+export function getTaskResult(params) {
+  console.log(params);
+  return request({
+    url: "/api/v1/tasks/history-result/",
+    method: "get",
+    params
   });
 }
