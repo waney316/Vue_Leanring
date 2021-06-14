@@ -2,13 +2,13 @@
   <div class="app-container">
     <el-card class="box-card">
       <div slot="header" class="clearfix">
-        <span>Prometheus数据源管理</span>
+        <span>监控项键值管理</span>
       </div>
       <div class="text item">
         <div class="filter-container">
           <el-input
             v-model="listQuery.search"
-            placeholder="请输入数据源名称或地址"
+            placeholder="请输入监控项名称或key"
             style="width: 200px"
             class="filter-item"
             @keyup.enter.native="handleFilter"
@@ -43,15 +43,16 @@
           fit
           highlight-current-row
           style="width: 100%; margin-top:10px"
+          @sort-change="sortChange"
         >
-          <el-table-column label="资源池" align="center" width="120">
+          <el-table-column label="所属类型" align="center" width="120">
             <template slot-scope="{ row }">
-              <span>{{ row.source_room }}</span>
+              <span>{{ row.type }}</span>
             </template>
           </el-table-column>
 
           <el-table-column
-            label="数据源名称"
+            label="监控项名称"
             prop="name"
             align="center"
             min-width="120"
@@ -61,56 +62,28 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="API地址" align="center" min-width="120">
+          <el-table-column label="KEY值" align="center" min-width="120">
             <template slot-scope="{ row }">
-              <span>{{ row.url }}</span>
+              <span>{{ row.key }}</span>
             </template>
           </el-table-column>
 
-          <el-table-column label="告警地址" align="center" width="160">
+          <el-table-column label="更新时间" align="center" width="160">
             <template slot-scope="{ row }">
-              <span v-if="row.alert_url">{{ row.alert_url }}</span>
-              <span v-else>Null</span>
+              <span>{{ row.update_time.split(".")[0] }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column width="200" label="备注" align="center">
+            <template slot-scope="{ row }">
+              <span>{{ row.remarks }}</span>
             </template>
           </el-table-column>
 
-          <el-table-column
-            label="API"
-            align="center"
-            class-name="small-padding fixed-width"
-            width="240"
-          >
-            <template slot-scope="{ row, $index }">
-              <el-button-group>
-                <el-button
-                  type="success"
-                  size="mini"
-                  @click="reloadService(row.id, 'health')"
-                >
-                  健康检查
-                </el-button>
-                <el-button
-                  type="success"
-                  size="mini"
-                  @click="reloadService(row.id, 'reload')"
-                >
-                  热加载
-                </el-button>
-                <el-button
-                  type="success"
-                  size="mini"
-                  @click="reloadService(row.id, 'quit')"
-                >
-                  停止
-                </el-button>
-              </el-button-group>
-            </template>
-          </el-table-column>
           <el-table-column
             label="操作"
             align="center"
             class-name="small-padding fixed-width"
-            width="220"
+            width="240"
           >
             <template slot-scope="{ row, $index }">
               <el-button type="primary" size="mini" @click="handleUpdate(row)">
@@ -144,29 +117,35 @@
         :rules="rules"
         :model="temp"
         label-position="left"
-        label-width="100px"
+        label-width="80px"
         style="width: 80%; margin-left: 50px"
       >
-        <el-form-item label="资源池名称" prop="source_room">
-          <el-input v-model="temp.source_room" placeholder="请输入资源池名称" />
+        <el-form-item label="名称" prop="name">
+          <el-input v-model="temp.name" placeholder="请输入监控项名称" />
         </el-form-item>
 
-        <el-form-item label="数据源名称" prop="name">
-          <el-input v-model="temp.name" placeholder="请输入数据源名称" />
+        <el-form-item label="KEY" prop="key">
+          <el-input v-model="temp.key" placeholder="请输入监控项键值信息" />
         </el-form-item>
-        <el-form-item label="API地址" prop="url">
-          <el-input v-model="temp.url" placeholder="请输入API地址" />
-        </el-form-item>
-        <el-form-item label="告警地址" prop="type">
-          <el-select v-model="temp.alert_url" clearable placeholder="请选择">
+        <el-form-item label="类型" prop="type">
+          <el-select v-model="temp.type" clearable placeholder="请选择">
             <el-option
               v-for="item in options"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
             >
             </el-option>
           </el-select>
+        </el-form-item>
+
+        <el-form-item label="备注信息">
+          <el-input
+            v-model="temp.remarks"
+            :autosize="{ minRows: 2, maxRows: 4 }"
+            type="textarea"
+            placeholder="请输入备注信息"
+          />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -202,20 +181,13 @@
 
 <script>
 //分类的增删改查
-import {
-  getPromList,
-  updateProm,
-  delProm,
-  createProm,
-  getAlertList,
-  reloadProm
-} from "@/api/prom";
+import { getItemList, updateItem, delItem, createItem } from "@/api/cmdb";
 
 import waves from "@/directive/waves"; // waves directive
 import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
 import { parseTime } from "@/utils";
 export default {
-  name: "PromInfo",
+  name: "ItemInfo",
   components: { Pagination },
   directives: { waves },
   data() {
@@ -232,31 +204,38 @@ export default {
       //分类选择
       classifyOption: [],
       temp: {
-        source_room: "",
+        // id: undefined,
         name: "",
-        url: "",
-        alert_url: "",
+        key: "",
+        type: "",
         remarks: ""
       },
-      options: [],
+      options: [
+        { label: "zabbix", value: "zabbix" },
+        { label: "prometheus", value: "prometheus" },
+        { label: "其他", value: "other" }
+      ],
 
       //信息
       info: "",
       dialogFormVisible: false,
       dialogStatus: "",
       textMap: {
-        update: "更新Prometheus数据源",
-        create: "添加Prometheus数据源"
+        update: "更新监控项",
+        create: "添加监控项"
       },
       dialogInfoVisible: false,
       dialogPvVisible: false,
       pvData: [],
       rules: {
         name: [
-          { required: true, message: "数据源名称必须填写", trigger: "blur" }
+          { required: true, message: "监控项名称必须填写", trigger: "blur" }
         ],
-        url: [
-          { required: true, message: "数据源API地址必须填写", trigger: "blur" }
+        key: [
+          { required: true, message: "监控项key必须填写", trigger: "blur" }
+        ],
+        type: [
+          { required: true, message: "监控项须关联数据源类型", trigger: "blur" }
         ]
       },
       downloadLoading: false
@@ -265,55 +244,18 @@ export default {
   //页面刷新时执行
   created() {
     this.getList();
-    this.getTotalAlert();
   },
 
   methods: {
-    //获取数据源列表
+    //获取zabbix数据源列表
     getList() {
       this.listLoading = true;
-      getPromList(this.listQuery).then(response => {
+      getItemList(this.listQuery).then(response => {
         console.log(response.data);
         this.list = response.data.results;
         this.total = response.data.count;
         this.listLoading = false;
       });
-    },
-    //获取当前所有告警源列表
-    getTotalAlert() {
-      getAlertList().then(response => {
-        console.log(response);
-        this.options = response.data.results;
-      });
-    },
-    //热加载服务
-    reloadService(id, action) {
-      this.$confirm(
-        "API操作需要服务配置有web.enable-lifecycle, 否则不会生效！",
-        "提示",
-        {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }
-      )
-        .then(() => {
-          reloadProm(id, { action: action }).then(resposne => {
-            console.log(resposne);
-            if (resposne.code === 0) {
-              this.$message({
-                type: "success",
-                message: resposne.message
-              });
-            }
-          });
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消操作"
-          });
-        });
     },
 
     handleFilter() {
@@ -350,7 +292,7 @@ export default {
     createData() {
       this.$refs["dataForm"].validate(valid => {
         if (valid) {
-          createProm(this.temp).then(response => {
+          createItem(this.temp).then(response => {
             console.log(response);
             // 如果后端返回的状态码为0,则创建成功
             if (response.code === 0) {
@@ -390,7 +332,7 @@ export default {
         if (valid) {
           const tempData = Object.assign({}, this.temp);
           // console.log(tempData);
-          updateProm(tempData, tempData.id).then(response => {
+          updateItem(tempData, tempData.id).then(response => {
             console.log(response);
             if (response.code === 0) {
               this.$notify({
@@ -421,7 +363,7 @@ export default {
         type: "warning"
       })
         .then(() => {
-          delProm(row.id).then(response => {
+          delItem(row.id).then(response => {
             console.log(response);
             if (response.code === 0) {
               this.$notify({

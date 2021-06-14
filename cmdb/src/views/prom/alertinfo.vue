@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-card class="box-card">
       <div slot="header" class="clearfix">
-        <span>Prometheus数据源管理</span>
+        <span>Alertmanager数据源管理</span>
       </div>
       <div class="text item">
         <div class="filter-container">
@@ -67,13 +67,6 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="告警地址" align="center" width="160">
-            <template slot-scope="{ row }">
-              <span v-if="row.alert_url">{{ row.alert_url }}</span>
-              <span v-else>Null</span>
-            </template>
-          </el-table-column>
-
           <el-table-column
             label="API"
             align="center"
@@ -96,13 +89,6 @@
                 >
                   热加载
                 </el-button>
-                <el-button
-                  type="success"
-                  size="mini"
-                  @click="reloadService(row.id, 'quit')"
-                >
-                  停止
-                </el-button>
               </el-button-group>
             </template>
           </el-table-column>
@@ -110,7 +96,7 @@
             label="操作"
             align="center"
             class-name="small-padding fixed-width"
-            width="220"
+            width="240"
           >
             <template slot-scope="{ row, $index }">
               <el-button type="primary" size="mini" @click="handleUpdate(row)">
@@ -157,17 +143,6 @@
         <el-form-item label="API地址" prop="url">
           <el-input v-model="temp.url" placeholder="请输入API地址" />
         </el-form-item>
-        <el-form-item label="告警地址" prop="type">
-          <el-select v-model="temp.alert_url" clearable placeholder="请选择">
-            <el-option
-              v-for="item in options"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
-            >
-            </el-option>
-          </el-select>
-        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false"> 关闭 </el-button>
@@ -203,19 +178,18 @@
 <script>
 //分类的增删改查
 import {
-  getPromList,
-  updateProm,
-  delProm,
-  createProm,
   getAlertList,
-  reloadProm
+  updateAlert,
+  delAlert,
+  createAlert,
+  reloadAlert
 } from "@/api/prom";
 
 import waves from "@/directive/waves"; // waves directive
 import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
 import { parseTime } from "@/utils";
 export default {
-  name: "PromInfo",
+  name: "AlertInfo",
   components: { Pagination },
   directives: { waves },
   data() {
@@ -232,10 +206,10 @@ export default {
       //分类选择
       classifyOption: [],
       temp: {
-        source_room: "",
+        // id: undefined,
         name: "",
-        url: "",
-        alert_url: "",
+        key: "",
+        type: "",
         remarks: ""
       },
       options: [],
@@ -245,8 +219,8 @@ export default {
       dialogFormVisible: false,
       dialogStatus: "",
       textMap: {
-        update: "更新Prometheus数据源",
-        create: "添加Prometheus数据源"
+        update: "更新Alertmanager数据源",
+        create: "添加Alertmanager数据源"
       },
       dialogInfoVisible: false,
       dialogPvVisible: false,
@@ -265,31 +239,23 @@ export default {
   //页面刷新时执行
   created() {
     this.getList();
-    this.getTotalAlert();
   },
 
   methods: {
     //获取数据源列表
     getList() {
       this.listLoading = true;
-      getPromList(this.listQuery).then(response => {
+      getAlertList(this.listQuery).then(response => {
         console.log(response.data);
         this.list = response.data.results;
         this.total = response.data.count;
         this.listLoading = false;
       });
     },
-    //获取当前所有告警源列表
-    getTotalAlert() {
-      getAlertList().then(response => {
-        console.log(response);
-        this.options = response.data.results;
-      });
-    },
     //热加载服务
     reloadService(id, action) {
       this.$confirm(
-        "API操作需要服务配置有web.enable-lifecycle, 否则不会生效！",
+        "API操作需要服务配置有web.enable-lifecycle, 否则不会生效?",
         "提示",
         {
           confirmButtonText: "确定",
@@ -298,7 +264,7 @@ export default {
         }
       )
         .then(() => {
-          reloadProm(id, { action: action }).then(resposne => {
+          reloadAlert(id, { action: action }).then(resposne => {
             console.log(resposne);
             if (resposne.code === 0) {
               this.$message({
@@ -315,7 +281,6 @@ export default {
           });
         });
     },
-
     handleFilter() {
       this.listQuery.page = 1;
       this.getList();
@@ -350,7 +315,7 @@ export default {
     createData() {
       this.$refs["dataForm"].validate(valid => {
         if (valid) {
-          createProm(this.temp).then(response => {
+          createAlert(this.temp).then(response => {
             console.log(response);
             // 如果后端返回的状态码为0,则创建成功
             if (response.code === 0) {
@@ -390,7 +355,7 @@ export default {
         if (valid) {
           const tempData = Object.assign({}, this.temp);
           // console.log(tempData);
-          updateProm(tempData, tempData.id).then(response => {
+          updateAlert(tempData, tempData.id).then(response => {
             console.log(response);
             if (response.code === 0) {
               this.$notify({
@@ -421,7 +386,7 @@ export default {
         type: "warning"
       })
         .then(() => {
-          delProm(row.id).then(response => {
+          delAlert(row.id).then(response => {
             console.log(response);
             if (response.code === 0) {
               this.$notify({

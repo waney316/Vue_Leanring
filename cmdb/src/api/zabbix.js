@@ -210,3 +210,12 @@ export function listAlerts(params, data) {
     params: params
   });
 }
+
+//数据查询
+export function getData(data) {
+  return request({
+    url: "/api/v1/zabbix/get_data/",
+    method: "post",
+    data: data
+  });
+}

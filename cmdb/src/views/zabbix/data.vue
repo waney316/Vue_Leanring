@@ -8,7 +8,7 @@
           size="mini"
           style="float: right"
           @click="keyManager"
-          >监控键值管理</el-button
+          >监控键值</el-button
         >
       </div>
 
@@ -32,29 +32,28 @@
                 </el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="监控项" prop="key">
+            <el-form-item label="监控项" prop="item">
               <el-select
                 v-model="form.key"
                 clearable
-                multiple
                 filterable
                 placeholder="请选择监控项"
                 style="margin-left: 10px"
               >
                 <el-option
-                  v-for="item in keyOption"
-                  :key="item.key"
-                  :label="item.name"
-                  :value="item.name"
+                  v-for="i in itemData"
+                  :key="i.id"
+                  :label="i.name"
+                  :value="i.key"
                 >
                 </el-option>
               </el-select>
             </el-form-item>
 
-            <el-form-item label="时间范围" prop="time_from">
+            <el-form-item label="时间范围" prop="time">
               <div class="block">
                 <el-date-picker
-                  v-model="time"
+                  v-model="form.time"
                   type="datetimerange"
                   :picker-options="pickerOptions"
                   range-separator="至"
@@ -67,8 +66,8 @@
                 </el-date-picker>
               </div>
             </el-form-item>
-            <el-form-item label="查询IP" prop="host">
-              <el-input type="textarea" v-model="form.host"></el-input>
+            <el-form-item label="查询IP" prop="hosts">
+              <el-input type="textarea" v-model="form.hosts"></el-input>
             </el-form-item>
             <el-form-item>
               <el-button type="primary" @click="submitForm('form')"
@@ -102,13 +101,7 @@
       <div class="text item">
         <template>
           <el-table
-            :data="
-              tableData.filter(
-                data =>
-                  !search ||
-                  data.name.toLowerCase().includes(search.toLowerCase())
-              )
-            "
+            :data="tableData"
             border
             fit
             highlight-current-row
@@ -172,10 +165,16 @@
             <el-table-column align="right">
               <template slot="header" slot-scope="scope">
                 <el-input
-                  v-model="search"
+                  v-model="listQuery.search"
                   size="mini"
                   placeholder="输入关键字搜索"
-                />
+                >
+                  <i
+                    slot="prefix"
+                    class="el-input__icon el-icon-search"
+                    @click="getLoadDataHistory()"
+                  ></i>
+                </el-input>
               </template>
               <template slot-scope="scope">
                 <el-button
@@ -213,10 +212,12 @@
     </el-card>
 
     <!-- 监控项管理模态框 -->
-    <el-dialog title="监控键值管理" :visible.sync="dialogFormVisible">
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false"> 关闭 </el-button>
-      </div>
+    <el-dialog title="监控键值" :visible.sync="dialogFormVisible">
+      <el-table :data="itemData" stripe border style="width: 100%" height="200">
+        <el-table-column prop="type" label="数据类型"> </el-table-column>
+        <el-table-column prop="name" label="监控名"> </el-table-column>
+        <el-table-column prop="key" label="键值"> </el-table-column>
+      </el-table>
     </el-dialog>
 
     <!-- 任务详情模态框 -->
@@ -294,10 +295,12 @@
 </template>
 
 <script>
-import { getZabbixList } from "@/api/zabbix";
+import { getZabbixList, getData } from "@/api/zabbix";
+import { getItemList } from "@/api/cmdb";
 import { getTaskHistory, delTaskHistory, getTaskResult } from "@/api/tasks";
 import { parseTime } from "@/utils";
 import Pagination from "@/components/Pagination";
+import FileSaver from "file-saver";
 
 export default {
   components: { Pagination },
@@ -347,10 +350,7 @@ export default {
           }
         ]
       },
-      keyOption: [
-        { key: "cpu.pused", name: "CPU使用率" },
-        { key: "memory.pused", name: "内存使用率" }
-      ],
+
       listLoading: true,
       //监控项管理模态框
       dialogFormVisible: false,
@@ -360,7 +360,7 @@ export default {
       //数据源选择
       dataSourceOption: [],
       downloadLoading: false,
-
+      itemData: [],
       //行数据
       rowTask: {
         task_desc: {
@@ -375,18 +375,19 @@ export default {
       //查询form
       form: {
         dataSource: "",
-        time_from: "",
-        time_till: "",
-        host: "",
+        time: "",
+        hosts: "",
         key: ""
       },
       rules: {
-        host: [
+        hosts: [
           { required: true, message: "主机列表必须填写", trigger: "blur" }
         ],
+        key: [{ required: true, message: "必须选择监控键值", trigger: "blur" }],
         dataSource: [
           { required: true, message: "请选择数据源", trigger: "blur" }
-        ]
+        ],
+        time: [{ required: true, message: "必须选择时间范围", trigger: "blur" }]
       }
     };
   },
@@ -395,6 +396,7 @@ export default {
     //刷新页面时获取数据源列表和任务列表
     this.getDataSourceList();
     this.getLoadDataHistory();
+    this.getZabbixItemList();
   },
   methods: {
     //任务详情
@@ -407,6 +409,16 @@ export default {
     keyManager() {
       this.dialogFormVisible = true;
     },
+    getZabbixItemList() {
+      const data = {
+        type: "zabbix"
+      };
+      getItemList(data).then(response => {
+        console.log(response.data);
+        this.itemData = response.data.results;
+        console.log(this.itemData);
+      });
+    },
     getDataSourceList() {
       getZabbixList().then(response => {
         // console.log(response.data)
@@ -417,12 +429,33 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.form.time_from = this.time[0];
-          this.form.time_till = this.time[1];
+          // this.form.time_from = this.time[0];
+          // this.form.time_till = this.time[1];
           console.log(this.form);
           const tempForm = Object.assign({}, this.form);
-          tempForm.host = this.validateHost(this.form);
+          //移除tempForm中time字段
+          delete tempForm.time;
+          tempForm.hosts = this.validateHost(this.form);
+          tempForm.time_from = Math.round(this.form.time[0] / 1000);
+          tempForm.time_till = Math.round(this.form.time[1] / 1000);
           console.log(tempForm);
+          getData(tempForm).then(response => {
+            if (response.code === 0) {
+              this.$notify({
+                title: response.message,
+                message: response.data,
+                type: "success"
+              });
+            } else {
+              this.$notify({
+                title: response.message,
+                message: response.data,
+                type: "danger"
+              });
+            }
+          });
+          //刷新历史列表
+          this.getLoadDataHistory();
         } else {
           console.log("error submit!!");
           return false;
@@ -437,9 +470,9 @@ export default {
     },
     //处理表单中host数据, 输入为数组项
     validateHost(formTem) {
-      if (formTem.host) {
+      if (formTem.hosts) {
         let hostArr = [];
-        formTem.host.split("\n").forEach(element => {
+        formTem.hosts.split("\n").forEach(element => {
           hostArr.push(element.replace(/^\s\s*/, "").replace(/\s\s*$/, ""));
         });
         return hostArr;
@@ -450,10 +483,9 @@ export default {
       //添加请求属性
       Object.assign(this.listQuery, { task_type: "load_data" });
       console.log(this.listQuery);
-      getTaskHistory().then(response => {
+      getTaskHistory(this.listQuery).then(response => {
         this.total = response.data.count;
         this.tableData = response.data.results;
-
         console.log(response);
       });
     },
@@ -467,18 +499,40 @@ export default {
         task_id: task_id
       }).then(response => {
         console.log(response.data);
-        if (response.data.code != 0) {
+        this.list = response.data;
+        if (response.code != 0) {
           this.$notify({
             title: "导出错误",
             message: response.data.message,
             type: "error"
           });
         } else {
-          this.$notify({
-            title: "导出",
-            message: "正在导出,请稍候",
-            type: "warning"
-          });
+          //导出数据为json
+          const data = JSON.stringify(this.list);
+          const blob = new Blob([data], { type: "" });
+          FileSaver.saveAs(blob, task_id + ".json");
+
+          // 带出数据为excel
+          // import("@/vendor/Export2Excel").then(excel => {
+          //   const tHeader = ["主机IP", "主机ID", "信息"];
+          //   const filterVal = [
+          //     "ip",
+          //     "hostid",
+          //     "author",
+          //     "pageviews",
+          //     "display_time"
+          //   ];
+          //   const list = this.list;
+          //   // const data = this.formatJson(filterVal, list);
+          //   const data = list;
+          //   excel.export_json_to_excel({
+          //     header: tHeader,
+          //     data,
+          //     filename: this.filename,
+          //     autoWidth: this.autoWidth
+          //   });
+          //   this.downloadLoading = false;
+          // });
 
           this.$notify({
             title: "成功",
@@ -487,27 +541,8 @@ export default {
           });
         }
       });
-      // import("@/vendor/Export2Excel").then(excel => {
-      //   const tHeader = ["Id", "Title", "Author", "Readings", "Date"];
-      //   const filterVal = [
-      //     "id",
-      //     "title",
-      //     "author",
-      //     "pageviews",
-      //     "display_time"
-      //   ];
-      //   const list = this.list;
-      //   const data = this.formatJson(filterVal, list);
-      //   excel.export_json_to_excel({
-      //     header: tHeader,
-      //     data,
-      //     filename: this.filename,
-      //     autoWidth: this.autoWidth,
-      //     bookType: this.bookType
-      //   });
-      // this.downloadLoading = false;
-      // });
     },
+
     formatJson(filterVal, jsonData) {
       return jsonData.map(v =>
         filterVal.map(j => {
@@ -522,7 +557,7 @@ export default {
 
     //删除任务历史数据
     handleDelete(row, index) {
-      this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
+      this.$confirm("此操作将永久删除该历史, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
@@ -536,6 +571,7 @@ export default {
                 message: response.message,
                 type: "success"
               });
+              //删除数据后返回第一页
               this.getLoadDataHistory();
             } else {
               this.$notify({

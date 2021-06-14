@@ -14,8 +14,8 @@
             size="mini"
           >
             <el-row :gutter="24">
-              <el-col :span="12">
-                <el-form-item label="数据源" prop="dataSource">
+              <el-col :span="8">
+                <el-form-item label="数据源">
                   <el-select
                     v-model="form.dataSource"
                     clearable
@@ -33,7 +33,7 @@
                   </el-select>
                 </el-form-item>
               </el-col>
-              <el-col :span="12">
+              <el-col :span="16">
                 <el-form-item label="主机组">
                   <el-select
                     v-model="form.groupids"
@@ -56,8 +56,15 @@
               </el-col>
             </el-row>
 
+            <el-form-item label="查询IP">
+              <el-input
+                type="textarea"
+                v-model="form.hosts"
+                :autosize="{ minRows: 1 }"
+              ></el-input>
+            </el-form-item>
             <el-row :gutter="24">
-              <el-col :span="12">
+              <el-col :span="10">
                 <el-form-item label="时间范围">
                   <div class="block">
                     <el-date-picker
@@ -75,7 +82,7 @@
                   </div>
                 </el-form-item>
               </el-col>
-              <el-col :span="12">
+              <el-col :span="10">
                 <el-form-item label="告警级别">
                   <el-checkbox-group v-model="form.severities">
                     <el-checkbox label="1">信息</el-checkbox>
@@ -86,22 +93,17 @@
                   </el-checkbox-group>
                 </el-form-item>
               </el-col>
+              <el-col :span="4">
+                <el-form-item>
+                  <el-button type="primary" @click="submitForm('form')"
+                    >查询</el-button
+                  >
+                  <el-button type="error" @click="resetForm('form')"
+                    >重置</el-button
+                  >
+                </el-form-item>
+              </el-col>
             </el-row>
-            <el-form-item label="查询IP">
-              <el-input
-                type="textarea"
-                v-model="form.hosts"
-                :autosize="{ minRows: 1 }"
-              ></el-input>
-            </el-form-item>
-            <el-form-item>
-              <el-button type="primary" @click="submitForm('form')"
-                >查询</el-button
-              >
-              <el-button type="error" @click="resetForm('form')"
-                >重置</el-button
-              >
-            </el-form-item>
           </el-form>
         </div>
       </transition>
@@ -350,7 +352,7 @@ export default {
           var obj = this.form;
           var tempForm = {};
           Object.keys(obj).forEach(function(key) {
-            console.log(key, obj[key]);
+            // console.log(key, obj[key]);
             if (obj[key].length != 0) {
               tempForm[key] = obj[key];
             }
