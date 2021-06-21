@@ -1,5 +1,12 @@
 import request from "@/utils/request";
 
+export function getPromActionList() {
+  return request({
+    url: "/api/v1/prom/query_prom_action/",
+    method: "get"
+  });
+}
+
 export function getPromList(params) {
   return request({
     url: "/api/v1/prom/prometheus/",
@@ -62,18 +69,18 @@ export function createAlert(data) {
   });
 }
 
-//热加载prometehus配置和alertmanager
-export function reloadProm(pk, params) {
+//prometheus/alertmanager  api操作
+export function managerProm(pk, params) {
   return request({
-    url: "/api/v1/prom/prom_reload/" + pk + "/",
+    url: `/api/v1/prom/manager_prom/${pk}/`,
     method: "put",
     data: params
   });
 }
 
-export function reloadAlert(pk, params) {
+export function managerAlert(pk, params) {
   return request({
-    url: "/api/v1/prom/alert_reload/" + pk + "/",
+    url: `/api/v1/prom/manager_alert/${pk}/`,
     method: "put",
     data: params
   });

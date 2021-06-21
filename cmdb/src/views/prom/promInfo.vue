@@ -1,7 +1,10 @@
 <template>
   <div class="app-container">
     <el-card class="box-card">
-      <div slot="header" class="clearfix">
+      <div
+        slot="header"
+        class="clearfix"
+      >
         <span>Prometheus数据源管理</span>
       </div>
       <div class="text item">
@@ -44,7 +47,11 @@
           highlight-current-row
           style="width: 100%; margin-top:10px"
         >
-          <el-table-column label="资源池" align="center" width="120">
+          <el-table-column
+            label="资源池"
+            align="center"
+            width="120"
+          >
             <template slot-scope="{ row }">
               <span>{{ row.source_room }}</span>
             </template>
@@ -61,13 +68,21 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="API地址" align="center" min-width="120">
+          <el-table-column
+            label="API地址"
+            align="center"
+            min-width="120"
+          >
             <template slot-scope="{ row }">
               <span>{{ row.url }}</span>
             </template>
           </el-table-column>
 
-          <el-table-column label="告警地址" align="center" width="160">
+          <el-table-column
+            label="告警地址"
+            align="center"
+            width="160"
+          >
             <template slot-scope="{ row }">
               <span v-if="row.alert_url">{{ row.alert_url }}</span>
               <span v-else>Null</span>
@@ -97,7 +112,7 @@
                   热加载
                 </el-button>
                 <el-button
-                  type="success"
+                  type="danger"
                   size="mini"
                   @click="reloadService(row.id, 'quit')"
                 >
@@ -113,7 +128,11 @@
             width="220"
           >
             <template slot-scope="{ row, $index }">
-              <el-button type="primary" size="mini" @click="handleUpdate(row)">
+              <el-button
+                type="primary"
+                size="mini"
+                @click="handleUpdate(row)"
+              >
                 编辑
               </el-button>
 
@@ -138,7 +157,10 @@
       </div>
     </el-card>
 
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
+    <el-dialog
+      :title="textMap[dialogStatus]"
+      :visible.sync="dialogFormVisible"
+    >
       <el-form
         ref="dataForm"
         :rules="rules"
@@ -147,18 +169,43 @@
         label-width="100px"
         style="width: 80%; margin-left: 50px"
       >
-        <el-form-item label="资源池名称" prop="source_room">
-          <el-input v-model="temp.source_room" placeholder="请输入资源池名称" />
+        <el-form-item
+          label="资源池名称"
+          prop="source_room"
+        >
+          <el-input
+            v-model="temp.source_room"
+            placeholder="请输入资源池名称"
+          />
         </el-form-item>
 
-        <el-form-item label="数据源名称" prop="name">
-          <el-input v-model="temp.name" placeholder="请输入数据源名称" />
+        <el-form-item
+          label="数据源名称"
+          prop="name"
+        >
+          <el-input
+            v-model="temp.name"
+            placeholder="请输入数据源名称"
+          />
         </el-form-item>
-        <el-form-item label="API地址" prop="url">
-          <el-input v-model="temp.url" placeholder="请输入API地址" />
+        <el-form-item
+          label="API地址"
+          prop="url"
+        >
+          <el-input
+            v-model="temp.url"
+            placeholder="请输入API地址"
+          />
         </el-form-item>
-        <el-form-item label="告警地址" prop="type">
-          <el-select v-model="temp.alert_url" clearable placeholder="请选择">
+        <el-form-item
+          label="告警地址"
+          prop="type"
+        >
+          <el-select
+            v-model="temp.alert_url"
+            clearable
+            placeholder="请选择"
+          >
             <el-option
               v-for="item in options"
               :key="item.id"
@@ -169,7 +216,10 @@
           </el-select>
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
         <el-button @click="dialogFormVisible = false"> 关闭 </el-button>
         <el-button
           type="primary"
@@ -180,23 +230,6 @@
       </div>
     </el-dialog>
 
-    <el-dialog :visible.sync="dialogPvVisible" title="Reading statistics">
-      <el-table
-        :data="pvData"
-        border
-        fit
-        highlight-current-row
-        style="width: 100%"
-      >
-        <el-table-column prop="key" label="Channel" />
-        <el-table-column prop="pv" label="Pv" />
-      </el-table>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dialogPvVisible = false"
-          >Confirm</el-button
-        >
-      </span>
-    </el-dialog>
   </div>
 </template>
 
@@ -208,7 +241,7 @@ import {
   delProm,
   createProm,
   getAlertList,
-  reloadProm
+  managerProm
 } from "@/api/prom";
 
 import waves from "@/directive/waves"; // waves directive
@@ -218,7 +251,7 @@ export default {
   name: "PromInfo",
   components: { Pagination },
   directives: { waves },
-  data() {
+  data () {
     return {
       tableKey: 0,
       list: null,
@@ -249,7 +282,6 @@ export default {
         create: "添加Prometheus数据源"
       },
       dialogInfoVisible: false,
-      dialogPvVisible: false,
       pvData: [],
       rules: {
         name: [
@@ -263,14 +295,14 @@ export default {
     };
   },
   //页面刷新时执行
-  created() {
+  created () {
     this.getList();
     this.getTotalAlert();
   },
 
   methods: {
     //获取数据源列表
-    getList() {
+    getList () {
       this.listLoading = true;
       getPromList(this.listQuery).then(response => {
         console.log(response.data);
@@ -280,48 +312,65 @@ export default {
       });
     },
     //获取当前所有告警源列表
-    getTotalAlert() {
+    getTotalAlert () {
       getAlertList().then(response => {
         console.log(response);
         this.options = response.data.results;
       });
     },
     //热加载服务
-    reloadService(id, action) {
-      this.$confirm(
-        "API操作需要服务配置有web.enable-lifecycle, 否则不会生效！",
-        "提示",
-        {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }
-      )
-        .then(() => {
-          reloadProm(id, { action: action }).then(resposne => {
-            console.log(resposne);
-            if (resposne.code === 0) {
-              this.$message({
-                type: "success",
-                message: resposne.message
-              });
-            }
+    reloadService (id, action) {
+      if (action == "health") {
+        managerProm(id, { action: action }).then(resposne => {
+          this.$message({
+            type: "success",
+            message: resposne.message
           });
         })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消操作"
+      } else {
+        this.$confirm(
+          "API操作需要服务配置有web.enable-lifecycle, 否则不会生效！",
+          "提示",
+          {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type: "warning"
+          }
+        )
+          .then(() => {
+            managerProm(id, { action: action }).then(resposne => {
+              console.log(resposne);
+              if (resposne.code === 0) {
+                if (action == "reload" && resposne.message == "") {
+                  this.$message({
+                    type: "success",
+                    message: "热更新配置成功"
+                  });
+                } else {
+                  this.$message({
+                    type: "success",
+                    message: resposne.message
+                  });
+                }
+              }
+            });
+          })
+          .catch(() => {
+            this.$message({
+              type: "info",
+              message: "已取消操作"
+            });
           });
-        });
+      }
+
     },
 
-    handleFilter() {
+    handleFilter () {
       this.listQuery.page = 1;
       this.getList();
     },
 
-    handleModifyStatus(row, status) {
+    handleModifyStatus (row, status) {
       this.$message({
         message: "操作Success",
         type: "success"
@@ -329,7 +378,7 @@ export default {
       row.status = status;
     },
 
-    resetTemp() {
+    resetTemp () {
       this.temp = {
         remarks: "",
         name: ""
@@ -337,7 +386,7 @@ export default {
     },
 
     //新增输入框，校验
-    handleCreate() {
+    handleCreate () {
       this.resetTemp();
       this.dialogStatus = "create";
       this.dialogFormVisible = true;
@@ -347,7 +396,7 @@ export default {
     },
 
     //添加数据源
-    createData() {
+    createData () {
       this.$refs["dataForm"].validate(valid => {
         if (valid) {
           createProm(this.temp).then(response => {
@@ -376,7 +425,7 @@ export default {
     },
 
     //数据更新
-    handleUpdate(row) {
+    handleUpdate (row) {
       this.temp = Object.assign({}, row); // copy obj
       this.dialogStatus = "update";
       this.dialogFormVisible = true;
@@ -384,7 +433,7 @@ export default {
         this.$refs["dataForm"].clearValidate();
       });
     },
-    updateData() {
+    updateData () {
       console.log(this.temp);
       this.$refs["dataForm"].validate(valid => {
         if (valid) {
@@ -413,7 +462,7 @@ export default {
     },
 
     //数据删除
-    handleDelete(row, index) {
+    handleDelete (row, index) {
       // console.log(row, index);  //index:当前列表页的索引顺序值
       this.$confirm("此操作将删除该数据源, 是否继续?", "提示", {
         confirmButtonText: "确定",
