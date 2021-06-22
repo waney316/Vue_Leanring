@@ -70,6 +70,7 @@
                 placeholder="请选择监控项或手动输入"
                 style="margin-left: 10px"
               >
+
                 <el-option
                   v-for="i in itemData"
                   :key="i.id"
