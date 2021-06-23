@@ -10,22 +10,21 @@ export default [
       title: "Trap管理",
       icon: "el-icon-s-open"
     },
-    children: [
-      {
-        path: "traps",
-        name: "PromInfo",
-        // component: () => import('@/views/prom/promInfo'),
+    children: [{
+        path: "influxdb",
+        name: "influxdb",
+        component: () => import('@/views/snmptrap/influxdb'),
         meta: {
-          title: "Trap查询",
+          title: "InfluxDB数据源",
           icon: "el-icon-s-open"
         }
       },
       {
-        path: "config",
-        name: "PromInfo",
-        // component: () => import('@/views/prom/promInfo'),
+        path: "queryTrap",
+        name: "queryTrap",
+        component: () => import('@/views/snmptrap/queryTrap'),
         meta: {
-          title: "Trap配置",
+          title: "Trap查询",
           icon: "el-icon-s-open"
         }
       }
