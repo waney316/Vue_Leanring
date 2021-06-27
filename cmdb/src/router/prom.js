@@ -14,7 +14,7 @@ export default [
       {
         path: "prometheus",
         name: "PromInfo",
-        component: () => import("@/views/prom/prominfo"),
+        component: () => import("@/views/prom/promInfo"),
         meta: {
           title: "Prom数据源",
           icon: "el-icon-s-promotion"
@@ -26,7 +26,7 @@ export default [
         component: () => import("@/views/prom/alertinfo"),
         meta: {
           title: "Alert数据源",
-          icon: "el-icon-s-promotion"
+          icon: "el-icon-message-solid"
         }
       },
       {
@@ -35,7 +35,7 @@ export default [
         component: () => import("@/views/prom/data"),
         meta: {
           title: "PromQL查询",
-          icon: "el-icon-s-promotion"
+          icon: "el-icon-star-on"
         }
       },
       {
@@ -44,7 +44,7 @@ export default [
         component: () => import("@/views/prom/alert"),
         meta: {
           title: "Alert查询",
-          icon: "el-icon-s-promotion"
+          icon: "el-icon-s-goods"
         }
       }
     ]

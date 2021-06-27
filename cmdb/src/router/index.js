@@ -73,7 +73,7 @@ export const constantRoutes = [
   //引入trap
   ...trapRouter,
   //引入agent
-  ...agentRouter,
+  // ...agentRouter,
 
   // 404 page must be placed at the end !!!
   {

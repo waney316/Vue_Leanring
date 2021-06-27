@@ -6,7 +6,7 @@ export default [
     component: Layout,
     name: "Example",
     meta: {
-      title: "数据管理",
+      title: "资产管理",
       icon: "el-icon-s-help"
     },
     children: [
@@ -29,11 +29,29 @@ export default [
       //   component: () => import("@/views/cmdb/dataDict")
       // },
       {
-        path: "asset",
-        name: "ZabbixInfo",
-        // component: () => import("@/views/cmdb/item"),
+        path: "model",
+        name: "model",
+        component: () => import("@/views/cmdb/model"),
         meta: {
-          title: "监控资产",
+          title: "数据模型",
+          icon: "list"
+        }
+      },
+      {
+        path: "hostResource",
+        name: "hostResource",
+        component: () => import("@/views/cmdb/hostResource"),
+        meta: {
+          title: "主机资源",
+          icon: "list"
+        }
+      },
+      {
+        path: "serviceTree",
+        name: "ZabbixInfo",
+        component: () => import("@/views/cmdb/serviceTree"),
+        meta: {
+          title: "服务树",
           icon: "list"
         }
       },
