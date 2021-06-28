@@ -50,6 +50,7 @@
                     >
                       <el-date-picker
                         v-model="queryForm.time"
+                        value-format="yyyy-MM-dd HH:mm:ss"
                         type="datetimerange"
                         :picker-options="pickerOptions"
                         range-separator="至"
