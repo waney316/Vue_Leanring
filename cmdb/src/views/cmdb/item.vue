@@ -12,6 +12,7 @@
             style="width: 200px"
             class="filter-item"
             @keyup.enter.native="handleFilter"
+            size="small"
           />
 
           <el-button
@@ -21,6 +22,7 @@
             icon="el-icon-search"
             @click="handleFilter"
             style="margin-left: 5px"
+            size="small"
           >
             搜索
           </el-button>
@@ -30,6 +32,7 @@
             type="primary"
             icon="el-icon-edit"
             @click="handleCreate"
+            size="small"
           >
             新建
           </el-button>

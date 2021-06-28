@@ -26,6 +26,7 @@
             style="width: 200px"
             class="filter-item"
             @keyup.enter.native="handleFilter"
+                        size="small"
           />
 
           <el-button
@@ -35,6 +36,7 @@
             icon="el-icon-search"
             @click="handleFilter"
             style="margin-left: 5px"
+            size="small"
           >
             搜索
           </el-button>
@@ -44,6 +46,7 @@
             type="primary"
             icon="el-icon-circle-plus-outline"
             @click="handleCreate"
+                        size="small"
           >
             新建
           </el-button>
@@ -271,13 +274,15 @@
       width="30%"
       center
     >
-      <p>需要事先在服务器端配置自定义handler</p>
-      <p>同事测试influxDB可接收到trap数据</p>
+    <div>
+          <h6 style="font: 14px 'sans-serif';">1：在监控TRAP服务器上配置自定义handler</h6>
+          <h6 style="font: 14px 'sans-serif';">2：部署InfluxDB, 并将trap数据流指向Infludb中snmptraps实例</h6>
+    <el-divider><i class="el-icon-mobile-phone"></i></el-divider>
+    </div>
       <span
         slot="footer"
         class="dialog-footer"
       >
-        <el-button @click="tipsDialogVisible = false">取 消</el-button>
         <el-button
           type="primary"
           @click="tipsDialogVisible = false"

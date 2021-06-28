@@ -73,7 +73,7 @@ export function deleteDataDict(pk) {
 // 监控项键值查看
 export function getItemList(params) {
   return request({
-    url: "/api/v1/cmdb/item/",
+    url: "/api/v1/cmdb/item",
     method: "get",
     params: params
   });
@@ -81,7 +81,7 @@ export function getItemList(params) {
 // 监控项键值更新
 export function updateItem(data, pk) {
   return request({
-    url: "/api/v1/cmdb/item/" + pk + "/",
+    url: `/api/v1/cmdb/item/${pk}`,
     method: "put",
     data: data
   });

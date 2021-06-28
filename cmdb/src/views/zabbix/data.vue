@@ -1,34 +1,27 @@
 <template>
   <div class="app-container">
     <el-card>
-      <div
-        slot="header"
-        class="clearfix"
-      >
+      <div slot="header" class="clearfix">
         <span>数据查询</span>
         <el-button
           type="primary"
           size="mini"
           style="float: right"
           @click="keyManager"
-        >监控键值</el-button>
+          >监控键值</el-button
+        >
       </div>
 
       <transition name="slide-fade">
-        <div
-          class="text item"
-          v-show="show"
-        >
+        <div class="text item" v-show="show">
           <el-form
             ref="form"
             :model="form"
             label-width="80px"
             :rules="rules"
+            size="small"
           >
-            <el-form-item
-              label="数据源"
-              prop="dataSource"
-            >
+            <el-form-item label="数据源" prop="dataSource">
               <el-select
                 v-model="form.dataSource"
                 clearable
@@ -45,10 +38,7 @@
                 </el-option>
               </el-select>
             </el-form-item>
-            <el-form-item
-              label="监控项"
-              prop="item"
-            >
+            <el-form-item label="监控项" prop="item">
               <el-select
                 v-model="form.key"
                 clearable
@@ -66,10 +56,7 @@
               </el-select>
             </el-form-item>
 
-            <el-form-item
-              label="时间范围"
-              prop="time"
-            >
+            <el-form-item label="时间范围" prop="time">
               <div class="block">
                 <el-date-picker
                   v-model="form.time"
@@ -85,48 +72,28 @@
                 </el-date-picker>
               </div>
             </el-form-item>
-            <el-form-item
-              label="查询IP"
-              prop="hosts"
-            >
-              <el-input
-                type="textarea"
-                v-model="form.hosts"
-              ></el-input>
+            <el-form-item label="查询IP" prop="hosts">
+              <el-input type="textarea" v-model="form.hosts"></el-input>
             </el-form-item>
             <el-form-item>
-              <el-button
-                type="primary"
-                @click="submitForm('form')"
-              >创建查询</el-button>
-              <el-button
-                type="danger"
-                @click="resetForm('form')"
-              >重置</el-button>
+              <el-button type="primary" @click="submitForm('form')" size="small"
+                >创建查询</el-button
+              >
+              <el-button type="danger" size="small" @click="resetForm('form')"
+                >重置</el-button
+              >
             </el-form-item>
           </el-form>
         </div>
       </transition>
-      <div
-        style="text-align:center; font-size: 12px"
-        @click="show = !show"
-      >
-        <i
-          class="el-icon-arrow-up"
-          v-show="show"
-        >隐藏查询条件</i>
-        <i
-          class="el-icon-arrow-down"
-          v-show="!show"
-        >展开查询条件</i>
+      <div style="text-align:center; font-size: 12px" @click="show = !show">
+        <i class="el-icon-arrow-up" v-show="show">隐藏查询条件</i>
+        <i class="el-icon-arrow-down" v-show="!show">展开查询条件</i>
       </div>
     </el-card>
 
     <el-card style="margin-top: 10px">
-      <div
-        slot="header"
-        class="clearfix"
-      >
+      <div slot="header" class="clearfix">
         <span>查询历史</span>
         <el-button
           type="primary"
@@ -134,7 +101,8 @@
           round
           style="float: right"
           @click="getLoadDataHistory()"
-        >刷新</el-button>
+          >刷新</el-button
+        >
       </div>
       <div class="text item">
         <template>
@@ -182,8 +150,10 @@
               min-width="120"
             >
               <template slot-scope="{ row }">
-                <span>{{ row.task_desc.time_from | transTime }} ~
-                  {{ row.task_desc.time_till | transTime }}</span>
+                <span
+                  >{{ row.task_desc.time_from | transTime }} ~
+                  {{ row.task_desc.time_till | transTime }}</span
+                >
               </template>
             </el-table-column>
 
@@ -199,10 +169,7 @@
             </el-table-column>
 
             <el-table-column align="right">
-              <template
-                slot="header"
-                slot-scope="scope"
-              >
+              <template slot="header" slot-scope="scope">
                 <el-input
                   v-model="listQuery.search"
                   size="mini"
@@ -220,19 +187,22 @@
                   size="mini"
                   type="primary"
                   @click="handleDetail(scope.row)"
-                >任务详情</el-button>
+                  >任务详情</el-button
+                >
                 <el-button
                   size="mini"
                   type="danger"
                   @click="handleDelete(scope.row, scope.$index)"
-                >删除</el-button>
+                  >删除</el-button
+                >
                 <el-button
                   size="mini"
                   :loading="scope.row.downloadLoading"
                   type="success"
                   @click="handleDownload(scope.row.task_id)"
                   v-show="scope.row.task_status === 'SUCCESS'"
-                >导出</el-button>
+                  >导出</el-button
+                >
               </template>
             </el-table-column>
           </el-table>
@@ -248,37 +218,16 @@
     </el-card>
 
     <!-- 监控项管理模态框 -->
-    <el-dialog
-      title="监控键值"
-      :visible.sync="dialogFormVisible"
-    >
-      <el-table
-        :data="itemData"
-        stripe
-        border
-        style="width: 100%"
-        height="200"
-      >
-        <el-table-column
-          prop="type"
-          label="数据类型"
-        > </el-table-column>
-        <el-table-column
-          prop="name"
-          label="监控名"
-        > </el-table-column>
-        <el-table-column
-          prop="key"
-          label="键值"
-        > </el-table-column>
+    <el-dialog title="监控键值" :visible.sync="dialogFormVisible">
+      <el-table :data="itemData" stripe border style="width: 100%" height="200">
+        <el-table-column prop="type" label="数据类型"> </el-table-column>
+        <el-table-column prop="name" label="监控名"> </el-table-column>
+        <el-table-column prop="key" label="键值"> </el-table-column>
       </el-table>
     </el-dialog>
 
     <!-- 任务详情模态框 -->
-    <el-dialog
-      title="任务详情"
-      :visible.sync="dialogTaskVisible"
-    >
+    <el-dialog title="任务详情" :visible.sync="dialogTaskVisible">
       <el-form
         ref="detailForm"
         :model="rowTask"
@@ -287,73 +236,33 @@
         size="mini"
         style="width: 80%; margin-left: 50px"
       >
-        <el-form-item
-          label="任务名称"
-          prop="task_name"
-        >
-          <el-input
-            :disabled="true"
-            v-model="rowTask.task_name"
-          />
+        <el-form-item label="任务名称" prop="task_name">
+          <el-input :disabled="true" v-model="rowTask.task_name" />
         </el-form-item>
-        <el-form-item
-          label="任务ID"
-          prop="task_id"
-        >
-          <el-input
-            :disabled="true"
-            v-model="rowTask.task_id"
-          />
+        <el-form-item label="任务ID" prop="task_id">
+          <el-input :disabled="true" v-model="rowTask.task_id" />
         </el-form-item>
-        <el-form-item
-          label="创建时间"
-          prop="create_time"
-        >
-          <el-input
-            :disabled="true"
-            v-model="rowTask.create_time"
-          />
+        <el-form-item label="创建时间" prop="create_time">
+          <el-input :disabled="true" v-model="rowTask.create_time" />
         </el-form-item>
 
-        <el-form-item
-          label="数据源"
-          prop="dataSource"
-        >
-          <el-input
-            :disabled="true"
-            v-model="rowTask.task_desc.dataSource"
-          />
+        <el-form-item label="数据源" prop="dataSource">
+          <el-input :disabled="true" v-model="rowTask.task_desc.dataSource" />
         </el-form-item>
         <el-row :gutter="24">
           <el-col :span="12">
-            <el-form-item
-              label="键值"
-              prop="key"
-            >
-              <el-input
-                :disabled="true"
-                v-model="rowTask.task_desc.key"
-              />
+            <el-form-item label="键值" prop="key">
+              <el-input :disabled="true" v-model="rowTask.task_desc.key" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item
-              label="监控项"
-              prop="name"
-            >
-              <el-input
-                :disabled="true"
-                v-model="rowTask.task_desc.name"
-              />
+            <el-form-item label="监控项" prop="name">
+              <el-input :disabled="true" v-model="rowTask.task_desc.name" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row :gutter="24">
-          <el-form-item
-            label="时间范围"
-            prop="create_time"
-            :inline="true"
-          >
+          <el-form-item label="时间范围" prop="create_time" :inline="true">
             <el-col :span="8">
               <el-input
                 :disabled="true"
@@ -376,10 +285,7 @@
             </el-col>
           </el-form-item>
         </el-row>
-        <el-form-item
-          label="查询IP"
-          prop="dataSource"
-        >
+        <el-form-item label="查询IP" prop="dataSource">
           <el-input
             :disabled="true"
             type="textarea"
@@ -387,10 +293,7 @@
           />
         </el-form-item>
       </el-form>
-      <div
-        slot="footer"
-        class="dialog-footer"
-      >
+      <div slot="footer" class="dialog-footer">
         <el-button @click="dialogTaskVisible = false"> 关闭 </el-button>
       </div>
     </el-dialog>
@@ -407,7 +310,7 @@ import FileSaver from "file-saver";
 
 export default {
   components: { Pagination },
-  data () {
+  data() {
     return {
       list: null,
       total: 0,
@@ -426,7 +329,7 @@ export default {
         shortcuts: [
           {
             text: "最近一周",
-            onClick (picker) {
+            onClick(picker) {
               const end = new Date();
               const start = new Date();
               start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
@@ -435,7 +338,7 @@ export default {
           },
           {
             text: "最近一个月",
-            onClick (picker) {
+            onClick(picker) {
               const end = new Date();
               const start = new Date();
               start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
@@ -444,7 +347,7 @@ export default {
           },
           {
             text: "最近三个月",
-            onClick (picker) {
+            onClick(picker) {
               const end = new Date();
               const start = new Date();
               start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
@@ -495,7 +398,7 @@ export default {
     };
   },
 
-  mounted () {
+  mounted() {
     //刷新页面时获取数据源列表和任务列表
     this.getDataSourceList();
     this.getLoadDataHistory();
@@ -503,16 +406,16 @@ export default {
   },
   methods: {
     //任务详情
-    handleDetail (row) {
+    handleDetail(row) {
       this.rowTask = Object.assign({}, row); // copy obj
       this.rowTask.task_desc.hosts = this.rowTask.task_desc.hosts.toString();
       console.log(this.rowTask);
       this.dialogTaskVisible = true;
     },
-    keyManager () {
+    keyManager() {
       this.dialogFormVisible = true;
     },
-    getZabbixItemList () {
+    getZabbixItemList() {
       const data = {
         type: "zabbix"
       };
@@ -522,14 +425,14 @@ export default {
         console.log(this.itemData);
       });
     },
-    getDataSourceList () {
+    getDataSourceList() {
       getZabbixList().then(response => {
         // console.log(response.data)
         this.dataSourceOption = response.data.results;
       });
     },
     //用于查询
-    submitForm (formName) {
+    submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
           // this.form.time_from = this.time[0];
@@ -567,12 +470,12 @@ export default {
     },
 
     //用户重置
-    resetForm (formName) {
+    resetForm(formName) {
       console.log(this.$refs[formName]);
       this.$refs[formName].resetFields();
     },
     //处理表单中host数据, 输入为数组项
-    validateHost (formTem) {
+    validateHost(formTem) {
       if (formTem.hosts) {
         let hostArr = [];
         formTem.hosts.split("\n").forEach(element => {
@@ -582,7 +485,7 @@ export default {
       }
     },
     //查询任务列表结果
-    getLoadDataHistory () {
+    getLoadDataHistory() {
       //添加请求属性
       Object.assign(this.listQuery, { task_type: "load_data" });
       console.log(this.listQuery);
@@ -594,7 +497,7 @@ export default {
     },
 
     //根据任务结果生成数据存储
-    handleDownload (task_id) {
+    handleDownload(task_id) {
       // this.$set(row, "downloadLoading", true);
       console.log(task_id);
       // var dataRow = Object.assign({}, row);
@@ -646,7 +549,7 @@ export default {
       });
     },
 
-    formatJson (filterVal, jsonData) {
+    formatJson(filterVal, jsonData) {
       return jsonData.map(v =>
         filterVal.map(j => {
           if (j === "timestamp") {
@@ -659,7 +562,7 @@ export default {
     },
 
     //删除任务历史数据
-    handleDelete (row, index) {
+    handleDelete(row, index) {
       this.$confirm("此操作将永久删除该历史, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",

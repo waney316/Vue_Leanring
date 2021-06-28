@@ -6,7 +6,7 @@
       </div>
       <div class="text item">
         <div class="filter-container">
-          <span>数据源</span>
+          <span style="font: 14px sans-serif">数据源</span>
 
           <el-select
             v-model="listQuery.dataSource"
@@ -14,6 +14,7 @@
             placeholder="请选择数据源"
             style="margin-left: 10px"
             @change="getList"
+            size="small"
           >
             <el-option
               v-for="item in dataSourceOption"
@@ -23,13 +24,14 @@
             >
             </el-option>
           </el-select>
-          <span style="margin-left: 15px">IP地址</span>
+          <span style="margin-left: 15px;font: 14px sans-serif">IP地址</span>
           <el-input
             v-model="listQuery.ip"
             placeholder="请输入要查询的主机名或IP地址"
             style="width: 200px;margin-left: 10px"
             class="filter-item"
             @keyup.enter.native="handleFilter"
+            size="small"
           />
 
           <el-button
@@ -39,6 +41,7 @@
             icon="el-icon-search"
             style="margin-left: 5px"
             @click="handleFilter"
+            size="small"
           >
             搜索
           </el-button>
@@ -50,6 +53,7 @@
             type="primary"
             icon="el-icon-download"
             @click="handleDownload"
+            size="small"
           >
             导出
           </el-button>
@@ -228,7 +232,7 @@
         </div>
         <div
           v-else
-          style="text-align: center; font-size: 20px; padding-top: 30px; padding-bottom: 30px"
+          style="text-align: center; font-size: 28px; padding-top: 30px; padding-bottom: 30px;color: #ddd;height: 30px"
         >
           请选择数据源，来加载数据
         </div>
@@ -242,6 +246,7 @@
             :inline="true"
             class="demo-form-inline"
             style="width: 450px; margin-left:50px;"
+            size="small"
           >
             <el-row>
               <el-col :span="10">
@@ -353,7 +358,11 @@
             </el-form-item>
           </el-form>
           <div slot="footer" class="dialog-footer">
-            <el-button @click="dialogFormVisible = false" type="success">
+            <el-button
+              @click="dialogFormVisible = false"
+              type="success"
+              size="small"
+            >
               确认
             </el-button>
           </div>
