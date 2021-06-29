@@ -124,6 +124,15 @@ export function listHost(params) {
   });
 }
 
+//删除指定主机
+export function delHost(data) {
+  return request({
+    url: "/api/v1/zabbix/host/",
+    method: "delete",
+    data
+  });
+}
+
 //获取代理列表
 export function listProxy(params) {
   return request({

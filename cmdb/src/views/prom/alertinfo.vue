@@ -1,7 +1,10 @@
 <template>
   <div class="app-container">
     <el-card class="box-card">
-      <div slot="header" class="clearfix">
+      <div
+        slot="header"
+        class="clearfix"
+      >
         <span>Alertmanager数据源管理</span>
       </div>
       <div class="text item">
@@ -47,7 +50,11 @@
           highlight-current-row
           style="width: 100%; margin-top:10px"
         >
-          <el-table-column label="资源池" align="center" width="120">
+          <el-table-column
+            label="资源池"
+            align="center"
+            width="120"
+          >
             <template slot-scope="{ row }">
               <span>{{ row.source_room }}</span>
             </template>
@@ -64,7 +71,11 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="API地址" align="center" min-width="120">
+          <el-table-column
+            label="API地址"
+            align="center"
+            min-width="120"
+          >
             <template slot-scope="{ row }">
               <span>{{ row.url }}</span>
             </template>
@@ -102,7 +113,11 @@
             width="240"
           >
             <template slot-scope="{ row, $index }">
-              <el-button type="primary" size="mini" @click="handleUpdate(row)">
+              <el-button
+                type="primary"
+                size="mini"
+                @click="handleUpdate(row)"
+              >
                 编辑
               </el-button>
 
@@ -127,30 +142,59 @@
       </div>
     </el-card>
 
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
+    <el-dialog
+      :title="textMap[dialogStatus]"
+      :visible.sync="dialogFormVisible"
+    >
       <el-form
         ref="dataForm"
         :rules="rules"
         :model="temp"
+        size="small"
         label-position="left"
         label-width="100px"
         style="width: 80%; margin-left: 50px"
       >
-        <el-form-item label="资源池名称" prop="source_room">
-          <el-input v-model="temp.source_room" placeholder="请输入资源池名称" />
+        <el-form-item
+          label="资源池名称"
+          prop="source_room"
+        >
+          <el-input
+            v-model="temp.source_room"
+            placeholder="请输入资源池名称"
+          />
         </el-form-item>
 
-        <el-form-item label="数据源名称" prop="name">
-          <el-input v-model="temp.name" placeholder="请输入数据源名称" />
+        <el-form-item
+          label="数据源名称"
+          prop="name"
+        >
+          <el-input
+            v-model="temp.name"
+            placeholder="请输入数据源名称"
+          />
         </el-form-item>
-        <el-form-item label="API地址" prop="url">
-          <el-input v-model="temp.url" placeholder="请输入API地址" />
+        <el-form-item
+          label="API地址"
+          prop="url"
+        >
+          <el-input
+            v-model="temp.url"
+            placeholder="请输入API地址"
+          />
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false"> 关闭 </el-button>
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button
+          @click="dialogFormVisible = false"
+          size="small"
+        > 关闭 </el-button>
         <el-button
           type="primary"
+          size="small"
           @click="dialogStatus === 'create' ? createData() : updateData()"
         >
           确认
@@ -158,7 +202,10 @@
       </div>
     </el-dialog>
 
-    <el-dialog :visible.sync="dialogPvVisible" title="Reading statistics">
+    <el-dialog
+      :visible.sync="dialogPvVisible"
+      title="Reading statistics"
+    >
       <el-table
         :data="pvData"
         border
@@ -166,13 +213,23 @@
         highlight-current-row
         style="width: 100%"
       >
-        <el-table-column prop="key" label="Channel" />
-        <el-table-column prop="pv" label="Pv" />
+        <el-table-column
+          prop="key"
+          label="Channel"
+        />
+        <el-table-column
+          prop="pv"
+          label="Pv"
+        />
       </el-table>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dialogPvVisible = false"
-          >Confirm</el-button
-        >
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button
+          type="primary"
+          @click="dialogPvVisible = false"
+        >Confirm</el-button>
       </span>
     </el-dialog>
   </div>
@@ -195,7 +252,7 @@ export default {
   name: "AlertInfo",
   components: { Pagination },
   directives: { waves },
-  data() {
+  data () {
     return {
       tableKey: 0,
       list: null,
@@ -240,13 +297,13 @@ export default {
     };
   },
   //页面刷新时执行
-  created() {
+  created () {
     this.getList();
   },
 
   methods: {
     //获取数据源列表
-    getList() {
+    getList () {
       this.listLoading = true;
       getAlertList(this.listQuery).then(response => {
         console.log(response.data);
@@ -256,7 +313,7 @@ export default {
       });
     },
     //热加载服务
-    reloadService(id, action) {
+    reloadService (id, action) {
       if (action == "health") {
         managerAlert(id, { action: action }).then(resposne => {
           this.$message({
@@ -293,12 +350,12 @@ export default {
           });
       }
     },
-    handleFilter() {
+    handleFilter () {
       this.listQuery.page = 1;
       this.getList();
     },
 
-    handleModifyStatus(row, status) {
+    handleModifyStatus (row, status) {
       this.$message({
         message: "操作Success",
         type: "success"
@@ -306,7 +363,7 @@ export default {
       row.status = status;
     },
 
-    resetTemp() {
+    resetTemp () {
       this.temp = {
         remarks: "",
         name: ""
@@ -314,7 +371,7 @@ export default {
     },
 
     //新增输入框，校验
-    handleCreate() {
+    handleCreate () {
       this.resetTemp();
       this.dialogStatus = "create";
       this.dialogFormVisible = true;
@@ -324,7 +381,7 @@ export default {
     },
 
     //添加数据源
-    createData() {
+    createData () {
       this.$refs["dataForm"].validate(valid => {
         if (valid) {
           createAlert(this.temp).then(response => {
@@ -353,7 +410,7 @@ export default {
     },
 
     //数据更新
-    handleUpdate(row) {
+    handleUpdate (row) {
       this.temp = Object.assign({}, row); // copy obj
       this.dialogStatus = "update";
       this.dialogFormVisible = true;
@@ -361,7 +418,7 @@ export default {
         this.$refs["dataForm"].clearValidate();
       });
     },
-    updateData() {
+    updateData () {
       console.log(this.temp);
       this.$refs["dataForm"].validate(valid => {
         if (valid) {
@@ -390,7 +447,7 @@ export default {
     },
 
     //数据删除
-    handleDelete(row, index) {
+    handleDelete (row, index) {
       // console.log(row, index);  //index:当前列表页的索引顺序值
       this.$confirm("此操作将删除该数据源, 是否继续?", "提示", {
         confirmButtonText: "确定",

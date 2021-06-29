@@ -26,7 +26,7 @@
             style="width: 200px"
             class="filter-item"
             @keyup.enter.native="handleFilter"
-                        size="small"
+            size="small"
           />
 
           <el-button
@@ -46,7 +46,7 @@
             type="primary"
             icon="el-icon-circle-plus-outline"
             @click="handleCreate"
-                        size="small"
+            size="small"
           >
             新建
           </el-button>
@@ -258,9 +258,13 @@
         slot="footer"
         class="dialog-footer"
       >
-        <el-button @click="dialogFormVisible = false"> 关闭 </el-button>
+        <el-button
+          @click="dialogFormVisible = false"
+          size="small"
+        > 关闭 </el-button>
         <el-button
           type="primary"
+          size="small"
           @click="dialogStatus === 'create' ? createData() : updateData()"
         >
           确认
@@ -274,11 +278,11 @@
       width="30%"
       center
     >
-    <div>
-          <h6 style="font: 14px 'sans-serif';">1：在监控TRAP服务器上配置自定义handler</h6>
-          <h6 style="font: 14px 'sans-serif';">2：部署InfluxDB, 并将trap数据流指向Infludb中snmptraps实例</h6>
-    <el-divider><i class="el-icon-mobile-phone"></i></el-divider>
-    </div>
+      <div>
+        <h6 style="font: 14px 'sans-serif';">1：在监控TRAP服务器上配置自定义handler</h6>
+        <h6 style="font: 14px 'sans-serif';">2：部署InfluxDB, 并将trap数据流指向Infludb中snmptraps实例</h6>
+        <el-divider><i class="el-icon-mobile-phone"></i></el-divider>
+      </div>
       <span
         slot="footer"
         class="dialog-footer"
@@ -286,6 +290,7 @@
         <el-button
           type="primary"
           @click="tipsDialogVisible = false"
+          size="small"
         >确 定</el-button>
       </span>
     </el-dialog>

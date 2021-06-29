@@ -1,7 +1,10 @@
 <template>
   <div class="app-container">
     <el-card class="box-card">
-      <div slot="header" class="clearfix">
+      <div
+        slot="header"
+        class="clearfix"
+      >
         <span>主机管理</span>
       </div>
       <div class="text item">
@@ -86,47 +89,82 @@
             highlight-current-row
             style="width: 110%; margin-top: 10px"
           >
-            <el-table-column label="主机ID" prop="id" align="center" width="80">
+            <el-table-column
+              label="主机ID"
+              prop="id"
+              align="center"
+              width="80"
+            >
               <template slot-scope="{ row }">
                 <span>{{ row.hostid }}</span>
               </template>
             </el-table-column>
 
-            <el-table-column label="主机名" align="center">
+            <el-table-column
+              label="主机名"
+              align="center"
+            >
               <template slot-scope="{ row }">
                 <span>{{ row.host }}</span>
               </template>
             </el-table-column>
-            <el-table-column label="接入IP" width="150px" align="center">
+            <el-table-column
+              label="接入IP"
+              width="150px"
+              align="center"
+            >
               <template slot-scope="{ row }">
-                <span v-for="(item, index) in row.interfaces" :key="index">
+                <span
+                  v-for="(item, index) in row.interfaces"
+                  :key="index"
+                >
                   {{ item.ip }}
                 </span>
               </template>
             </el-table-column>
-            <el-table-column label="监控项" width="80px" align="center">
+            <el-table-column
+              label="监控项"
+              width="80px"
+              align="center"
+            >
               <template slot-scope="{ row }">
                 <span>{{ row.items }}</span>
               </template>
             </el-table-column>
-            <el-table-column label="应用集" width="80px" align="center">
+            <el-table-column
+              label="应用集"
+              width="80px"
+              align="center"
+            >
               <template slot-scope="{ row }">
                 <span>{{ row.applications }}</span>
               </template>
             </el-table-column>
-            <el-table-column label="触发器" width="80px" align="center">
+            <el-table-column
+              label="触发器"
+              width="80px"
+              align="center"
+            >
               <template slot-scope="{ row }">
                 <span>{{ row.triggers }}</span>
               </template>
             </el-table-column>
 
-            <el-table-column label="是否启用" width="80px" align="center">
+            <el-table-column
+              label="是否启用"
+              width="80px"
+              align="center"
+            >
               <template slot-scope="{ row }">
                 <span>{{ row.status }}</span>
               </template>
             </el-table-column>
 
-            <el-table-column label="代理" width="80px" align="center">
+            <el-table-column
+              label="代理"
+              width="80px"
+              align="center"
+            >
               <template slot-scope="{ row }">
                 <span>{{ row.proxy_hostid }}</span>
               </template>
@@ -165,7 +203,11 @@
                 </el-tag>
               </template>
             </el-table-column>
-            <el-table-column label="监控状态" width="80px" align="center">
+            <el-table-column
+              label="监控状态"
+              width="80px"
+              align="center"
+            >
               <template slot-scope="{ row }">
                 <el-popover
                   ref="popover"
@@ -237,7 +279,10 @@
           请选择数据源，来加载数据
         </div>
 
-        <el-dialog :title="title" :visible.sync="dialogFormVisible">
+        <el-dialog
+          :title="title"
+          :visible.sync="dialogFormVisible"
+        >
           <el-form
             ref="dataForm"
             :model="temp"
@@ -315,20 +360,42 @@
               </el-col>
             </el-row>
 
-            <el-form-item prop="interfaces" style="margin-bottom: 0">
+            <el-form-item
+              prop="interfaces"
+              style="margin-bottom: 0"
+            >
               <el-table
                 :data="temp.interfaces"
                 style="width: 100%"
                 size="medium"
               >
-                <el-table-column property="ip" label="接口IP" width="180" />
-                <el-table-column property="type" label="接入类型" width="180" />
-                <el-table-column property="port" label="端口" width="180" />
+                <el-table-column
+                  property="ip"
+                  label="接口IP"
+                  width="180"
+                />
+                <el-table-column
+                  property="type"
+                  label="接入类型"
+                  width="180"
+                />
+                <el-table-column
+                  property="port"
+                  label="端口"
+                  width="180"
+                />
               </el-table>
             </el-form-item>
 
-            <el-form-item prop="groups" style="margin-bottom: 0">
-              <el-table :data="temp.groups" style="width: 100%" size="medium">
+            <el-form-item
+              prop="groups"
+              style="margin-bottom: 0"
+            >
+              <el-table
+                :data="temp.groups"
+                style="width: 100%"
+                size="medium"
+              >
                 <el-table-column
                   property="groupid"
                   label="主机组id"
@@ -342,7 +409,10 @@
               </el-table>
             </el-form-item>
 
-            <el-form-item prop="parentTemplates" style="margin-bottom: 0">
+            <el-form-item
+              prop="parentTemplates"
+              style="margin-bottom: 0"
+            >
               <el-table
                 :data="temp.parentTemplates"
                 style="width: 100%"
@@ -353,11 +423,18 @@
                   label="模版ID"
                   width="180"
                 />
-                <el-table-column property="name" label="模版名称" width="360" />
+                <el-table-column
+                  property="name"
+                  label="模版名称"
+                  width="360"
+                />
               </el-table>
             </el-form-item>
           </el-form>
-          <div slot="footer" class="dialog-footer">
+          <div
+            slot="footer"
+            class="dialog-footer"
+          >
             <el-button
               @click="dialogFormVisible = false"
               type="success"
@@ -373,7 +450,7 @@
 </template>
 
 <script>
-import { listHost, getZabbixList } from "@/api/zabbix";
+import { listHost, getZabbixList, delHost } from "@/api/zabbix";
 
 import waves from "@/directive/waves"; // waves directive
 import { parseTime } from "@/utils";
@@ -384,7 +461,7 @@ export default {
   components: { Pagination },
   directives: { waves },
   filters: {
-    statusFilter(status) {
+    statusFilter (status) {
       const statusMap = {
         published: "success",
         draft: "info",
@@ -392,11 +469,11 @@ export default {
       };
       return statusMap[status];
     },
-    typeFilter(type) {
+    typeFilter (type) {
       return calendarTypeKeyValue[type];
     }
   },
-  data() {
+  data () {
     return {
       dataSourceOption: "",
       tableKey: 0,
@@ -426,12 +503,12 @@ export default {
       downloadLoading: false
     };
   },
-  created() {
+  created () {
     this.getDataSourceList();
   },
   methods: {
     //获取数据分类列表
-    getDataSourceList() {
+    getDataSourceList () {
       getZabbixList().then(response => {
         // console.log(response.data)
         this.dataSourceOption = response.data.results;
@@ -439,7 +516,7 @@ export default {
       });
     },
     //获取主机列表
-    getList() {
+    getList () {
       if (this.listQuery.dataSource) {
         this.listLoading = true;
         listHost(this.listQuery).then(response => {
@@ -457,7 +534,7 @@ export default {
     },
 
     //主机状态tag选择
-    showTags(val) {
+    showTags (val) {
       if (val === "未知") {
         return "info";
       } else if (val === "正常") {
@@ -468,30 +545,49 @@ export default {
     },
 
     //过滤查询
-    handleFilter() {
+    handleFilter () {
       this.listQuery.page = 1;
       this.getList();
     },
 
     //获取单个主机详情
-    getDetail(row) {
+    getDetail (row) {
       this.temp = Object.assign({}, row); // copy obj
       this.title = this.temp.host + " 主机详情";
       console.log(this.temp);
       this.dialogFormVisible = true;
     },
     //删除单个主机
-    handleDelete(row, index) {
-      this.$notify({
-        title: "Success",
-        message: "Delete Successfully",
-        type: "success",
-        duration: 2000
-      });
-      this.list.splice(index, 1);
+    handleDelete (row, index) {
+      const data = {
+        dataSource: this.listQuery.dataSource,
+        hostids: []
+      }
+      data.hostids.push(row.hostid)
+      delHost(data).then(response => {
+        console.log(response);
+        if (response.code === 0) {
+          this.$notify({
+            title: "Success",
+            message: "Delete Successfully",
+            type: "success"
+          });
+
+          //重新获取列表
+          this.getList()
+        } else {
+          this.$notify({
+            title: "Failed",
+            message: response.message,
+            type: "error"
+
+          });
+        }
+      })
+
     },
 
-    handleDownload() {
+    handleDownload () {
       this.downloadLoading = true;
       import("@/vendor/Export2Excel").then(excel => {
         const tHeader = [
@@ -534,7 +630,7 @@ export default {
         this.downloadLoading = false;
       });
     },
-    formatJson(filterVal) {
+    formatJson (filterVal) {
       return this.list.map(v =>
         filterVal.map(j => {
           if (j === "timestamp") {
