@@ -1,14 +1,8 @@
 <template>
   <div class="app-container">
     <el-card class="box-card">
-      <el-tabs
-        v-model="activeName"
-        @tab-click="handleClick"
-      >
-        <el-tab-pane
-          label="主机新建"
-          name="first"
-        >
+      <el-tabs v-model="activeName" @tab-click="handleClick">
+        <el-tab-pane label="主机新建" name="first">
           <el-form
             :model="hostCreateForm"
             :rules="rules"
@@ -20,10 +14,7 @@
           >
             <el-row :gutter="24">
               <el-col :span="6">
-                <el-form-item
-                  label="数据源选择"
-                  prop="dataSource"
-                >
+                <el-form-item label="数据源选择" prop="dataSource">
                   <el-select
                     v-model="dataSource"
                     clearable
@@ -45,41 +36,26 @@
                 </el-form-item>
               </el-col>
               <el-col :span="6">
-                <el-form-item
-                  label="接入类型"
-                  prop="type"
-                >
+                <el-form-item label="接入类型" prop="type">
                   <el-select
                     v-model="hostCreateForm.type"
                     clearable
                     placeholder="请选择接入类型"
                     @change="handleType"
                   >
-                    <el-option
-                      label="SNMP接入"
-                      value="snmp"
-                    > </el-option>
-                    <el-option
-                      label="Agent接入"
-                      value="agent"
-                    > </el-option>
+                    <el-option label="SNMP接入" value="snmp"> </el-option>
+                    <el-option label="Agent接入" value="agent"> </el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
               <el-col :span="6">
-                <el-form-item
-                  label="挂载代理"
-                  prop="proxy"
-                >
+                <el-form-item label="挂载代理" prop="proxy">
                   <el-select
                     v-model="hostCreateForm.proxy"
                     clearable
                     placeholder="请选择挂载的代理"
                   >
-                    <el-option
-                      label="不挂载代理"
-                      value=""
-                    ></el-option>
+                    <el-option label="不挂载代理" value=""></el-option>
                     <el-option
                       v-for="item in proxyList"
                       :label="item.host"
@@ -91,10 +67,7 @@
                 </el-form-item>
               </el-col>
               <el-col :span="6">
-                <el-form-item
-                  label="接入端口"
-                  prop="port"
-                >
+                <el-form-item label="接入端口" prop="port">
                   <el-input
                     v-model="hostCreateForm.port"
                     placeholder="端口"
@@ -107,18 +80,9 @@
               prop="snmp"
               v-show="hostCreateForm.type === 'snmp'"
             >
-              <el-select
-                v-model="snmpversion"
-                placeholder="请选择snmp版本"
-              >
-                <el-option
-                  label="SNMPv2"
-                  value="2"
-                ></el-option>
-                <el-option
-                  label="SNMPv3"
-                  value="3"
-                ></el-option>
+              <el-select v-model="snmpversion" placeholder="请选择snmp版本">
+                <el-option label="SNMPv2" value="2"></el-option>
+                <el-option label="SNMPv3" value="3"></el-option>
               </el-select>
             </el-form-item>
             <template>
@@ -145,22 +109,10 @@
                 </el-row>
 
                 <el-form-item label="安全级别">
-                  <el-select
-                    v-model="securitylevel"
-                    placeholder="选择安全级别"
-                  >
-                    <el-option
-                      label="noAuthnoPriv"
-                      value="0"
-                    ></el-option>
-                    <el-option
-                      label="authNoPriv"
-                      value="1"
-                    ></el-option>
-                    <el-option
-                      label="authPriv"
-                      value="2"
-                    ></el-option>
+                  <el-select v-model="securitylevel" placeholder="选择安全级别">
+                    <el-option label="noAuthnoPriv" value="0"></el-option>
+                    <el-option label="authNoPriv" value="1"></el-option>
+                    <el-option label="authPriv" value="2"></el-option>
                   </el-select>
                 </el-form-item>
                 <el-form-item
@@ -176,14 +128,8 @@
                         v-model="authprotocol"
                         placeholder="选择验证协议"
                       >
-                        <el-option
-                          label="MD5"
-                          value="0"
-                        ></el-option>
-                        <el-option
-                          label="SHA"
-                          value="1"
-                        ></el-option>
+                        <el-option label="MD5" value="0"></el-option>
+                        <el-option label="SHA" value="1"></el-option>
                       </el-select>
                     </el-col>
                     <el-col :span="4.5">
@@ -195,24 +141,15 @@
                   </el-row>
                 </el-form-item>
 
-                <el-form-item
-                  label="隐私协议"
-                  v-show="securitylevel === '2'"
-                >
+                <el-form-item label="隐私协议" v-show="securitylevel === '2'">
                   <el-row :gutter="10">
                     <el-col :span="3">
                       <el-select
                         v-model="privprotocol"
                         placeholder="选择隐私协议"
                       >
-                        <el-option
-                          label="DES"
-                          value="0"
-                        ></el-option>
-                        <el-option
-                          label="AES"
-                          value="1"
-                        ></el-option>
+                        <el-option label="DES" value="0"></el-option>
+                        <el-option label="AES" value="1"></el-option>
                       </el-select>
                     </el-col>
                     <el-col :span="4.5">
@@ -226,10 +163,7 @@
               </div>
             </template>
 
-            <el-form-item
-              label="主机群组"
-              prop="group"
-            >
+            <el-form-item label="主机群组" prop="group">
               <el-select
                 v-model="hostCreateForm.group"
                 multiple
@@ -249,10 +183,7 @@
                 </el-option>
               </el-select>
             </el-form-item>
-            <el-form-item
-              label="关联模板"
-              prop="template"
-            >
+            <el-form-item label="关联模板" prop="template">
               <el-select
                 v-model="hostCreateForm.template"
                 multiple
@@ -273,10 +204,7 @@
               </el-select>
             </el-form-item>
 
-            <el-form-item
-              label="主机列表"
-              prop="host"
-            >
+            <el-form-item label="主机列表" prop="host">
               <el-input
                 type="textarea"
                 placeholder="请输入IP列表, 以换行为间隔, 默认以IP作为主机名"
@@ -294,10 +222,7 @@
                 inactive-value="false"
               ></el-switch>
             </el-form-item>
-            <el-form-item
-              label="是否启用"
-              prop="status"
-            >
+            <el-form-item label="是否启用" prop="status">
               <el-switch
                 v-model="hostCreateForm.status"
                 active-value="0"
@@ -308,27 +233,20 @@
               type="primary"
               @click="submitForm('hostCreateForm')"
               size="small"
-            >立即创建</el-button>
-            <el-button
-              @click="resetForm('hostCreateForm')"
-              size="small"
-            >重置</el-button>
-            <el-button
-              type="primary"
-              @click="handleConnect()"
-              size="small"
-            >Socket连接</el-button>
-            <el-button
-              type="danger"
-              @click="closeConnect()"
-              size="small"
-            >socket关闭</el-button>
+              >立即创建</el-button
+            >
+            <el-button @click="resetForm('hostCreateForm')" size="small"
+              >重置</el-button
+            >
+            <el-button type="primary" @click="handleConnect()" size="small"
+              >Socket连接</el-button
+            >
+            <el-button type="danger" @click="closeConnect()" size="small"
+              >socket关闭</el-button
+            >
           </el-form>
         </el-tab-pane>
-        <el-tab-pane
-          label="主机-群组-模版-代理管理"
-          name="second"
-        >
+        <el-tab-pane label="主机-群组-模版-代理管理" name="second">
           <el-form
             :model="hostManagerForm"
             :rules="rules"
@@ -336,10 +254,7 @@
             label-width="100px"
             class="demo-ruleForm"
           >
-            <el-form-item
-              label="数据源选择"
-              prop="dataSource"
-            >
+            <el-form-item label="数据源选择" prop="dataSource">
               <el-select
                 v-model="dataSource"
                 clearable
@@ -360,10 +275,7 @@
                 </el-option>
               </el-select>
             </el-form-item>
-            <el-form-item
-              label="操作类型"
-              prop="operationTypeOption"
-            >
+            <el-form-item label="操作类型" prop="operationTypeOption">
               <el-select
                 v-model="operationModule"
                 clearable
@@ -384,28 +296,16 @@
                 ></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item
-              label="操作类型"
-              prop="operationTypeOption"
-            >
+            <el-form-item label="操作类型" prop="operationTypeOption">
               <el-select
                 v-model="operationType"
                 clearable
                 placeholder="请选择操作类型"
                 style="margin-left: 10px"
               >
-                <el-option
-                  label="添加"
-                  value="add"
-                ></el-option>
-                <el-option
-                  label="移除"
-                  value="remove"
-                ></el-option>
-                <el-option
-                  label="替换"
-                  value="replace"
-                ></el-option>
+                <el-option label="添加" value="add"></el-option>
+                <el-option label="移除" value="remove"></el-option>
+                <el-option label="替换" value="replace"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item
@@ -480,28 +380,21 @@
               </el-select>
             </el-form-item>
 
-            <el-form-item
-              label="主机列表"
-              prop="desc"
-            >
+            <el-form-item label="主机列表" prop="desc">
               <el-input
                 type="textarea"
                 v-model="hostManagerForm.desc"
               ></el-input>
             </el-form-item>
             <el-form-item>
-              <el-button
-                type="primary"
-                @click="submitForm('hostManagerForm')"
-              >立即执行</el-button>
+              <el-button type="primary" @click="submitForm('hostManagerForm')"
+                >立即执行</el-button
+              >
               <el-button @click="resetForm('hostManagerForm')">重置</el-button>
             </el-form-item>
           </el-form>
         </el-tab-pane>
-        <el-tab-pane
-          label="主机管理"
-          name="four"
-        >
+        <el-tab-pane label="主机管理" name="four">
           <el-form
             :model="hostManagerForm"
             :rules="rules"
@@ -509,10 +402,7 @@
             label-width="100px"
             class="demo-ruleForm"
           >
-            <el-form-item
-              label="数据源选择"
-              prop="dataSource"
-            >
+            <el-form-item label="数据源选择" prop="dataSource">
               <el-select
                 v-model="hostManagerForm.dataSource"
                 clearable
@@ -528,38 +418,20 @@
                 </el-option>
               </el-select>
             </el-form-item>
-            <el-form-item
-              label="操作类型"
-              prop="hostoperation"
-            >
+            <el-form-item label="操作类型" prop="hostoperation">
               <el-select
                 v-model="hostoperation"
                 clearable
                 placeholder="请选择操作类型"
                 style="margin-left: 10px"
               >
-                <el-option
-                  label="查询主机"
-                  value="show"
-                > </el-option>
-                <el-option
-                  label="禁用主机"
-                  value="disable"
-                > </el-option>
-                <el-option
-                  label="启用主机"
-                  value="enable"
-                > </el-option>
-                <el-option
-                  label="删除主机"
-                  value="delete"
-                > </el-option>
+                <el-option label="查询主机" value="show"> </el-option>
+                <el-option label="禁用主机" value="disable"> </el-option>
+                <el-option label="启用主机" value="enable"> </el-option>
+                <el-option label="删除主机" value="delete"> </el-option>
               </el-select>
             </el-form-item>
-            <el-form-item
-              label="主机列表"
-              prop="desc"
-            >
+            <el-form-item label="主机列表" prop="desc">
               <el-input
                 type="textarea"
                 v-model="hostManagerForm.desc"
@@ -567,24 +439,17 @@
             </el-form-item>
 
             <el-form-item>
-              <el-button
-                type="primary"
-                @click="submitForm('hostManagerForm')"
-              >立即创建</el-button>
+              <el-button type="primary" @click="submitForm('hostManagerForm')"
+                >立即创建</el-button
+              >
               <el-button @click="resetForm('hostManagerForm')">重置</el-button>
             </el-form-item>
           </el-form>
         </el-tab-pane>
       </el-tabs>
     </el-card>
-    <div
-      class="log"
-      v-show="LogVisible"
-    >
-      <p
-        v-for="(item, index) in log"
-        :key="index"
-      >
+    <div class="log" v-show="LogVisible">
+      <p v-for="(item, index) in log" :key="index">
         {{ item }}
       </p>
     </div>
@@ -607,7 +472,7 @@ import { socketRequest } from "@/api/zabbix";
 
 export default {
   components: { Log },
-  data () {
+  data() {
     return {
       //日志
       log: [],
@@ -664,18 +529,18 @@ export default {
       }
     };
   },
-  created () {
+  created() {
     this.getDataSourceList();
   },
   methods: {
     //获取数据分类列表
-    getDataSourceList () {
+    getDataSourceList() {
       getZabbixList().then(response => {
         this.dataSourceOption = response.data.results;
       });
     },
     //主机主机组列表
-    getHostGroupList (params) {
+    getHostGroupList(params) {
       if (this.dataSource) {
         const data = {
           dataSource: this.dataSource
@@ -689,7 +554,7 @@ export default {
       }
     },
     //获取模板列表
-    getTemplateList (params) {
+    getTemplateList(params) {
       if (this.dataSource) {
         const data = {
           dataSource: this.dataSource
@@ -703,7 +568,7 @@ export default {
       }
     },
     //获取代理列表
-    getProxyList (params) {
+    getProxyList(params) {
       if (this.dataSource) {
         const data = {
           dataSource: this.dataSource
@@ -717,12 +582,12 @@ export default {
       }
     },
 
-    handleClick (tab, event) {
+    handleClick(tab, event) {
       this.dataSource = "";
       console.log(tab, event);
     },
     //用于新建主机
-    submitForm (formName) {
+    submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
           const formData = [];
@@ -742,22 +607,25 @@ export default {
           //建立socket连接
           this.handleConnect();
           //向后端发起创建主机请求
-          hostCreate(tempData).then(response => {
-            console.log(response);
-            if (response.code != 0) {
-              this.$message({
-                showClose: true,
-                message: response.message,
-                type: "error"
-              });
-            } else {
-              this.$message({
-                showClose: true,
-                message: response.data,
-                type: "success"
-              });
-            }
-          });
+          setTimeout(() => {
+            hostCreate(tempData).then(response => {
+              console.log(response);
+              if (response.code != 0) {
+                this.$message({
+                  showClose: true,
+                  message: response.message,
+                  type: "error"
+                });
+              } else {
+                this.$message({
+                  showClose: true,
+                  message: response.data,
+                  type: "success"
+                });
+              }
+            });
+          }, 3000);
+
           // alert('submit!');
         } else {
           console.log("error submit!!");
@@ -767,7 +635,7 @@ export default {
     },
 
     //用于主机模板群组管理
-    managerForm (formName) {
+    managerForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
           const formData = [];
@@ -810,7 +678,7 @@ export default {
     },
 
     //用于主机管理表
-    hostForm (formName) {
+    hostForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
           const formData = [];
@@ -826,24 +694,25 @@ export default {
             data: formData
           };
           console.log(tempData);
-
+          setTimeout(() => {
+            hostCreate(tempData).then(response => {
+              console.log(response);
+              if (response.code != 0) {
+                this.$message({
+                  showClose: true,
+                  message: response.message,
+                  type: "error"
+                });
+              } else {
+                this.$message({
+                  showClose: true,
+                  message: response.data,
+                  type: "success"
+                });
+              }
+            });
+          }, 3000);
           //向后端发起post请求
-          hostCreate(tempData).then(response => {
-            console.log(response);
-            if (response.code != 0) {
-              this.$message({
-                showClose: true,
-                message: response.message,
-                type: "error"
-              });
-            } else {
-              this.$message({
-                showClose: true,
-                message: response.data,
-                type: "success"
-              });
-            }
-          });
           // alert('submit!');
         } else {
           console.log("error submit!!");
@@ -851,17 +720,17 @@ export default {
         }
       });
     },
-    resetForm (formName) {
+    resetForm(formName) {
       this.$refs[formName].resetFields();
     },
 
     //处理切换接入类型后表单问题
-    handleType () {
+    handleType() {
       console.log(typeof this.snmpversion);
       this.snmpversion = "";
     },
     //处理表单中host数据, 输入为数组项
-    validateHost (formTem) {
+    validateHost(formTem) {
       if (formTem.host) {
         let hostArr = [];
         formTem.host.split("\n").forEach(element => {
@@ -874,7 +743,7 @@ export default {
     },
 
     //处理snmp添加
-    handleSnmp () {
+    handleSnmp() {
       const details = {
         version: this.snmpversion,
         bulk: 1
@@ -903,14 +772,14 @@ export default {
     },
 
     //socket连接
-    handleConnect () {
+    handleConnect() {
       //如果socket事先存在，则关闭
       if (window.ws) {
         //清空log
-        this.log = []
+        this.log = [];
         window.ws.close();
-        window.ws.onclose = function (event) {
-          console.log(new Date() + "socker已关闭")
+        window.ws.onclose = function(event) {
+          console.log(new Date() + "socker已关闭");
         };
         this.LogVisible = true;
       }
@@ -921,33 +790,33 @@ export default {
         window.ws = new WebSocket("ws://127.0.0.1:8000/ws/zabbix");
         console.log(ws.readyState);
         //
-        ws.send = function () { };
+        ws.send = function() {};
         // 连接建立后的回调函数
-        ws.onopen = function () {
+        ws.onopen = function() {
           console.log("连接已建立");
         };
         //监听消息
-        ws.onmessage = function (event) {
+        ws.onmessage = function(event) {
           var data = JSON.parse(event.data);
           self.log.push(data["message"]);
           console.log(data["message"]);
         };
 
-        ws.onerror = function (event) {
+        ws.onerror = function(event) {
           console.log("服务端连接异常！");
         };
 
-        ws.onclose = function (event) {
+        ws.onclose = function(event) {
           console.log("websocket已关闭！");
         };
       }
     },
 
     //关闭socket连接
-    closeConnect () {
+    closeConnect() {
       console.log(window.ws);
       window.ws.close();
-      window.ws.onclose = function (event) {
+      window.ws.onclose = function(event) {
         console.log("中止监听");
       };
     }
