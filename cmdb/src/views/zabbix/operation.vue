@@ -16,7 +16,7 @@
             label-width="100px"
             label-position="left"
             class="demo-ruleForm"
-            size="small"
+            size="mini"
           >
             <el-row :gutter="24">
               <el-col :span="6">
@@ -314,11 +314,6 @@
               size="small"
             >重置</el-button>
             <el-button
-              type="primary"
-              @click="handleConnect()"
-              size="small"
-            >Socket连接</el-button>
-            <el-button
               type="danger"
               @click="closeConnect()"
               size="small"
@@ -335,6 +330,7 @@
             ref="ruleForm"
             label-width="100px"
             class="demo-ruleForm"
+            size="mini"
           >
             <el-form-item
               label="数据源选择"
@@ -493,8 +489,12 @@
               <el-button
                 type="primary"
                 @click="submitForm('hostManagerForm')"
+                size="mini"
               >立即执行</el-button>
-              <el-button @click="resetForm('hostManagerForm')">重置</el-button>
+              <el-button
+                @click="resetForm('hostManagerForm')"
+                size="mini"
+              >重置</el-button>
             </el-form-item>
           </el-form>
         </el-tab-pane>
@@ -508,6 +508,7 @@
             ref="ruleForm"
             label-width="100px"
             class="demo-ruleForm"
+            size="mini"
           >
             <el-form-item
               label="数据源选择"
