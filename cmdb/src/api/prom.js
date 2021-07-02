@@ -85,3 +85,22 @@ export function managerAlert(pk, params) {
     data: params
   });
 }
+
+
+// prom api数据查询
+export function promQuery(data) {
+  return request({
+    url: '/api/v1/prom/query_prom_data/',
+    method: "post",
+    data: data
+  })
+}
+
+// alertmanager数据查询
+export function alertQuery(data) {
+  return request({
+    url: '/api/v1/prom/query_alert_data/',
+    method: "post",
+    data: data
+  })
+}

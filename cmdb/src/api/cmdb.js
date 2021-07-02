@@ -89,14 +89,14 @@ export function updateItem(data, pk) {
 // 监控项键值删除
 export function delItem(pk) {
   return request({
-    url: "/api/v1/cmdb/item/" + pk + "/",
+    url: `/api/v1/cmdb/item/${pk}`,
     method: "delete"
   });
 }
 // 监控项键值增加
 export function createItem(data) {
   return request({
-    url: "/api/v1/cmdb/item/",
+    url: "/api/v1/cmdb/item",
     method: "post",
     data: data
   });

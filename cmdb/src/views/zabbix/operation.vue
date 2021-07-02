@@ -719,7 +719,10 @@ export default {
     },
 
     handleClick (tab, event) {
+      //点击tab切换时关闭socket,清空日志
+      this.closeConnect()
       this.dataSource = "";
+      this.log = []
       console.log(tab, event);
     },
     //用于新建主机
@@ -943,19 +946,15 @@ export default {
           console.log("服务端连接异常！");
         };
 
-        ws.onclose = function (event) {
-          console.log("websocket已关闭！");
-        };
       }
     },
 
     //关闭socket连接
     closeConnect () {
-      console.log(window.ws);
-      window.ws.close();
-      window.ws.onclose = function (event) {
+      if (window.ws) {
+        window.ws.close();
         console.log("中止监听");
-      };
+      }
     }
   }
 };
