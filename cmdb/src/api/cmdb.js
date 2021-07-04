@@ -1,75 +1,5 @@
 import request from "@/utils/request";
 
-// 分类创建
-export function createClassify(data) {
-  return request({
-    url: "/api/v1/cmdb/classify/",
-    method: "post",
-    data
-  });
-}
-
-// 分类更新, pk：要更新的数据id
-export function updateClassify(data, pk) {
-  return request({
-    url: "/api/v1/cmdb/classify/" + pk + "/",
-    method: "put",
-    data
-  });
-}
-
-// 分类删除,pk：要删除对象的id
-export function deleteClassify(pk) {
-  return request({
-    url: "/api/v1/cmdb/classify/" + pk + "/",
-    method: "delete"
-  });
-}
-
-// 获取分类
-export function getClassifyList(params) {
-  return request({
-    url: "/api/v1/cmdb/classify/",
-    method: "get",
-    params: params
-  });
-}
-
-//数据字典获取
-export function getDataDictList(params) {
-  return request({
-    url: "/api/v1/cmdb/data_dict/",
-    method: "get",
-    params: params
-  });
-}
-
-// 数据字典创建
-export function createDataDict(data) {
-  return request({
-    url: "/api/v1/cmdb/data_dict/",
-    method: "post",
-    data
-  });
-}
-
-// 数据字典更新
-export function updateDataDict(data, pk) {
-  return request({
-    url: "/api/v1/cmdb/data_dict/" + pk + "/",
-    method: "put",
-    data
-  });
-}
-
-// 数据字典删除
-export function deleteDataDict(pk) {
-  return request({
-    url: "/api/v1/cmdb/data_dict/" + pk + "/",
-    method: "delete"
-  });
-}
-
 // 监控项键值查看
 export function getItemList(params) {
   return request({
@@ -99,5 +29,101 @@ export function createItem(data) {
     url: "/api/v1/cmdb/item",
     method: "post",
     data: data
+  });
+}
+
+//获取模型列表
+export function getModelList() {
+  return request({
+    url: "/api/v1/cmdb/model_group",
+    method: "get"
+  });
+}
+//新建服务模型分组
+export function createModelGroup(data) {
+  return request({
+    url: "/api/v1/cmdb/model_group",
+    method: "post",
+    data: data
+  });
+}
+//修改服务模型分组
+export function updateModelGroup(id, data) {
+  return request({
+    url: `/api/v1/cmdb/model_group/${id}`,
+    method: "put",
+    data
+  });
+}
+//删除服务模型分组
+export function deleteModelGroup(id) {
+  return request({
+    url: `/api/v1/cmdb/model_group/${id}`,
+    method: "delete"
+  });
+}
+
+//模型详情
+export function getModelDetails(id) {
+  return request({
+    url: `/api/v1/cmdb/model/details/${id}`,
+    method: "get"
+  });
+}
+//创建模型
+export function createModel(data) {
+  return request({
+    url: "/api/v1/cmdb/model",
+    method: "post",
+    data: data
+  });
+}
+//修改服务模型
+export function updateModel(id, data) {
+  return request({
+    url: `/api/v1/cmdb/model/${id}`,
+    method: "put",
+    data
+  });
+}
+//删除服务模型
+export function deleteModel(id) {
+  return request({
+    url: `/api/v1/cmdb/model/${id}`,
+    method: "delete"
+  });
+}
+
+createField, updateField, delField;
+
+//新建字段
+export function createField(data) {
+  return request({
+    url: "/api/v1/cmdb/field",
+    method: "post",
+    data: data
+  });
+}
+//修改字段
+export function updateField(id, data) {
+  return request({
+    url: `/api/v1/cmdb/field/${id}`,
+    method: "put",
+    data
+  });
+}
+//删除字段
+export function delField(id) {
+  return request({
+    url: `/api/v1/cmdb/field/${id}`,
+    method: "delete"
+  });
+}
+
+//主机资源
+export function getHostResource(id) {
+  return request({
+    url: `/api/v1/cmdb/resource`,
+    method: "get"
   });
 }

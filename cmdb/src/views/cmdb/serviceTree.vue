@@ -14,7 +14,7 @@
             </el-input>
           </div>
           <div class="text item">
-            <el-tree></el-tree>
+            <el-tree :data="serviceData" :props="defaultProps"></el-tree>
           </div>
         </el-card>
       </el-col>
@@ -39,17 +39,42 @@
 </template>
 
 <script>
+import { getModelList } from "@/api/cmdb";
 export default {
   data() {
     return {
       //服务树搜索字段
       field: "",
-      activeName: "first"
+      activeName: "first",
+
+      serviceData: [],
+      defaultProps: {
+        children: "children",
+        label: "label"
+      }
     };
   },
-  created() {},
+  created() {
+    this.modelList();
+  },
   mounted() {},
-  methods: {}
+  methods: {
+    modelList() {
+      getModelList().then(response => {
+        console.log(response.data);
+        var data = response.data.results;
+        var classifArr = [];
+        console.log(this.serviceData);
+        data.forEach(element => {
+          classifArr.push(element.classify);
+        });
+
+        classifArr.forEach(element => {
+          this.serviceData.push();
+        });
+      });
+    }
+  }
 };
 </script>
 

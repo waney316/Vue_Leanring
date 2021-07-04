@@ -33,10 +33,22 @@ export default [
         name: "model",
         component: () => import("@/views/cmdb/model"),
         meta: {
-          title: "数据模型",
+          title: "服务模型",
+          icon: "list"
+        },
+        children: []
+      },
+      {
+        path: "details",
+        name: "modelDetails",
+        component: () => import("@/views/cmdb/details"),
+        hidden: true,
+        meta: {
+          title: "模型详情",
           icon: "list"
         }
       },
+
       {
         path: "hostResource",
         name: "hostResource",
