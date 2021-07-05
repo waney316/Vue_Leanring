@@ -8,7 +8,7 @@
         <div class="filter-container">
           <el-input
             v-model="listQuery.search"
-            placeholder="请输入IP地址或主机名"
+            placeholder="请输入IP地址或标识"
             style="width: 200px"
             class="filter-item"
             @keyup.enter.native="handleFilter"
@@ -47,27 +47,40 @@
           highlight-current-row
           style="width: 100%; margin-top:10px"
         >
-          <el-table-column label="ID" align="center" width="120">
-            <template slot-scope="{ row }">
-              <span>{{ row.id }}</span>
-            </template>
-          </el-table-column>
-
-          <el-table-column label="IP地址" align="center" min-width="100">
+          <el-table-column label="IP地址" align="center" width="180">
             <template slot-scope="{ row }">
               <span>{{ row.ip }}</span>
             </template>
           </el-table-column>
-
-          <el-table-column label="主机名" align="center" width="120">
+          <el-table-column label="资源数据" align="center" width="80">
             <template slot-scope="{ row }">
-              <span>{{ row.hostname }}</span>
+              <span v-if="!row.data"><el-tag type="danger">无</el-tag></span>
+              <span v-else>{{ row.data }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="配置信息" align="center" width="80">
+            <template slot-scope="{ row }">
+              <span v-if="!row.configuration"
+                ><el-tag type="danger">无</el-tag></span
+              >
+              <span v-else>{{ row.configuration }}</span>
             </template>
           </el-table-column>
 
           <el-table-column label="服务标签" align="center" min-width="160">
             <template slot-scope="{ row }">
-              <span>{{ row.service_model }}</span>
+              <el-tag
+                size="mini"
+                v-for="item in row.services"
+                :key="item.id"
+                style="margin-left: 10px"
+                >{{ item.name }}</el-tag
+              >
+            </template>
+          </el-table-column>
+          <el-table-column label="标识" align="center" width="160">
+            <template slot-scope="{ row }">
+              <span>{{ row.tag }}</span>
             </template>
           </el-table-column>
 
@@ -75,9 +88,17 @@
             label="操作"
             align="center"
             class-name="small-padding fixed-width"
-            width="220"
+            min-width="100"
           >
             <template slot-scope="{ row, $index }">
+              <el-button
+                class="el-icon-edit"
+                type="primary"
+                size="mini"
+                @click="handleUpdate(row)"
+              >
+                详情
+              </el-button>
               <el-button
                 class="el-icon-edit"
                 type="primary"
@@ -123,13 +144,13 @@
         </el-form-item>
         <el-form-item label="关联服务" prop="service_model">
           <el-select
-            v-model="form.service_model"
+            v-model="form.services"
             placeholder="请选择"
             multiple
             style="width: 100%"
           >
             <el-option
-              v-for="item in modelGroup"
+              v-for="(item, index) in models"
               :key="item.id"
               :label="item.name"
               :value="item.id"
@@ -140,9 +161,6 @@
 
         <el-form-item label="标签" prop="tag">
           <el-input v-model="form.tag" placeholder="请输入标签" />
-        </el-form-item>
-        <el-form-item label="配置信息" prop="configuration">
-          <el-input v-model="form.configuration" placeholder="请输入配置信息" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -163,7 +181,14 @@
 
 <script>
 //分类的增删改查
-import { getHostResource, getModelList } from "@/api/cmdb";
+import {
+  getHostResource,
+  delHostResource,
+  createHostResource,
+  updateHostResource,
+  getHostDetail,
+  getModelList
+} from "@/api/cmdb";
 
 import waves from "@/directive/waves"; // waves directive
 import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
@@ -182,8 +207,8 @@ export default {
         page: 1,
         size: 10
       },
-      model: [],
-      modelGroup: [],
+      models: [],
+
       form: {},
       dialogFormVisible: false,
       dialogStatus: "",
@@ -192,32 +217,23 @@ export default {
         create: "添加主机"
       },
       rules: {
-        ip: [
-          { required: true, message: "InfluxDB地址必须填写", trigger: "blur" }
-        ]
+        ip: [{ required: true, message: "主机IP地址必须填写", trigger: "blur" }]
       }
     };
   },
   //页面刷新时执行
   created() {
     this.getList();
-    this.getModelGroupList();
+    this.modelList();
   },
 
   methods: {
     //获取所有服务模型列表
     //获取模型分组列表
-    getModelGroupList() {
+    modelList() {
       getModelList().then(res => {
-        this.modelGroup = res.data.results;
-        console.log(this.modelGroup);
-        this.modelGroup.forEach(element => {
-          if (element.models.length > 0) {
-            this.model.concat(element.models);
-            console.log(this.model);
-          }
-        });
-        console.log(this.model);
+        this.models = res.data.results;
+        console.log(this.models);
       });
     },
 
@@ -254,9 +270,7 @@ export default {
     createData() {
       this.$refs["dataForm"].validate(valid => {
         if (valid) {
-          console.log(this.form);
-          createInfluxdb(this.form).then(response => {
-            console.log(response);
+          createHostResource(this.form).then(response => {
             // 如果后端返回的状态码为0,则创建成功
             if (response.code === 0) {
               this.$notify({
@@ -293,8 +307,7 @@ export default {
       this.$refs["dataForm"].validate(valid => {
         if (valid) {
           const tempData = Object.assign({}, this.form);
-          updateInfluxdb(tempData.id, tempData).then(response => {
-            console.log(response);
+          updateHostResource(tempData.id, tempData).then(response => {
             if (response.code === 0) {
               this.$notify({
                 title: "更新成功",
@@ -317,13 +330,13 @@ export default {
 
     //数据删除
     handleDelete(row, index) {
-      this.$confirm("此操作将删除该数据源, 是否继续?", "提示", {
+      this.$confirm("此操作将删除该主机资源, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
       })
         .then(() => {
-          delInfluxdb(row.id).then(response => {
+          delHostResource(row.id).then(response => {
             if (response.code === 0) {
               this.$notify({
                 title: "删除成功",

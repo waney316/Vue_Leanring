@@ -159,7 +159,7 @@
 
 <script>
 import {
-  getModelList,
+  getModelGroupList,
   createModelGroup,
   updateModelGroup,
   deleteModelGroup,
@@ -308,7 +308,7 @@ export default {
       });
     },
     modelList() {
-      getModelList().then(response => {
+      getModelGroupList().then(response => {
         console.log(response.data);
         this.models = response.data.results;
       });

@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import { getModelList } from "@/api/cmdb";
+import { getModelGroupList } from "@/api/cmdb";
 export default {
   data() {
     return {
@@ -60,7 +60,7 @@ export default {
   mounted() {},
   methods: {
     modelList() {
-      getModelList().then(response => {
+      getModelGroupList().then(response => {
         console.log(response.data);
         var data = response.data.results;
         var classifArr = [];

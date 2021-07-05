@@ -229,7 +229,7 @@
 
 <script>
 import {
-  getModelList,
+  getModelGroupList,
   getModelDetails,
   updateModel,
   deleteModel,
@@ -273,7 +273,7 @@ export default {
   methods: {
     //获取模型分组列表
     getModelGroupList() {
-      getModelList().then(res => {
+      getModelGroupList().then(res => {
         console.log(res.data);
         this.modelGroup = res.data.results;
       });

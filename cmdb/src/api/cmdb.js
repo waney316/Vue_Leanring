@@ -33,7 +33,7 @@ export function createItem(data) {
 }
 
 //获取模型列表
-export function getModelList() {
+export function getModelGroupList() {
   return request({
     url: "/api/v1/cmdb/model_group",
     method: "get"
@@ -70,6 +70,14 @@ export function getModelDetails(id) {
     method: "get"
   });
 }
+
+export function getModelList(id) {
+  return request({
+    url: `/api/v1/cmdb/model`,
+    method: "get"
+  });
+}
+
 //创建模型
 export function createModel(data) {
   return request({
@@ -120,10 +128,45 @@ export function delField(id) {
   });
 }
 
-//主机资源
-export function getHostResource(id) {
+//获取主机资源
+export function getHostResource(params) {
   return request({
     url: `/api/v1/cmdb/resource`,
+    method: "get",
+    params
+  });
+}
+
+//添加主机资源
+export function createHostResource(data) {
+  return request({
+    url: `/api/v1/cmdb/resource`,
+    method: "post",
+    data
+  });
+}
+
+//删除主机资源
+export function delHostResource(id) {
+  return request({
+    url: `/api/v1/cmdb/resource/${id}`,
+    method: "delete"
+  });
+}
+
+//更新主机资源
+export function updateHostResource(id, data) {
+  return request({
+    url: `/api/v1/cmdb/resource/${id}`,
+    method: "put",
+    data: data
+  });
+}
+
+//获取单个主机资源
+export function getHostDetail(id) {
+  return request({
+    url: `/api/v1/cmdb/resource/${id}`,
     method: "get"
   });
 }
