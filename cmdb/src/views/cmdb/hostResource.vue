@@ -80,7 +80,14 @@
           </el-table-column>
           <el-table-column label="标识" align="center" width="160">
             <template slot-scope="{ row }">
-              <span>{{ row.tag }}</span>
+              <el-tag
+                v-for="(item, index) in row.tag"
+                :key="index"
+                type="info"
+                size="mini"
+                style="margin-left: 10px"
+                >{{ item }}</el-tag
+              >
             </template>
           </el-table-column>
 
@@ -142,15 +149,17 @@
         <el-form-item label="主机IP" prop="ip">
           <el-input v-model="form.ip" placeholder="请输入主机资源常用IP" />
         </el-form-item>
+
         <el-form-item label="关联服务" prop="service_model">
           <el-select
             v-model="form.services"
             placeholder="请选择"
             multiple
+            clearable
             style="width: 100%"
           >
             <el-option
-              v-for="(item, index) in models"
+              v-for="item in models"
               :key="item.id"
               :label="item.name"
               :value="item.id"
@@ -160,7 +169,15 @@
         </el-form-item>
 
         <el-form-item label="标签" prop="tag">
-          <el-input v-model="form.tag" placeholder="请输入标签" />
+          <el-select
+            v-model="form.tag"
+            placeholder="请输入标签"
+            multiple
+            style="width: 100%"
+            filterable
+            allow-create
+          >
+          </el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -209,7 +226,9 @@ export default {
       },
       models: [],
 
-      form: {},
+      form: {
+        services: []
+      },
       dialogFormVisible: false,
       dialogStatus: "",
       textMap: {
@@ -297,6 +316,7 @@ export default {
     //数据更新
     handleUpdate(row) {
       this.form = Object.assign({}, row); // copy obj
+      console.log(this.form.services);
       this.dialogStatus = "update";
       this.dialogFormVisible = true;
       this.$nextTick(() => {

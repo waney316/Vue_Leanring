@@ -72,9 +72,36 @@ export const constantRoutes = [
   ...promRouter,
   //引入trap
   ...trapRouter,
-  //引入agent
-  // ...agentRouter,
 
+  {
+    path: "/system",
+    component: Layout,
+    name: "system",
+    meta: {
+      title: "系统管理",
+      icon: "el-icon-cherry"
+    },
+    children: [
+      {
+        path: "user",
+        name: "用户管理",
+        component: () => import("@/views/system/user"),
+        meta: {
+          title: "用户管理",
+          icon: "dashboard"
+        }
+      },
+      {
+        path: "audit_log",
+        name: "操作日志",
+        component: () => import("@/views/system/auditLog"),
+        meta: {
+          title: "操作日志",
+          icon: "dashboard"
+        }
+      }
+    ]
+  },
   // 404 page must be placed at the end !!!
   {
     path: "*",

@@ -114,7 +114,7 @@
           >
             <el-option
               v-for="item in models"
-              :key="item.id"
+              :key="item.name"
               :label="item.name"
               :value="item.id"
             >
