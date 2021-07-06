@@ -170,3 +170,21 @@ export function getHostDetail(id) {
     method: "get"
   });
 }
+
+
+//获取服务树
+export function getServiceTree() {
+  return request({
+    url: `/api/v1/cmdb/service_tree`,
+    method: "get"
+  });
+}
+
+//点击树节点时获取关联主机资源
+export function getServiceResource(params) {
+  return request({
+    url: "/api/v1/cmdb/service_resource",
+    method: "get",
+    params
+  })
+}
