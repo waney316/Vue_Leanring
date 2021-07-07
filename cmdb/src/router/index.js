@@ -3,13 +3,14 @@ import Router from "vue-router";
 import zabbixRouter from "./zabbix";
 import cmdbRouter from "./cmdb";
 import promRouter from "./prom";
-import agentRouter from "./agent";
 import trapRouter from "./trap";
+import tasksRouter from "./tasks";
 
 Vue.use(Router);
 
 /* Layout */
 import Layout from "@/layout";
+import { delTaskHistory } from "@/api/tasks";
 
 /**
  * Note: sub-menu only appear when route children.length >= 1
@@ -35,7 +36,8 @@ import Layout from "@/layout";
  * a base page that does not have permission requirements
  * all roles can be accessed
  */
-export const constantRoutes = [{
+export const constantRoutes = [
+  {
     path: "/login",
     component: () => import("@/views/login/index"),
     hidden: true
@@ -50,15 +52,17 @@ export const constantRoutes = [{
     path: "/",
     component: Layout,
     redirect: "/dashboard",
-    children: [{
-      path: "dashboard",
-      name: "Dashboard",
-      component: () => import("@/views/dashboard/index"),
-      meta: {
-        title: "首页",
-        icon: "dashboard"
+    children: [
+      {
+        path: "dashboard",
+        name: "Dashboard",
+        component: () => import("@/views/dashboard/index"),
+        meta: {
+          title: "首页",
+          icon: "dashboard"
+        }
       }
-    }]
+    ]
   },
 
   //引入cmdb
@@ -69,6 +73,7 @@ export const constantRoutes = [{
   ...promRouter,
   //引入trap
   ...trapRouter,
+  ...tasksRouter,
 
   {
     path: "/system",
@@ -78,7 +83,8 @@ export const constantRoutes = [{
       title: "系统管理",
       icon: "el-icon-cherry"
     },
-    children: [{
+    children: [
+      {
         path: "user",
         name: "用户管理",
         component: () => import("@/views/system/user"),
