@@ -35,8 +35,7 @@ import Layout from "@/layout";
  * a base page that does not have permission requirements
  * all roles can be accessed
  */
-export const constantRoutes = [
-  {
+export const constantRoutes = [{
     path: "/login",
     component: () => import("@/views/login/index"),
     hidden: true
@@ -51,17 +50,15 @@ export const constantRoutes = [
     path: "/",
     component: Layout,
     redirect: "/dashboard",
-    children: [
-      {
-        path: "dashboard",
-        name: "Dashboard",
-        component: () => import("@/views/dashboard/index"),
-        meta: {
-          title: "首页",
-          icon: "dashboard"
-        }
+    children: [{
+      path: "dashboard",
+      name: "Dashboard",
+      component: () => import("@/views/dashboard/index"),
+      meta: {
+        title: "首页",
+        icon: "dashboard"
       }
-    ]
+    }]
   },
 
   //引入cmdb
@@ -81,8 +78,7 @@ export const constantRoutes = [
       title: "系统管理",
       icon: "el-icon-cherry"
     },
-    children: [
-      {
+    children: [{
         path: "user",
         name: "用户管理",
         component: () => import("@/views/system/user"),
@@ -96,7 +92,7 @@ export const constantRoutes = [
         name: "操作日志",
         component: () => import("@/views/system/auditLog"),
         meta: {
-          title: "操作日志",
+          title: "日志审计",
           icon: "dashboard"
         }
       }

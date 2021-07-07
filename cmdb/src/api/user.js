@@ -16,6 +16,15 @@ export function getInfo() {
   })
 }
 
+//更新用户密码
+export function updateUser(data) {
+  return request({
+    url: '/api/v1/user/info',
+    method: 'post',
+    data
+  })
+}
+
 
 //logout: 退出登录清空token即可
 // export function logout() {
