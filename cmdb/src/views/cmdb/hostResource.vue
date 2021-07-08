@@ -1,10 +1,7 @@
 <template>
   <div class="app-container">
     <el-card class="box-card">
-      <div
-        slot="header"
-        class="clearfix"
-      >
+      <div slot="header" class="clearfix">
         <span>主机资源</span>
       </div>
       <div class="text item">
@@ -50,20 +47,12 @@
           highlight-current-row
           style="width: 100%; margin-top:10px"
         >
-          <el-table-column
-            label="IP地址"
-            align="center"
-            width="180"
-          >
+          <el-table-column label="IP地址" align="center" width="180">
             <template slot-scope="{ row }">
               <span>{{ row.ip }}</span>
             </template>
           </el-table-column>
-          <el-table-column
-            label="资源数据"
-            align="center"
-            width="80"
-          >
+          <el-table-column label="资源数据" align="center" width="80">
             <template slot-scope="{ row }">
               <span v-if="!row.data">
                 <el-tag type="danger">无</el-tag>
@@ -71,11 +60,7 @@
               <span v-else>{{ row.data }}</span>
             </template>
           </el-table-column>
-          <el-table-column
-            label="配置信息"
-            align="center"
-            width="80"
-          >
+          <el-table-column label="配置信息" align="center" width="80">
             <template slot-scope="{ row }">
               <span v-if="!row.configuration">
                 <el-tag type="danger">无</el-tag>
@@ -84,25 +69,18 @@
             </template>
           </el-table-column>
 
-          <el-table-column
-            label="服务标签"
-            align="center"
-            min-width="160"
-          >
+          <el-table-column label="服务标签" align="center" min-width="160">
             <template slot-scope="{ row }">
               <el-tag
                 size="mini"
                 v-for="item in row.services"
                 :key="'mini' + item.id"
                 style="margin-left: 10px"
-              >{{ item.name }}</el-tag>
+                >{{ item.name }}</el-tag
+              >
             </template>
           </el-table-column>
-          <el-table-column
-            label="标识"
-            align="center"
-            width="160"
-          >
+          <el-table-column label="标识" align="center" width="160">
             <template slot-scope="{ row }">
               <el-tag
                 v-for="(item, index) in row.tag"
@@ -110,7 +88,8 @@
                 type="info"
                 size="mini"
                 style="margin-left: 10px"
-              >{{ item }}</el-tag>
+                >{{ item }}</el-tag
+              >
             </template>
           </el-table-column>
 
@@ -160,10 +139,7 @@
     </el-card>
 
     <!-- 主机资源编辑 -->
-    <el-dialog
-      :title="textMap[dialogStatus]"
-      :visible.sync="dialogFormVisible"
-    >
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form
         ref="dataForm"
         :rules="rules"
@@ -173,20 +149,11 @@
         label-width="120px"
         style="width: 80%; margin-left: 50px"
       >
-        <el-form-item
-          label="主机IP"
-          prop="ip"
-        >
-          <el-input
-            v-model="form.ip"
-            placeholder="请输入主机资源常用IP"
-          />
+        <el-form-item label="主机IP" prop="ip">
+          <el-input v-model="form.ip" placeholder="请输入主机资源常用IP" />
         </el-form-item>
 
-        <el-form-item
-          label="关联服务"
-          prop="service_model"
-        >
+        <el-form-item label="关联服务" prop="service_model">
           <el-select
             v-model="updateServices"
             placeholder="请选择"
@@ -204,10 +171,7 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item
-          label="标签"
-          prop="tag"
-        >
+        <el-form-item label="标签" prop="tag">
           <el-select
             v-model="form.tag"
             placeholder="请输入标签"
@@ -219,14 +183,8 @@
           </el-select>
         </el-form-item>
       </el-form>
-      <div
-        slot="footer"
-        class="dialog-footer"
-      >
-        <el-button
-          @click="dialogFormVisible = false"
-          size="small"
-        >
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false" size="small">
           关闭
         </el-button>
         <el-button
@@ -242,62 +200,46 @@
     <!-- 关联服务字段编辑 -->
     <el-drawer
       size="35%"
+      custom-class="overflow-auto"
       title="关联服务字段编辑"
       :visible.sync="drawer"
       :direction="direction"
     >
       <el-form
-        ref="hostFileds"
-        :model="hostFileds"
-        size="small"
+        ref="filedsForm"
+        :model="filedsForm"
+        size="mini"
         label-position="left"
         label-width="120px"
         style="width: 80%; margin-left: 50px"
       >
-        <el-form-item
-          label="主机IP"
-          prop="ip"
-        >
-          <el-input
-            v-model="form.ip"
-            placeholder="请输入主机资源常用IP"
-          />
-        </el-form-item>
+        <template v-for="service in hostFileds">
+          <div :key="service.id">
+            <div class="field-header">
+              <span>{{ service.name }}</span>
+            </div>
+            <div class="field-form" v-if="service.fields.length > 0">
+              <template v-for="field in service.fields">
+                <el-form-item
+                  :label="field.cname"
+                  :key="field.id"
+                  :rules="[{ required: field.required, message: '字段必填' }]"
+                >
+                  <el-input :placeholder="field.type"></el-input>
+                </el-form-item>
+              </template>
+            </div>
+            <div v-else><span>无字段</span></div>
+          </div>
+        </template>
 
-        <el-form-item
-          label="关联服务"
-          prop="service_model"
-        >
-          <el-select
-            v-model="updateServices"
-            placeholder="请选择"
-            multiple
-            clearable
-            style="width: 100%"
-          >
-            <el-option
-              v-for="item in models"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
-            >
-            </el-option>
-          </el-select>
-        </el-form-item>
-
-        <el-form-item
-          label="标签"
-          prop="tag"
-        >
-          <el-select
-            v-model="form.tag"
-            placeholder="请输入标签"
-            multiple
-            style="width: 100%"
-            filterable
-            allow-create
-          >
-          </el-select>
+        <el-form-item style="margin-top: 3px" size="medium">
+          <el-button @click="drawer = false" type="danger">
+            取消
+          </el-button>
+          <el-button type="primary">
+            立即创建
+          </el-button>
         </el-form-item>
       </el-form>
     </el-drawer>
@@ -322,9 +264,9 @@ export default {
   name: "HostResource",
   components: { Pagination },
   directives: { waves },
-  data () {
+  data() {
     return {
-      testService: ['zabbix_proxy', 'zabbix_server', 'mysql'],
+      testService: ["zabbix_proxy", "zabbix_server", "mysql"],
       tableKey: 0,
       list: null,
       total: 0,
@@ -334,10 +276,10 @@ export default {
         size: 10
       },
       models: [],
-      hostFileds: {},
+      hostFileds: [],
+      filedsForm: {},
       updateServices: [],
-      form: {
-      },
+      form: {},
       dialogFormVisible: false,
       dialogStatus: "",
       textMap: {
@@ -349,11 +291,11 @@ export default {
       },
 
       drawer: false,
-      direction: 'rtl',
+      direction: "rtl"
     };
   },
   //页面刷新时执行
-  created () {
+  created() {
     this.getList();
     this.modelList();
   },
@@ -361,7 +303,7 @@ export default {
   methods: {
     //获取所有服务模型列表
     //获取模型分组列表
-    modelList () {
+    modelList() {
       getModelList().then(res => {
         this.models = res.data.results;
         console.log(this.models);
@@ -369,7 +311,7 @@ export default {
     },
 
     //获取数据源列表
-    getList () {
+    getList() {
       this.listLoading = true;
       getHostResource(this.listQuery).then(response => {
         console.log(response.data);
@@ -379,17 +321,17 @@ export default {
       });
     },
 
-    handleFilter () {
+    handleFilter() {
       this.listQuery.page = 1;
       this.getList();
     },
 
-    resetTemp () {
+    resetTemp() {
       this.form = {};
     },
 
     //新增输入框，校验
-    handleCreate () {
+    handleCreate() {
       this.resetTemp();
       this.dialogStatus = "create";
       this.dialogFormVisible = true;
@@ -398,7 +340,7 @@ export default {
       });
     },
     //添加数据源
-    createData () {
+    createData() {
       this.$refs["dataForm"].validate(valid => {
         if (valid) {
           createHostResource(this.form).then(response => {
@@ -426,12 +368,12 @@ export default {
     },
 
     //数据更新
-    handleUpdate (row) {
-      this.updateServices = []
+    handleUpdate(row) {
+      this.updateServices = [];
       this.form = Object.assign({}, row); // copy obj
       this.form.services.forEach(ele => {
-        this.updateServices.push(ele.id)
-      })
+        this.updateServices.push(ele.id);
+      });
       console.log(this.updateServices);
 
       this.dialogStatus = "update";
@@ -440,11 +382,11 @@ export default {
         this.$refs["dataForm"].clearValidate();
       });
     },
-    updateData () {
+    updateData() {
       this.$refs["dataForm"].validate(valid => {
         if (valid) {
           const tempData = Object.assign({}, this.form);
-          tempData.services = this.updateServices
+          tempData.services = this.updateServices;
           updateHostResource(tempData.id, tempData).then(response => {
             if (response.code === 0) {
               this.$notify({
@@ -467,7 +409,7 @@ export default {
     },
 
     //数据删除
-    handleDelete (row, index) {
+    handleDelete(row, index) {
       this.$confirm("此操作将删除该主机资源, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -500,12 +442,29 @@ export default {
     },
 
     //服务模型字段编辑
-    filedUpdate (row) {
-      this.drawer = true
-      console.log(row);
-      this.hostFileds = row.services
-
+    filedUpdate(row) {
+      this.drawer = true;
+      this.hostFileds = row.services;
+      console.log(this.hostFileds);
     }
   }
 };
 </script>
+
+<style scoped>
+.field-header > span {
+  color: #909399;
+  font-size: 15px;
+  line-height: 10px;
+  padding: 20px;
+  font-weight: bold;
+  text-align: left;
+  display: block;
+}
+
+.field-form {
+  outline: 1px white dashed;
+  outline-offset: -10px;
+  border-radius: 4%;
+}
+</style>
