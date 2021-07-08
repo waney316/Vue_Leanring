@@ -125,9 +125,9 @@
                 class="el-icon-edit"
                 type="primary"
                 size="mini"
-                @click="handleUpdate(row)"
+                @click="filedUpdate(row)"
               >
-                详情
+                服务字段
               </el-button>
               <el-button
                 class="el-icon-edit"
@@ -159,6 +159,7 @@
       </div>
     </el-card>
 
+    <!-- 主机资源编辑 -->
     <el-dialog
       :title="textMap[dialogStatus]"
       :visible.sync="dialogFormVisible"
@@ -237,6 +238,69 @@
         </el-button>
       </div>
     </el-dialog>
+
+    <!-- 关联服务字段编辑 -->
+    <el-drawer
+      size="35%"
+      title="关联服务字段编辑"
+      :visible.sync="drawer"
+      :direction="direction"
+    >
+      <el-form
+        ref="hostFileds"
+        :model="hostFileds"
+        size="small"
+        label-position="left"
+        label-width="120px"
+        style="width: 80%; margin-left: 50px"
+      >
+        <el-form-item
+          label="主机IP"
+          prop="ip"
+        >
+          <el-input
+            v-model="form.ip"
+            placeholder="请输入主机资源常用IP"
+          />
+        </el-form-item>
+
+        <el-form-item
+          label="关联服务"
+          prop="service_model"
+        >
+          <el-select
+            v-model="updateServices"
+            placeholder="请选择"
+            multiple
+            clearable
+            style="width: 100%"
+          >
+            <el-option
+              v-for="item in models"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item
+          label="标签"
+          prop="tag"
+        >
+          <el-select
+            v-model="form.tag"
+            placeholder="请输入标签"
+            multiple
+            style="width: 100%"
+            filterable
+            allow-create
+          >
+          </el-select>
+        </el-form-item>
+      </el-form>
+    </el-drawer>
   </div>
 </template>
 
@@ -270,6 +334,7 @@ export default {
         size: 10
       },
       models: [],
+      hostFileds: {},
       updateServices: [],
       form: {
       },
@@ -281,7 +346,10 @@ export default {
       },
       rules: {
         ip: [{ required: true, message: "主机IP地址必须填写", trigger: "blur" }]
-      }
+      },
+
+      drawer: false,
+      direction: 'rtl',
     };
   },
   //页面刷新时执行
@@ -429,6 +497,14 @@ export default {
             message: "已取消删除"
           });
         });
+    },
+
+    //服务模型字段编辑
+    filedUpdate (row) {
+      this.drawer = true
+      console.log(row);
+      this.hostFileds = row.services
+
     }
   }
 };

@@ -7,7 +7,7 @@ export default [
     component: Layout,
     name: "Example",
     meta: {
-      title: "Trap管理",
+      title: "TRAP查询",
       icon: "el-icon-s-open"
     },
     children: [{

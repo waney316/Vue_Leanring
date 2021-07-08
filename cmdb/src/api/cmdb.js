@@ -102,7 +102,6 @@ export function deleteModel(id) {
   });
 }
 
-createField, updateField, delField;
 
 //新建字段
 export function createField(data) {
