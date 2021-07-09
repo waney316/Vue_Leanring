@@ -8,3 +8,11 @@ export function getAuditLog(params) {
     params: params
   });
 }
+
+// 获取dashboard数据
+export function getDashboard() {
+  return request({
+    url: "api/v1/dashboard",
+    method: "get"
+  });
+}
