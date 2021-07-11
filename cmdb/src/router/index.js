@@ -5,6 +5,7 @@ import cmdbRouter from "./cmdb";
 import promRouter from "./prom";
 import trapRouter from "./trap";
 import tasksRouter from "./tasks";
+import systemRouter from "./system";
 
 Vue.use(Router);
 
@@ -74,36 +75,8 @@ export const constantRoutes = [
   //引入trap
   ...trapRouter,
   ...tasksRouter,
+  ...systemRouter,
 
-  {
-    path: "/system",
-    component: Layout,
-    name: "system",
-    meta: {
-      title: "系统管理",
-      icon: "el-icon-cherry"
-    },
-    children: [
-      {
-        path: "user",
-        name: "用户管理",
-        component: () => import("@/views/system/user"),
-        meta: {
-          title: "用户管理",
-          icon: "dashboard"
-        }
-      },
-      {
-        path: "audit_log",
-        name: "操作日志",
-        component: () => import("@/views/system/auditLog"),
-        meta: {
-          title: "日志审计",
-          icon: "dashboard"
-        }
-      }
-    ]
-  },
   // 404 page must be placed at the end !!!
   {
     path: "*",

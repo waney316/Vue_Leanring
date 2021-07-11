@@ -65,11 +65,11 @@
               <span v-if="!row.configuration">
                 <el-tag type="danger">无</el-tag>
               </span>
-              <span v-else>{{ row.configuration }}</span>
+              <span v-else><el-tag type="success">是</el-tag> </span>
             </template>
           </el-table-column>
 
-          <el-table-column label="服务标签" align="center" min-width="160">
+          <el-table-column label="服务标签" align="center" min-width="140">
             <template slot-scope="{ row }">
               <el-tag
                 size="mini"

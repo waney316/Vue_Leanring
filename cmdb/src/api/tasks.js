@@ -1,6 +1,6 @@
 import request from "@/utils/request";
 
-// 获取任务列表
+// 获取任务历史列表
 export function getTaskHistory(params) {
   return request({
     url: "/api/v1/tasks/history/",
@@ -21,6 +21,15 @@ export function delTaskHistory(pk) {
 export function getTaskResult(params) {
   return request({
     url: "/api/v1/tasks/history-result/",
+    method: "get",
+    params
+  });
+}
+
+//获取定时任务列表
+export function getCronTask(params) {
+  return request({
+    url: "/api/v1/tasks/cron/",
     method: "get",
     params
   });
