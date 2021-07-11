@@ -173,7 +173,7 @@
                   type="success"
                   @click="handleDetails(scope.row)"
                   v-show="scope.row.task_status === 'SUCCESS'"
-                  >生成PDF</el-button
+                  >报告预览</el-button
                 >
               </template>
             </el-table-column>
