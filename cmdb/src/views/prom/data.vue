@@ -1,18 +1,12 @@
 <template>
   <div class="app-container">
     <el-card>
-      <div
-        slot="header"
-        class="clearfix"
-      >
+      <div slot="header" class="clearfix">
         <span>PromQL数据查询</span>
       </div>
 
       <transition name="slide-fade">
-        <div
-          class="text item"
-          v-show="show"
-        >
+        <div class="text item" v-show="show">
           <el-form
             ref="form"
             :model="form"
@@ -22,10 +16,7 @@
           >
             <el-row>
               <el-col :span="7">
-                <el-form-item
-                  label="数据源"
-                  prop="name"
-                >
+                <el-form-item label="数据源" prop="name">
                   <el-select
                     v-model="form.name"
                     clearable
@@ -43,10 +34,7 @@
                 </el-form-item>
               </el-col>
               <el-col :span="7">
-                <el-form-item
-                  label="查询类型"
-                  prop="method"
-                >
+                <el-form-item label="查询类型" prop="method">
                   <el-select
                     v-model="form.method"
                     clearable
@@ -119,54 +107,33 @@
               ></el-input>
             </el-form-item> -->
             <el-form-item>
-              <el-button
-                type="primary"
-                @click="submitForm('form')"
-              >创建查询</el-button>
-              <el-button
-                type="danger"
-                @click="resetForm('form')"
-              >重置</el-button>
+              <el-button type="primary" @click="submitForm('form')"
+                >创建查询</el-button
+              >
+              <el-button type="danger" @click="resetForm('form')"
+                >重置</el-button
+              >
             </el-form-item>
           </el-form>
         </div>
       </transition>
-      <div
-        style="text-align:center; font-size: 12px"
-        @click="show = !show"
-      >
-        <i
-          class="el-icon-arrow-up"
-          v-show="show"
-        >隐藏查询条件</i>
-        <i
-          class="el-icon-arrow-down"
-          v-show="!show"
-        >展开查询条件</i>
+      <div style="text-align:center; font-size: 12px" @click="show = !show">
+        <i class="el-icon-arrow-up" v-show="show">隐藏查询条件</i>
+        <i class="el-icon-arrow-down" v-show="!show">展开查询条件</i>
       </div>
-
     </el-card>
 
     <!-- 查询告警规则文件 -->
-    <el-card
-      style="margin-top: 10px"
-      v-if="rulesStatus"
-    >
-      <template v-for="(rule,index) in rulesData">
-        <div
-          :key="index"
-          style="margin-top: 10px"
-        >
+    <el-card style="margin-top: 10px" v-if="rulesStatus">
+      <template v-for="(rule, index) in rulesData">
+        <div :key="index" style="margin-top: 10px">
           <div class="rule-header">
-            <span>告警规则分组：{{rule.name }}</span>
-            <span>规则文件路径：{{rule.file }}</span>
-            <span>规则匹配周期：{{rule.interval }}</span>
+            <span>告警规则分组：{{ rule.name }}</span>
+            <span>规则文件路径：{{ rule.file }}</span>
+            <span>规则匹配周期：{{ rule.interval }}</span>
           </div>
 
-          <el-table
-            :data="rule.rules"
-            style="width: 100%"
-          >
+          <el-table :data="rule.rules" style="width: 100%">
             <el-table-column type="expand">
               <template slot-scope="props">
                 <el-form
@@ -177,25 +144,17 @@
                 >
                   <el-row>
                     <template v-for="(item, key, index) in props.row.labels">
-                      <el-col :span="6">
-                        <el-form-item
-                          :label="key"
-                          :key="index"
-                        >
+                      <el-col :span="6" :key="index">
+                        <el-form-item :label="key">
                           <span>{{ item }}</span>
                         </el-form-item>
                       </el-col>
                     </template>
                   </el-row>
-
                 </el-form>
               </template>
             </el-table-column>
-            <el-table-column
-              label="规则名称"
-              prop="name"
-              min-width="160"
-            >
+            <el-table-column label="规则名称" prop="name" min-width="160">
             </el-table-column>
             <el-table-column
               show-overflow-tooltip
@@ -204,10 +163,7 @@
               min-width="120"
             >
             </el-table-column>
-            <el-table-column
-              label="采集周期"
-              prop="duration"
-            >
+            <el-table-column label="采集周期" prop="duration">
             </el-table-column>
             <el-table-column
               show-overflow-tooltip
@@ -215,30 +171,18 @@
               prop="annotations.summary"
             >
             </el-table-column>
-            <el-table-column
-              label="健康检查"
-              prop="health"
-              min-width="160"
-            >
+            <el-table-column label="健康检查" prop="health" min-width="160">
             </el-table-column>
-
           </el-table>
         </div>
       </template>
-
     </el-card>
 
     <!-- 查询告警数据 -->
-    <el-card
-      style="margin-top: 10px"
-      v-if="alertsStatus"
-    >
+    <el-card style="margin-top: 10px" v-if="alertsStatus">
       <!-- 告警展示 -->
       <div>
-        <el-table
-          :data="alertsData"
-          style="width: 100%"
-        >
+        <el-table :data="alertsData" style="width: 100%">
           <el-table-column type="expand">
             <template slot-scope="props">
               <el-form
@@ -249,25 +193,17 @@
               >
                 <el-row>
                   <template v-for="(item, key, index) in props.row.labels">
-                    <el-col :span="6">
-                      <el-form-item
-                        :label="key"
-                        :key="index"
-                      >
+                    <el-col :span="6" :key="index">
+                      <el-form-item :label="key">
                         <span>{{ item }}</span>
                       </el-form-item>
                     </el-col>
                   </template>
                 </el-row>
-
               </el-form>
             </template>
           </el-table-column>
-          <el-table-column
-            label="告警时间"
-            prop="activeAt"
-            min-width="160"
-          >
+          <el-table-column label="告警时间" prop="activeAt" min-width="160">
           </el-table-column>
           <el-table-column
             label="告警实例"
@@ -275,16 +211,9 @@
             min-width="120"
           >
           </el-table-column>
-          <el-table-column
-            label="告警分组"
-            prop="labels.job"
-          >
+          <el-table-column label="告警分组" prop="labels.job">
           </el-table-column>
-          <el-table-column
-            label="状态"
-            prop="state"
-          >
-          </el-table-column>
+          <el-table-column label="状态" prop="state"> </el-table-column>
           <el-table-column
             label="告警描述"
             prop="annotations.summary"
@@ -292,10 +221,7 @@
             show-overflow-tooltip
           >
           </el-table-column>
-          <el-table-column
-            label="告警值"
-            prop="annotations.value"
-          >
+          <el-table-column label="告警值" prop="annotations.value">
           </el-table-column>
         </el-table>
         <pagination
@@ -307,17 +233,21 @@
         />
       </div>
     </el-card>
-
   </div>
 </template>
 
 <script>
-import { getPromList, getPromActionList, promQuery, alertQuery } from "@/api/prom";
+import {
+  getPromList,
+  getPromActionList,
+  promQuery,
+  alertQuery
+} from "@/api/prom";
 import { getItemList } from "@/api/cmdb";
 import Pagination from "@/components/Pagination";
 export default {
   components: { Pagination },
-  data () {
+  data() {
     return {
       form: {
         name: "", //prometheus数据源名称
@@ -351,12 +281,11 @@ export default {
       rulesStatus: false,
 
       //查询配置文件
-      configStatus: false,
-
+      configStatus: false
     };
   },
 
-  mounted () {
+  mounted() {
     //页面挂载时获取所有数据源和prometheus对应的监控项键值
     this.getDataSourceList();
     this.getPromItemList();
@@ -364,7 +293,7 @@ export default {
   },
   methods: {
     //获取promethues数据源
-    getDataSourceList () {
+    getDataSourceList() {
       getPromList().then(response => {
         if (response.code === 0) {
           this.dataSourceOption = response.data.results;
@@ -373,50 +302,51 @@ export default {
     },
 
     //获取监控键值
-    getPromItemList () {
+    getPromItemList() {
       getItemList({ type: "prometheus" }).then(response => {
         this.itemData = response.data.results;
       });
     },
 
     //获取查询方法集
-    getActionList () {
+    getActionList() {
       getPromActionList().then(response => {
         this.methodOption = response.data.results;
       });
     },
 
     //处理告警数据
-    handleAlertsData (data) {
-      this.alertsStatus = true
-      this.alertsData = data
+    handleAlertsData(data) {
+      this.alertsStatus = true;
+      this.alertsData = data;
     },
 
-    handleRulesData (data) {
-      this.rulesStatus = true
-      this.rulesData = data
+    handleRulesData(data) {
+      this.rulesStatus = true;
+      this.rulesData = data;
     },
 
-    getList () {
-
+    getList() {
+      queryTrapInfo(this.form, this.listQuery).then(response => {
+        this.alertsData = response.data.results;
+      });
     },
     //提交查询表单
-    submitForm (formName) {
-      this.rulesStatus = this.configStatus = false
+    submitForm(formName) {
+      this.rulesStatus = this.configStatus = false;
       this.$refs[formName].validate(valid => {
         if (valid) {
           console.log(this.form.method);
           promQuery(this.form).then(response => {
-            var res = response.data.results
+            var res = response.data.results;
             //判断数据返回类型
             if (this.form.method == "alerts") {
-              this.total = response.data.count
-              this.handleAlertsData(res)
+              this.total = response.data.count;
+              this.handleAlertsData(res);
             } else if (this.form.method == "rules") {
-              this.handleRulesData(res)
+              this.handleRulesData(res);
             }
-          })
-
+          });
         } else {
           console.log("error submit!!");
           return false;

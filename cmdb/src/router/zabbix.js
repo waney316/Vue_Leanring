@@ -9,7 +9,8 @@ export default [
       title: "ZBX管理",
       icon: "el-icon-cherry"
     },
-    children: [{
+    children: [
+      {
         path: "info",
         name: "ZabbixInfo",
         component: () => import("@/views/zabbix/zabbixInfo"),
@@ -67,11 +68,40 @@ export default [
       {
         path: "operation",
         name: "operation",
-        component: () => import("@/views/zabbix/operation"),
+        component: () => import("@/views/zabbix/api/index"),
         meta: {
           title: "API操作",
           icon: "eye-open"
-        }
+        },
+        children: [
+          {
+            path: "hostcreate",
+            name: "hostcreate",
+            component: () => import("@/views/zabbix/api/hostcreate"),
+            meta: {
+              title: "主机批量新建",
+              icon: "list"
+            }
+          },
+          {
+            path: "hostlink",
+            name: "hostlink",
+            component: () => import("@/views/zabbix/api/hostlink"),
+            meta: {
+              title: "主机批量关联",
+              icon: "list"
+            }
+          },
+          {
+            path: "hostmanager",
+            name: "hostmanager",
+            component: () => import("@/views/zabbix/api/hostmanager"),
+            meta: {
+              title: "主机批量管理",
+              icon: "list"
+            }
+          }
+        ]
       }
     ]
   }
