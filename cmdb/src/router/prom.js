@@ -7,11 +7,10 @@ export default [
     component: Layout,
     name: "Example",
     meta: {
-      title: "Prom管理",
+      title: "PROM管理",
       icon: "el-icon-message-solid"
     },
-    children: [
-      {
+    children: [{
         path: "prometheus",
         name: "PromInfo",
         component: () => import("@/views/prom/promInfo"),

@@ -6,11 +6,10 @@ export default [
     component: Layout,
     name: "Example",
     meta: {
-      title: "Zabbix管理",
+      title: "ZBX管理",
       icon: "el-icon-cherry"
     },
-    children: [
-      {
+    children: [{
         path: "info",
         name: "ZabbixInfo",
         component: () => import("@/views/zabbix/zabbixInfo"),

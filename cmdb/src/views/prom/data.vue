@@ -87,7 +87,7 @@
               </el-col>
             </el-row>
 
-            <el-form-item
+            <!-- <el-form-item
               label="监控项"
               prop="key"
             >
@@ -107,7 +107,7 @@
                 >
                 </el-option>
               </el-select>
-            </el-form-item>
+            </el-form-item> -->
 
             <!-- <el-form-item
               label="查询IP"
@@ -144,48 +144,170 @@
           v-show="!show"
         >展开查询条件</i>
       </div>
-      <!-- 查询配置文件显示 -->
-      <div
-        class="config-content"
-        v-if="configStatus"
-      >
-        <el-input
-          type="textarea"
-          :autosize="{ minRows: 2, maxRows: 4 }"
-          v-model="textarea"
+
+    </el-card>
+
+    <!-- 查询告警规则文件 -->
+    <el-card
+      style="margin-top: 10px"
+      v-if="rulesStatus"
+    >
+      <template v-for="(rule,index) in rulesData">
+        <div
+          :key="index"
+          style="margin-top: 10px"
         >
-        </el-input>
+          <div class="rule-header">
+            <span>告警规则分组：{{rule.name }}</span>
+            <span>规则文件路径：{{rule.file }}</span>
+            <span>规则匹配周期：{{rule.interval }}</span>
+          </div>
+
+          <el-table
+            :data="rule.rules"
+            style="width: 100%"
+          >
+            <el-table-column type="expand">
+              <template slot-scope="props">
+                <el-form
+                  border
+                  label-position="left"
+                  inline
+                  class="demo-table-expand"
+                >
+                  <el-row>
+                    <template v-for="(item, key, index) in props.row.labels">
+                      <el-col :span="6">
+                        <el-form-item
+                          :label="key"
+                          :key="index"
+                        >
+                          <span>{{ item }}</span>
+                        </el-form-item>
+                      </el-col>
+                    </template>
+                  </el-row>
+
+                </el-form>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="规则名称"
+              prop="name"
+              min-width="160"
+            >
+            </el-table-column>
+            <el-table-column
+              show-overflow-tooltip
+              label="表达式"
+              prop="query"
+              min-width="120"
+            >
+            </el-table-column>
+            <el-table-column
+              label="采集周期"
+              prop="duration"
+            >
+            </el-table-column>
+            <el-table-column
+              show-overflow-tooltip
+              label="告警描述"
+              prop="annotations.summary"
+            >
+            </el-table-column>
+            <el-table-column
+              label="健康检查"
+              prop="health"
+              min-width="160"
+            >
+            </el-table-column>
+
+          </el-table>
+        </div>
+      </template>
+
+    </el-card>
+
+    <!-- 查询告警数据 -->
+    <el-card
+      style="margin-top: 10px"
+      v-if="alertsStatus"
+    >
+      <!-- 告警展示 -->
+      <div>
+        <el-table
+          :data="alertsData"
+          style="width: 100%"
+        >
+          <el-table-column type="expand">
+            <template slot-scope="props">
+              <el-form
+                border
+                label-position="left"
+                inline
+                class="demo-table-expand"
+              >
+                <el-row>
+                  <template v-for="(item, key, index) in props.row.labels">
+                    <el-col :span="6">
+                      <el-form-item
+                        :label="key"
+                        :key="index"
+                      >
+                        <span>{{ item }}</span>
+                      </el-form-item>
+                    </el-col>
+                  </template>
+                </el-row>
+
+              </el-form>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="告警时间"
+            prop="activeAt"
+            min-width="160"
+          >
+          </el-table-column>
+          <el-table-column
+            label="告警实例"
+            prop="labels.instance"
+            min-width="120"
+          >
+          </el-table-column>
+          <el-table-column
+            label="告警分组"
+            prop="labels.job"
+          >
+          </el-table-column>
+          <el-table-column
+            label="状态"
+            prop="state"
+          >
+          </el-table-column>
+          <el-table-column
+            label="告警描述"
+            prop="annotations.summary"
+            min-width="160"
+            show-overflow-tooltip
+          >
+          </el-table-column>
+          <el-table-column
+            label="告警值"
+            prop="annotations.value"
+          >
+          </el-table-column>
+        </el-table>
+        <pagination
+          v-show="total > 0"
+          :total="total"
+          :page.sync="listQuery.page"
+          :limit.sync="listQuery.size"
+          @pagination="getList"
+        />
       </div>
     </el-card>
 
-    <!-- 数据/告警/规则文件展示 -->
-    <div
-      class="muti-content"
-      v-if="mutiStatus"
-    >
-      <el-table
-        :data="tableData"
-        stripe
-        style="width: 100%"
-      >
-        <template v-for="item in tableData">
-          <el-table-column
-            prop="value"
-            label="值"
-            width="180"
-            :key="item.value"
-          >
-          </el-table-column>
-          <el-table-column
-            prop="metric"
-            label="值"
-            width="180"
-            :key="item.metric"
-          >
-          </el-table-column>
-        </template>
-      </el-table>
-    </div>
   </div>
 </template>
 
@@ -201,6 +323,11 @@ export default {
         name: "", //prometheus数据源名称
         key: "" //查询键值
       },
+      total: undefined,
+      listQuery: {
+        page: 1,
+        size: 10
+      },
       show: true,
       dataSourceOption: "",
       itemData: "",
@@ -215,11 +342,17 @@ export default {
         time: [{ required: true, message: "必须选择时间范围", trigger: "blur" }]
       },
       textarea: "",
-      tableData: [],
+      //存储告警数据
+      alertsData: [],
+      alertsStatus: false,
+
+      //存储规则数据
+      rulesData: [],
+      rulesStatus: false,
+
       //查询配置文件
       configStatus: false,
-      //告警/数据/规则文件
-      mutiStatus: false
+
     };
   },
 
@@ -246,36 +379,43 @@ export default {
       });
     },
 
-    //获取监控键值
+    //获取查询方法集
     getActionList () {
       getPromActionList().then(response => {
-        console.log(response.data);
         this.methodOption = response.data.results;
       });
     },
 
-    //校验规则重置
+    //处理告警数据
+    handleAlertsData (data) {
+      this.alertsStatus = true
+      this.alertsData = data
+    },
 
+    handleRulesData (data) {
+      this.rulesStatus = true
+      this.rulesData = data
+    },
+
+    getList () {
+
+    },
     //提交查询表单
     submitForm (formName) {
-      this.mutiStatus = this.configStatus = false
-      console.log(this.configStatus, this.mutiStatus);
+      this.rulesStatus = this.configStatus = false
       this.$refs[formName].validate(valid => {
         if (valid) {
-          console.log(this.form);
+          console.log(this.form.method);
           promQuery(this.form).then(response => {
-            console.log(response.data);
+            var res = response.data.results
             //判断数据返回类型
-            if (this.form.method == "config") {
-              this.configStatus = true
-              this.textarea = response.data.yaml
-            } else {
-              this.mutiStatus = true
-              this.tableData = response.data.results
+            if (this.form.method == "alerts") {
+              this.total = response.data.count
+              this.handleAlertsData(res)
+            } else if (this.form.method == "rules") {
+              this.handleRulesData(res)
             }
           })
-
-
 
         } else {
           console.log("error submit!!");
@@ -297,5 +437,29 @@ export default {
 /* .slide-fade-leave-active for below version 2.1.8 */ {
   transform: translateX(10px);
   opacity: 0;
+}
+
+.demo-table-expand {
+  font-size: 0;
+}
+.demo-table-expand label {
+  width: 90px;
+  color: #99a9bf;
+}
+.demo-table-expand .el-form-item {
+  margin-right: 0;
+  margin-bottom: 0;
+  width: 50%;
+}
+
+.rule-header {
+  font-size: 14px;
+  color: #999;
+  border-left: 2px solid #ccc;
+  padding-left: 5px;
+}
+.rule-header span {
+  margin-top: 8px;
+  display: block;
 }
 </style>

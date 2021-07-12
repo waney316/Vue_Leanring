@@ -1,7 +1,10 @@
 <template>
   <div>
     <el-card class="box-card">
-      <div slot="header" class="clearfix">
+      <div
+        slot="header"
+        class="clearfix"
+      >
         <span>监控巡检</span>
       </div>
       <div class="text item">
@@ -73,7 +76,10 @@
     </el-card>
     <!-- 任务巡检结果 -->
     <el-card style="margin-top: 10px">
-      <div slot="header" class="clearfix">
+      <div
+        slot="header"
+        class="clearfix"
+      >
         <span>监控巡检任务结果</span>
         <el-button
           type="primary"
@@ -81,8 +87,7 @@
           round
           style="float: right"
           @click="getLoadDataHistory()"
-          >刷新</el-button
-        >
+        >刷新</el-button>
       </div>
       <div class="text item">
         <template>
@@ -128,21 +133,24 @@
               label="任务状态"
               prop="task_status"
               align="center"
-              width="100"
+              width="120"
             >
               <template slot-scope="{ row }">
-                <span v-if="row.task_status == 'FAILED'"
-                  ><el-tag type="danger">{{ row.task_status }}</el-tag></span
-                >
-                <span v-else-if="row.task_status == 'SUCCESS'"
-                  ><el-tag type="success">{{ row.task_status }}</el-tag></span
-                >
+                <span v-if="row.task_status == 'FAILED'">
+                  <el-tag type="danger">{{ row.task_status }}</el-tag>
+                </span>
+                <span v-else-if="row.task_status == 'SUCCESS'">
+                  <el-tag type="success">{{ row.task_status }}</el-tag>
+                </span>
                 <span v-else>{{ row.task_status }}</span>
               </template>
             </el-table-column>
 
             <el-table-column align="right">
-              <template slot="header" slot-scope="scope">
+              <template
+                slot="header"
+                slot-scope="scope"
+              >
                 <el-input
                   v-model="listQuery.search"
                   size="mini"
@@ -160,21 +168,18 @@
                   size="mini"
                   type="primary"
                   @click="handleDetail(scope.row)"
-                  >任务详情</el-button
-                >
+                >任务详情</el-button>
                 <el-button
                   size="mini"
                   type="danger"
                   @click="handleDelete(scope.row, scope.$index)"
-                  >删除</el-button
-                >
+                >删除</el-button>
                 <el-button
                   size="mini"
                   type="success"
                   @click="handleDetails(scope.row)"
                   v-show="scope.row.task_status === 'SUCCESS'"
-                  >报告预览</el-button
-                >
+                >报告预览</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -191,7 +196,10 @@
 
     <!-- 任务详情 -->
     <!-- 任务详情模态框 -->
-    <el-dialog title="任务详情" :visible.sync="dialogTaskVisible">
+    <el-dialog
+      title="任务详情"
+      :visible.sync="dialogTaskVisible"
+    >
       <el-form
         ref="detailForm"
         :model="rowTask"
@@ -200,23 +208,57 @@
         size="mini"
         style="width: 80%; margin-left: 50px"
       >
-        <el-form-item label="任务名称" prop="task_name">
-          <el-input :disabled="true" v-model="rowTask.task_name" />
+        <el-form-item
+          label="任务名称"
+          prop="task_name"
+        >
+          <el-input
+            :disabled="true"
+            v-model="rowTask.task_name"
+          />
         </el-form-item>
-        <el-form-item label="任务ID" prop="task_id">
-          <el-input :disabled="true" v-model="rowTask.task_id" />
+        <el-form-item
+          label="任务ID"
+          prop="task_id"
+        >
+          <el-input
+            :disabled="true"
+            v-model="rowTask.task_id"
+          />
         </el-form-item>
-        <el-form-item label="创建时间" prop="create_time">
-          <el-input :disabled="true" v-model="rowTask.create_time" />
+        <el-form-item
+          label="创建时间"
+          prop="create_time"
+        >
+          <el-input
+            :disabled="true"
+            v-model="rowTask.create_time"
+          />
         </el-form-item>
-        <el-form-item label="任务类型" prop="task_type">
-          <el-input :disabled="true" v-model="rowTask.task_type" />
+        <el-form-item
+          label="任务类型"
+          prop="task_type"
+        >
+          <el-input
+            :disabled="true"
+            v-model="rowTask.task_type"
+          />
         </el-form-item>
-        <el-form-item label="任务详情" prop="task_desc">
-          <el-input :disabled="true" type="text" v-model="rowTask.task_desc" />
+        <el-form-item
+          label="任务详情"
+          prop="task_desc"
+        >
+          <el-input
+            :disabled="true"
+            type="text"
+            v-model="rowTask.task_desc"
+          />
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
         <el-button @click="dialogTaskVisible = false"> 关闭 </el-button>
       </div>
     </el-dialog>
@@ -230,7 +272,7 @@ import { parseTime } from "@/utils";
 import Pagination from "@/components/Pagination";
 export default {
   components: { Pagination },
-  data() {
+  data () {
     return {
       rowTask: {},
       //任务详情模态框
@@ -246,13 +288,13 @@ export default {
       }
     };
   },
-  created() {
+  created () {
     this.getInspectionCron();
     this.getLoadDataHistory();
   },
-  mounted() {},
+  mounted () { },
   methods: {
-    getInspectionCron() {
+    getInspectionCron () {
       //获取主机资源
       getHostResource({
         size: 10000
@@ -271,7 +313,8 @@ export default {
         });
       });
     },
-    getLoadDataHistory() {
+
+    getLoadDataHistory () {
       //添加请求属性
       Object.assign(this.listQuery, { task_type: "inspection" });
       getTaskHistory(this.listQuery).then(response => {
@@ -279,13 +322,13 @@ export default {
         this.tableData = response.data.results;
       });
     },
-    handleDetail(row) {
+    handleDetail (row) {
       this.rowTask = Object.assign({}, row); // copy obj
       this.dialogTaskVisible = true;
     },
     //删除任务历史数据
     //删除任务历史数据
-    handleDelete(row, index) {
+    handleDelete (row, index) {
       this.$confirm("此操作将永久删除该历史, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -319,7 +362,7 @@ export default {
         });
     },
 
-    handleDetails(row) {
+    handleDetails (row) {
       console.log(row);
       // this.$set(row, "downloadLoading", true);
       var id = row.task_id;
@@ -327,9 +370,6 @@ export default {
       console.log(data);
       let routeData = this.$router.resolve({
         path: `/tasks/report/${id}`,
-        query: {
-          row: data
-        }
       });
       window.open(routeData.href, "_blank");
     }
