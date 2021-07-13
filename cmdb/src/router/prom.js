@@ -33,19 +33,19 @@ export default [
         name: "Promdata",
         component: () => import("@/views/prom/data"),
         meta: {
-          title: "数据导出",
+          title: "数据查询",
           icon: "el-icon-star-on"
         }
+      },
+      {
+        path: "alert",
+        name: "PromInfo",
+        component: () => import("@/views/prom/alert"),
+        meta: {
+          title: "告警查询",
+          icon: "el-icon-s-goods"
+        }
       }
-      // {
-      //   path: "alert",
-      //   name: "PromInfo",
-      //   component: () => import("@/views/prom/alert"),
-      //   meta: {
-      //     title: "Alert查询",
-      //     icon: "el-icon-s-goods"
-      //   }
-      // }
     ]
   }
 ];

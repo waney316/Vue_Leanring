@@ -88,19 +88,22 @@ export function managerAlert(pk, params) {
 
 
 // prom api数据查询
-export function promQuery(data) {
+export function promQuery(data, params) {
   return request({
     url: '/api/v1/prom/query_prom_data/',
     method: "post",
-    data: data
+    data: data,
+    params,
+
   })
 }
 
 // alertmanager数据查询
-export function alertQuery(data) {
+export function alertQuery(data, params) {
   return request({
     url: '/api/v1/prom/query_alert_data/',
     method: "post",
-    data: data
+    data: data,
+    params,
   })
 }

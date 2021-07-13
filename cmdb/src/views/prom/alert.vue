@@ -1,12 +1,18 @@
 <template>
   <div class="app-container">
     <el-card>
-      <div slot="header" class="clearfix">
+      <div
+        slot="header"
+        class="clearfix"
+      >
         <span>Alertmanager告警查询</span>
       </div>
 
       <transition name="slide-fade">
-        <div class="text item" v-show="show">
+        <div
+          class="text item"
+          v-show="show"
+        >
           <el-form
             ref="form"
             :model="form"
@@ -15,8 +21,11 @@
             size="small"
           >
             <el-row>
-              <el-col :span="8">
-                <el-form-item label="数据源" prop="dataSource">
+              <el-col :span="6">
+                <el-form-item
+                  label="数据源"
+                  prop="dataSource"
+                >
                   <el-select
                     v-model="form.name"
                     clearable
@@ -30,138 +39,181 @@
                       :value="item.name"
                     >
                     </el-option>
-                  </el-select> </el-form-item
-              ></el-col>
-              <el-col :span="8">
-                <el-form-item label="查询类型" prop="type">
-                  <el-select
-                    v-model="form.type"
-                    clearable
-                    placeholder="请选择查询类型"
-                    style="margin-left: 10px"
-                  >
-                    <el-option
-                      v-for="item in typeOption"
-                      :key="item.key"
-                      :label="item.name"
-                      :value="item.key"
-                    >
-                    </el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
-              <el-col :span="8">
+
+              <el-col :span="6">
                 <el-form-item style="float: center">
-                  <el-button type="primary" @click="submitForm('form')"
-                    >创建查询</el-button
-                  >
-                  <el-button type="danger" @click="resetForm('form')"
-                    >重置</el-button
-                  >
+                  <el-button
+                    type="primary"
+                    @click="submitForm('form')"
+                  >创建查询</el-button>
+                  <el-button
+                    type="danger"
+                    @click="resetForm('form')"
+                  >重置</el-button>
                 </el-form-item>
               </el-col>
             </el-row>
           </el-form>
         </div>
       </transition>
-      <div style="text-align:center; font-size: 12px" @click="show = !show">
-        <i class="el-icon-arrow-up" v-show="show">隐藏查询条件</i>
-        <i class="el-icon-arrow-down" v-show="!show">展开查询条件</i>
+      <div
+        style="text-align:center; font-size: 12px"
+        @click="show = !show"
+      >
+        <i
+          class="el-icon-arrow-up"
+          v-show="show"
+        >隐藏查询条件</i>
+        <i
+          class="el-icon-arrow-down"
+          v-show="!show"
+        >展开查询条件</i>
       </div>
     </el-card>
 
-    <el-card style="margin-top: 10px">
-      <el-table
-        :key="tableKey"
-        v-loading="listLoading"
-        :data="list"
-        border
-        fit
-        highlight-current-row
-        style="width: 100%; margin-top:10px"
-      >
-        <el-table-column label="资源池" align="center" width="120">
-          <template slot-scope="{ row }">
-            <span>{{ row.source_room }}</span>
-          </template>
-        </el-table-column>
-
-        <el-table-column
-          label="数据源名称"
-          prop="name"
-          align="center"
-          min-width="120"
+    <div v-if="form.name">
+      <el-card style="margin-top: 10px">
+        <el-table
+          :key="tableKey"
+          v-loading="listLoading"
+          :data="list"
+          border
+          fit
+          highlight-current-row
+          style="width: 100%; margin-top:10px"
         >
-          <template slot-scope="{ row }">
-            <span>{{ row.name }}</span>
-          </template>
-        </el-table-column>
+          <el-table-column
+            type="expand"
+            label="标签"
+            width="60"
+          >
+            <template slot-scope="props">
+              <el-form
+                label-position="left"
+                inline
+                class="demo-table-expand"
+              >
+                <el-row>
+                  <template v-for="(item, key, index) in props.row.labels">
+                    <el-col
+                      :span="6"
+                      :key="index"
+                    >
+                      <el-form-item :label="key">
+                        <span>{{ item }}</span>
+                      </el-form-item>
+                    </el-col>
+                  </template>
+                </el-row>
+              </el-form>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="告警时间"
+            align="center"
+            min-width="120"
+          >
+            <template slot-scope="{ row }">
+              <span>{{ row.startsAt }}</span>
+            </template>
+          </el-table-column>
 
-        <el-table-column label="API地址" align="center" min-width="120">
-          <template slot-scope="{ row }">
-            <span>{{ row.url }}</span>
-          </template>
-        </el-table-column>
+          <el-table-column
+            label="告警内容"
+            prop="name"
+            align="center"
+            min-width="120"
+          >
+            <template slot-scope="{ row }">
+              <span>{{ row.annotations.summary }}</span>
+            </template>
+          </el-table-column>
 
-        <el-table-column label="告警地址" align="center" min-width="140">
-          <template slot-scope="{ row }">
-            <el-tag type="info" size="mini">{{ row.alert_url.name }}</el-tag>
-            <!-- <span v-if="row.alert_url">{{ row.alert_url }}</span>
-              <span v-else>Null</span> -->
-          </template>
-        </el-table-column>
-      </el-table>
-      <pagination
-        v-show="total > 0"
-        :total="total"
-        :page.sync="listQuery.page"
-        :limit.sync="listQuery.size"
-        @pagination="getList"
-      />
-    </el-card>
+          <el-table-column
+            label="告警状态"
+            align="center"
+            min-width="120"
+          >
+            <template slot-scope="{ row }">
+              <el-tag type="danger"><span>{{ row.status.state }}</span></el-tag>
+            </template>
+          </el-table-column>
+
+          <el-table-column
+            label="接收组"
+            align="center"
+            min-width="140"
+          >
+            <template slot-scope="{ row }">
+              <template v-for="(receiver,index) in row.receivers">
+
+                <el-tag
+                  type="info"
+                  size="mini"
+                  style="margin-left: 5px"
+                  :key="index"
+                >{{ receiver }}</el-tag>
+
+              </template>
+
+            </template>
+          </el-table-column>
+        </el-table>
+        <pagination
+          v-show="total > 0"
+          :total="total"
+          :page.sync="listQuery.page"
+          :limit.sync="listQuery.size"
+          @pagination="getList"
+        />
+      </el-card>
+    </div>
+
+    <div
+      v-else
+      style="text-align: center; font-size: 28px; padding-top: 30px; padding-bottom: 30px;color: #ddd;height: 30px"
+    >
+      请选择数据源，来加载数据
+    </div>
   </div>
 </template>
 
 <script>
-import { getAlertList } from "@/api/prom";
+import { getAlertList, alertQuery } from "@/api/prom";
 import Pagination from "@/components/Pagination";
 export default {
   components: { Pagination },
-  data() {
+  data () {
     return {
       tableKey: 0,
       list: [],
-      listLoading: true,
+      listLoading: false,
       listQuery: {
         page: 1,
         szie: 10
       },
       total: 0,
       form: {
-        name: "", //prometheus数据源名称
-        key: "" //查询键值
+        method: "alerts"
       },
       show: true,
       dataSourceOption: "",
-      itemData: "",
-      typeOption: "",
-      pickerOptions: "",
       rules: {
-        name: [{ required: true, message: "请选择数据源", trigger: "blur" }],
-        type: [{ required: true, message: "请选择查询类型", trigger: "blur" }],
-        key: [{ required: true, message: "请输入查询键值", trigger: "blur" }],
-        time: [{ required: true, message: "必须选择时间范围", trigger: "blur" }]
+        name: [{ required: true, message: "请选择数据源", trigger: "blur" }]
       }
     };
   },
 
-  mounted() {
+  mounted () {
     //页面挂载时获取所有数据源和prometheus对应的监控项键值
     this.getDataSourceList();
   },
   methods: {
     //获取alertmanager数据源
-    getDataSourceList() {
+    getDataSourceList () {
       getAlertList().then(response => {
         if (response.code === 0) {
           this.dataSourceOption = response.data.results;
@@ -169,20 +221,47 @@ export default {
       });
     },
 
-    getList() {},
+    getList () {
+      alertQuery(this.form, this.listQuery).then(res => {
+        console.log(res);
+        if (res.code === 0) {
+          this.list = res.data.results
+          this.total = res.data.count
+          this.listLoading = false
+        } else {
+          this.$message.error('查询失败');
+        }
+      })
+    },
 
     //校验规则重置
 
     //提交查询表单
-    submitForm(formName) {
+    submitForm (formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
+          this.listLoading = true
+          alertQuery(this.form).then(res => {
+            console.log(res);
+            if (res.code === 0) {
+              this.list = res.data.results
+              this.total = res.data.count
+              this.listLoading = false
+            } else {
+              this.$message.error('查询失败');
+            }
+          })
         } else {
           console.log("error submit!!");
           return false;
         }
       });
-    }
+    },
+    //重置表单
+    resetForm (formName) {
+      console.log(formName);
+      this.$refs[formName].resetFields();
+    },
   }
 };
 </script>

@@ -28,7 +28,9 @@ Object.keys(filters).forEach(k => Vue.filter(k, filters[k]));
  * please remove it before going online ! ! !
  */
 if (process.env.NODE_ENV === "production") {
-  const { mockXHR } = require("../mock");
+  const {
+    mockXHR
+  } = require("../mock");
   mockXHR();
 }
 

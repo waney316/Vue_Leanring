@@ -1,7 +1,10 @@
 <template>
   <div class="app-container">
     <el-card class="box-card">
-      <div slot="header" class="clearfix">
+      <div
+        slot="header"
+        class="clearfix"
+      >
         <span>主机-群组-模版-代理关联</span>
       </div>
       <div class="text item">
@@ -13,7 +16,10 @@
           class="demo-ruleForm"
           size="mini"
         >
-          <el-form-item label="数据源选择" prop="dataSource">
+          <el-form-item
+            label="数据源选择"
+            prop="dataSource"
+          >
             <el-select
               v-model="hostLinkForm.dataSource"
               clearable
@@ -34,7 +40,10 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="操作类型" prop="operationModule">
+          <el-form-item
+            label="操作类型"
+            prop="operationModule"
+          >
             <el-select
               v-model="hostLinkForm.operationModule"
               clearable
@@ -55,16 +64,28 @@
               ></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="操作类型" prop="method">
+          <el-form-item
+            label="操作类型"
+            prop="method"
+          >
             <el-select
               v-model="hostLinkForm.method"
               clearable
               placeholder="请选择操作类型"
               style="margin-left: 10px"
             >
-              <el-option label="添加" value="add"></el-option>
-              <el-option label="移除" value="remove"></el-option>
-              <el-option label="替换" value="replace"></el-option>
+              <el-option
+                label="添加"
+                value="add"
+              ></el-option>
+              <el-option
+                label="移除"
+                value="remove"
+              ></el-option>
+              <el-option
+                label="替换"
+                value="replace"
+              ></el-option>
             </el-select>
           </el-form-item>
           <el-form-item
@@ -73,7 +94,7 @@
             v-if="hostLinkForm.operationModule === 'hostGroupManager'"
           >
             <el-select
-              v-model="hostLinkForm.group"
+              v-model="hostLinkForm.groups"
               multiple
               filterable
               clearable
@@ -97,7 +118,7 @@
             v-if="hostLinkForm.operationModule === 'hostTemplateManager'"
           >
             <el-select
-              v-model="hostLinkForm.template"
+              v-model="hostLinkForm.templates"
               multiple
               filterable
               clearable
@@ -139,26 +160,38 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item label="主机列表" prop="hosts">
-            <el-input type="textarea" v-model="hostLinkForm.hosts"></el-input>
+          <el-form-item
+            label="主机列表"
+            prop="hosts"
+          >
+            <el-input
+              type="textarea"
+              v-model="hostLinkForm.hosts"
+            ></el-input>
           </el-form-item>
           <el-form-item>
             <el-button
               type="primary"
               @click="submitHostLinkForm('hostLinkForm')"
               size="mini"
-              >立即执行</el-button
-            >
-            <el-button @click="resetForm('hostLinkForm')" size="mini"
-              >重置</el-button
-            >
+            >立即执行</el-button>
+            <el-button
+              @click="resetForm('hostLinkForm')"
+              size="mini"
+            >重置</el-button>
           </el-form-item>
         </el-form>
       </div>
     </el-card>
 
-    <div class="log" v-show="LogVisible">
-      <p v-for="(item, index) in log" :key="index">
+    <div
+      class="log"
+      v-show="LogVisible"
+    >
+      <p
+        v-for="(item, index) in log"
+        :key="index"
+      >
         {{ item }}
       </p>
     </div>
@@ -170,17 +203,15 @@ import {
   getZabbixList,
   listAllTemplates,
   listAllHostGroup,
-  hostCreate,
   hostTemplate,
   hostGroup,
   listAllProxies
 } from "@/api/zabbix";
 import Log from "@/components/LogShow";
-import { socketRequest } from "@/api/zabbix";
 
 export default {
   components: { Log },
-  data() {
+  data () {
     return {
       //日志
       log: [],
@@ -220,32 +251,32 @@ export default {
         hosts: [
           { required: true, message: "请输入IP,以换行分割", trigger: "blur" }
         ],
-        group: [{ required: true, message: "请选择主机组", trigger: "blur" }],
-        template: [{ required: true, message: "请选择模版", trigger: "blur" }],
+        groups: [{ required: true, message: "请选择主机组", trigger: "blur" }],
+        templates: [{ required: true, message: "请选择模版", trigger: "blur" }],
         proxy: [{ required: true, message: "请选择代理", trigger: "blur" }]
       }
     };
   },
-  created() {
+  created () {
     this.getDataSourceList();
   },
-  mounted() {
+  mounted () {
     //页面刷新时如果存在socket连接先行关闭
     this.closeConnect();
   },
-  beforeDestroy() {
+  beforeDestroy () {
     //页面刷新时如果存在socket连接先行关闭
     this.closeConnect();
   },
   methods: {
     //获取数据分类列表
-    getDataSourceList() {
+    getDataSourceList () {
       getZabbixList().then(response => {
         this.dataSourceOption = response.data.results;
       });
     },
     //主机主机组列表
-    getHostGroupList(params) {
+    getHostGroupList (params) {
       if (this.hostLinkForm.dataSource) {
         listAllHostGroup({ dataSource: this.hostLinkForm.dataSource }).then(
           response => {
@@ -257,7 +288,7 @@ export default {
       }
     },
     //获取模板列表
-    getTemplateList(params) {
+    getTemplateList (params) {
       if (this.hostLinkForm.dataSource) {
         listAllTemplates({ dataSource: this.hostLinkForm.dataSource }).then(
           response => {
@@ -269,7 +300,7 @@ export default {
       }
     },
     //获取代理列表
-    getProxyList(params) {
+    getProxyList (params) {
       if (this.hostLinkForm.dataSource) {
         listAllProxies({ dataSource: this.hostLinkForm.dataSource }).then(
           response => {
@@ -281,7 +312,7 @@ export default {
     },
 
     //用于主机模板群组关联
-    submitHostLinkForm(formName) {
+    submitHostLinkForm (formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
           const copyForm = Object.assign({}, this.hostLinkForm);
@@ -323,19 +354,19 @@ export default {
     },
 
     //重置表单
-    resetForm(formName) {
+    resetForm (formName) {
       this.$refs[formName].resetFields();
     },
 
     //socket连接
-    handleConnect() {
+    handleConnect () {
       //如果socket事先存在，则关闭
       if (window.ws) {
         //清空log
         this.log = [];
         this.LogVisible = true;
         window.ws.close();
-        window.ws.onclose = function(event) {
+        window.ws.onclose = function (event) {
           console.log(new Date() + "socker已关闭");
         };
       }
@@ -346,33 +377,33 @@ export default {
         window.ws = new WebSocket("ws://127.0.0.1:8000/ws/zabbix");
         console.log(ws.readyState);
         //
-        ws.send = function() {};
+        ws.send = function () { };
         // 连接建立后的回调函数
-        ws.onopen = function() {
+        ws.onopen = function () {
           console.log("连接已建立");
         };
         //监听消息
-        ws.onmessage = function(event) {
+        ws.onmessage = function (event) {
           console.log(event.data);
           var data = JSON.parse(event.data);
           self.log.push(data["message"]);
           console.log(data["message"]);
         };
 
-        ws.onerror = function(event) {
+        ws.onerror = function (event) {
           console.log("服务端连接异常！");
         };
       }
     },
 
     //关闭socket连接
-    closeConnect() {
+    closeConnect () {
       if (window.ws) {
         window.ws.close();
         console.log("中止监听");
       }
     },
-    validateHost(data) {
+    validateHost (data) {
       let hostArr = [];
       data.split("\n").forEach(element => {
         hostArr.push(element.replace(/^\s\s*/, "").replace(/\s\s*$/, ""));

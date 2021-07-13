@@ -202,13 +202,6 @@ export function listAllProxies(params) {
     params
   });
 }
-export function socketRequest(params) {
-  return request({
-    url: "/api/v1/zabbix/showlog/",
-    method: "get",
-    params
-  });
-}
 
 //告警查询
 export function listAlerts(params, data) {
